@@ -203,8 +203,55 @@
 **What's Next (Ideas for Session 5+):**
 - Parallax scrolling on the hero background elements
 - Animated SVG device illustrations (exploded phone view)
-- Floating mountain/tech particles in the hero
 - Scroll-triggered counter animation for stats
 - Interactive before/after slider for repair photos
 - Easter egg: Konami code or click-the-mountain interaction
 - Animated service card icons (wrench spinning, screen pulsing)
+
+---
+
+## Session 5 — 2026-03-26 (Opus 4.6)
+
+### What I Did: Enhanced Tech Particles — Repair Sparks & Circuit Dust
+
+**Focus:** Replaced the basic floating dot particles in the hero with a rich, multi-type particle system themed to device repair — dust motes, circuit traces, screw-head crosses, and bright accent sparks.
+
+**Particle types (4 variants, weighted random distribution):**
+1. **Dots (50% weight)** — Tiny dust motes (2-5px), low opacity (6-18%), slow drift upward (10-22s). The ambient base layer.
+2. **Sparks (15% weight)** — Brighter accent-colored particles (2-4px), higher opacity (20-50%), faster (4-8s). Have a subtle `box-shadow` glow that pulses with the animation. Like soldering iron sparks.
+3. **Crosses (20% weight)** — Plus-sign shapes (5-9px) using `::before` / `::after` pseudo-elements. Subtle nod to screwdriver/phillips head. Rotate as they drift.
+4. **Lines (15% weight)** — Short circuit-trace segments (12-28px × 1.5px). Scale in/out as they drift, like electricity arcing briefly. Random rotation angles.
+
+**Motion system:**
+- Each particle gets unique CSS custom properties: `--p-drift-y` (vertical travel), `--p-sway` (horizontal wander), `--p-rotate` (spin), `--p-opacity` (max visibility)
+- 3 distinct keyframe animations: `particleDrift` (dots/crosses), `particleSpark` (sparks with scale pulse), `particleLine` (traces that scale in then fade)
+- Spawned in the bottom 60% of the hero, spread across full width
+- Animation delays staggered up to 15 seconds so particles enter at different times
+
+**Mouse parallax:**
+- On pointer devices, the entire particle container shifts opposite to cursor position (8px horizontal, 6px vertical)
+- Creates depth perception — particles feel like they're on a different plane than the hero text
+- Uses `requestAnimationFrame` throttling
+- Disabled on touch-only devices
+
+**Technical notes:**
+- 35 particles total (4% of page DOM) — lightweight
+- All motion via CSS `@keyframes` animations (GPU-accelerated transform + opacity)
+- No JS animation loop — particles are created once, CSS handles everything
+- Full `prefers-reduced-motion` support via existing `.hero-particles { display: none }` rule
+- `will-change: transform, opacity` on each particle for compositor hints
+
+**Files changed:**
+- `style.css` — replaced simple `particleFloat` keyframe with 4 particle type styles + 3 animation keyframes (~80 lines net change)
+- `main.js` — replaced 12-line particle loop with ~65-line weighted type system + mouse parallax
+
+**Tested:** Dark mode, light mode, desktop (1024px, 800px), mobile (375px). Zero console errors. No parallax on touch devices.
+
+**What's Next (Ideas for Session 6+):**
+- Parallax scrolling on the hero background glow blobs
+- Animated SVG device illustrations (exploded phone view)
+- Scroll-triggered counter animation for stats
+- Interactive before/after slider for repair photos
+- Easter egg: Konami code or click-the-mountain interaction
+- Animated service card icons (wrench spinning, screen pulsing)
+- Hero scroll-to reveal: content unfolds as you scroll down

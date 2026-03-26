@@ -4448,20 +4448,86 @@ body {
   pointer-events: none;
   z-index: 0;
 }
+/* ── Particle base ── */
 .hero-particle {
   position: absolute;
-  width: 4px;
-  height: 4px;
+  opacity: 0;
+  pointer-events: none;
+  will-change: transform, opacity;
+}
+
+/* ── Type: dot (default) — floating dust motes ── */
+.hero-particle--dot {
+  border-radius: 50%;
+  background: var(--text-muted);
+  animation: particleDrift linear infinite;
+}
+
+/* ── Type: spark — brighter accent-colored ── */
+.hero-particle--spark {
   border-radius: 50%;
   background: var(--accent);
-  opacity: 0.15;
-  animation: particleFloat linear infinite;
+  box-shadow: 0 0 6px var(--accent-glow);
+  animation: particleSpark linear infinite;
 }
-@keyframes particleFloat {
-  0% { transform: translateY(0) translateX(0); opacity: 0; }
-  10% { opacity: 0.15; }
-  90% { opacity: 0.15; }
-  100% { transform: translateY(-100vh) translateX(30px); opacity: 0; }
+
+/* ── Type: cross — tiny plus sign (like a screw head) ── */
+.hero-particle--cross {
+  background: transparent;
+  animation: particleDrift linear infinite;
+}
+.hero-particle--cross::before,
+.hero-particle--cross::after {
+  content: '';
+  position: absolute;
+  background: var(--text-muted);
+  border-radius: 1px;
+}
+.hero-particle--cross::before {
+  width: 100%;
+  height: 1.5px;
+  top: 50%;
+  left: 0;
+  transform: translateY(-50%);
+}
+.hero-particle--cross::after {
+  width: 1.5px;
+  height: 100%;
+  left: 50%;
+  top: 0;
+  transform: translateX(-50%);
+}
+
+/* ── Type: line — short circuit trace ── */
+.hero-particle--line {
+  border-radius: 1px;
+  background: var(--accent);
+  opacity: 0;
+  animation: particleLine linear infinite;
+}
+
+/* ── Keyframes ── */
+@keyframes particleDrift {
+  0%   { transform: translateY(0) translateX(0) rotate(0deg); opacity: 0; }
+  8%   { opacity: var(--p-opacity, 0.12); }
+  50%  { transform: translateY(calc(var(--p-drift-y, -50vh))) translateX(var(--p-sway, 20px)) rotate(var(--p-rotate, 45deg)); }
+  92%  { opacity: var(--p-opacity, 0.12); }
+  100% { transform: translateY(calc(var(--p-drift-y, -100vh))) translateX(calc(var(--p-sway, 20px) * -0.5)) rotate(calc(var(--p-rotate, 45deg) * 2)); opacity: 0; }
+}
+
+@keyframes particleSpark {
+  0%   { transform: translateY(0) scale(1); opacity: 0; }
+  5%   { opacity: 0.35; }
+  25%  { transform: translateY(calc(var(--p-drift-y, -30vh) * 0.3)) scale(1.2); opacity: 0.5; }
+  50%  { opacity: 0.25; }
+  100% { transform: translateY(var(--p-drift-y, -30vh)) scale(0.5); opacity: 0; }
+}
+
+@keyframes particleLine {
+  0%   { transform: translateY(0) translateX(0) rotate(var(--p-rotate, 30deg)) scaleX(0); opacity: 0; }
+  10%  { transform: translateY(calc(var(--p-drift-y, -40vh) * 0.1)) translateX(5px) rotate(var(--p-rotate, 30deg)) scaleX(1); opacity: 0.15; }
+  90%  { opacity: 0.1; }
+  100% { transform: translateY(var(--p-drift-y, -40vh)) translateX(var(--p-sway, 15px)) rotate(var(--p-rotate, 30deg)) scaleX(0.3); opacity: 0; }
 }
 
 /* ─── GLOWING ACCENT UNDERLINES (eyebrows) ────────────────── */

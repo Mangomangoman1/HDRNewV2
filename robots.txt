@@ -1,0 +1,11 @@
+# Hailey Device Repair — robots.txt
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://haileyrepair.com/sitemap.xml
+
+# Disallow admin/build files
+Disallow: /build.sh
+Disallow: /PROJECT-STATE.md
+Disallow: /sw.js

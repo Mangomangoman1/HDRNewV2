@@ -7208,3 +7208,158 @@ body {
 [data-animate][data-scramble].scramble-done {
   opacity: 1;
 }
+
+
+/* ═══════════════════════════════════════════════
+   CUSTOM SCROLLBAR — Themed accent track
+   ═══════════════════════════════════════════════ */
+
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+}
+
+:root {
+  --scrollbar-thumb: rgba(79, 142, 247, 0.35);
+  --scrollbar-thumb-hover: rgba(79, 142, 247, 0.6);
+  --scrollbar-track: rgba(255, 255, 255, 0.03);
+}
+[data-theme="light"] {
+  --scrollbar-thumb: rgba(37, 99, 235, 0.3);
+  --scrollbar-thumb-hover: rgba(37, 99, 235, 0.55);
+  --scrollbar-track: rgba(0, 0, 0, 0.04);
+}
+
+/* WebKit (Chrome, Safari, Edge) */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: var(--scrollbar-track);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb);
+  border-radius: 10px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+  transition: background 0.2s ease;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--scrollbar-thumb-hover);
+  background-clip: content-box;
+}
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+
+/* ═══════════════════════════════════════════════
+   NOISE TEXTURE OVERLAY — Depth & richness
+   Subtle SVG noise for dark mode depth, barely visible in light.
+   Uses a dedicated div for cross-browser reliability.
+   ═══════════════════════════════════════════════ */
+
+.noise-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9998;
+  pointer-events: none;
+  opacity: 0.028;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 256px 256px;
+  mix-blend-mode: overlay;
+}
+
+[data-theme="light"] .noise-overlay {
+  opacity: 0.02;
+  mix-blend-mode: soft-light;
+}
+
+
+/* ═══════════════════════════════════════════════
+   SECTION DIVIDER ENHANCEMENTS — Mountain-inspired waves
+   Different wave shapes for variety between sections.
+   ═══════════════════════════════════════════════ */
+
+/* Wave variant: gentle mountain ridge */
+.wave-divider--mountain svg {
+  height: 100%;
+}
+.wave-divider--mountain {
+  height: 56px;
+}
+
+/* Wave variant: double peak */
+.wave-divider--peaks {
+  height: 40px;
+}
+
+/* Section transition gradients for depth */
+.section--alt {
+  position: relative;
+}
+.section--alt::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 120px;
+  background: linear-gradient(to bottom, rgba(0,0,0,0.04), transparent);
+  pointer-events: none;
+  z-index: 0;
+}
+[data-theme="light"] .section--alt::before {
+  background: linear-gradient(to bottom, rgba(0,0,0,0.015), transparent);
+}
+
+/* Bottom fade-out for alt sections transitioning to normal */
+.wave-divider--bottom .wave-fill {
+  fill: var(--bg-primary);
+}
+
+
+/* ═══════════════════════════════════════════════
+   HERO SECTION — Subtle mountain silhouette
+   Layered SVG silhouette at the bottom of the hero
+   referencing the Hailey/Sun Valley mountain landscape.
+   ═══════════════════════════════════════════════ */
+
+.hero-mountains {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  height: 120px;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+.hero-mountains svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+.hero-mountain-back {
+  fill: rgba(79, 142, 247, 0.04);
+}
+.hero-mountain-front {
+  fill: rgba(79, 142, 247, 0.07);
+}
+[data-theme="light"] .hero-mountain-back {
+  fill: rgba(37, 99, 235, 0.03);
+}
+[data-theme="light"] .hero-mountain-front {
+  fill: rgba(37, 99, 235, 0.05);
+}
+
+/* ═══════════════════════════════════════════════
+   REDUCED MOTION — disable noise animation
+   ═══════════════════════════════════════════════ */
+@media (prefers-reduced-motion: reduce) {
+  /* Noise is static — no animations to disable, keep as-is */
+}

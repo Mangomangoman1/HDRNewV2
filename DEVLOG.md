@@ -146,9 +146,65 @@
 **What's Next (Ideas for Session 4+):**
 - Parallax scrolling on the hero section background elements
 - Animated SVG device illustrations (exploded phone view)
-- Enhanced dark mode with subtle noise/grain texture overlay
-- Custom scrollbar styling to match the theme
 - Floating mountain/tech particles in the hero
 - Scroll-triggered counter animation for stats
 - Interactive before/after slider for repair photos
 - Easter egg: Konami code or click-the-mountain interaction
+
+---
+
+## Session 4 — 2026-03-26 (Opus 4.6)
+
+### What I Did: Custom Scrollbar + Noise Texture + Mountain Silhouette + Wave Dividers
+
+**Focus:** Premium ambient polish — the kind of details that make a site feel expensive and intentional. Three features that affect the entire page feel:
+
+**1. Custom Scrollbar (WebKit + Firefox)**
+- Scrollbar thumb uses accent blue with transparency (35% dark, 30% light)
+- Thumb brightens on hover (60% dark, 55% light)
+- Track is nearly invisible (3% white in dark, 4% black in light)
+- Thumb has rounded corners with a transparent border for padding
+- Firefox: `scrollbar-width: thin; scrollbar-color` for native support
+- WebKit: `::-webkit-scrollbar`, `::-webkit-scrollbar-thumb`, etc.
+- Theme-aware via CSS custom properties (`--scrollbar-thumb`, `--scrollbar-track`, `--scrollbar-thumb-hover`)
+
+**2. Noise/Grain Texture Overlay**
+- SVG `feTurbulence` noise filter rendered as a tiling background
+- Dedicated `.noise-overlay` div (fixed, inset 0, z-index 9998, pointer-events: none)
+- Dark mode: 2.8% opacity, `mix-blend-mode: overlay` — adds subtle film grain texture
+- Light mode: 2% opacity, `mix-blend-mode: soft-light` — barely there, just enough to prevent flat backgrounds
+- Uses inline data URI SVG for zero extra HTTP requests
+- Doesn't block interactions (pointer-events: none)
+
+**3. Mountain Silhouette (Hero Section)**
+- Layered SVG mountain range at the bottom of the hero section
+- Two paths: back range (4% opacity) and front range (7% opacity) — subtle depth effect
+- References the Hailey/Sun Valley mountain landscape
+- Light mode gets slightly lighter fills (3% and 5%)
+- Anchored to bottom of hero, full width, 120px tall
+
+**4. Additional Wave Dividers**
+- Added wave divider before mail-in section (process → mail-in transition) — flip variant
+- Added wave divider before FAQ section (compare → FAQ transition) — mountain variant with different curve
+- Now 3 total wave dividers creating organic transitions between background changes
+- Each uses a different SVG path for visual variety
+
+**5. Section Depth Gradients**
+- `section--alt::before` adds a 120px linear-gradient at the top of alternating sections
+- Dark mode: `rgba(0,0,0,0.04)` fade — subtle darkening at section start
+- Light mode: `rgba(0,0,0,0.015)` — barely perceptible
+
+**Files changed:**
+- `index.html` — added `.noise-overlay` div, `.hero-mountains` SVG, 2 new `.wave-divider` elements
+- `style.css` — added ~120 lines: scrollbar styles, noise overlay, mountain silhouette, wave variants, section depth gradients, reduced motion fallback
+
+**Tested:** Dark mode, light mode, desktop (1024px, 800px), mobile (375px). Zero console errors. All pointer events pass through noise overlay.
+
+**What's Next (Ideas for Session 5+):**
+- Parallax scrolling on the hero background elements
+- Animated SVG device illustrations (exploded phone view)
+- Floating mountain/tech particles in the hero
+- Scroll-triggered counter animation for stats
+- Interactive before/after slider for repair photos
+- Easter egg: Konami code or click-the-mountain interaction
+- Animated service card icons (wrench spinning, screen pulsing)

@@ -292,6 +292,9 @@ a{color:inherit;text-decoration:none}
 </head>
 <body>
 
+  <!-- Noise texture overlay for visual depth -->
+  <div class="noise-overlay" aria-hidden="true"></div>
+
   <!-- Page load curtain -->
   <div class="page-curtain" id="pageCurtain">
     <div class="page-curtain-logo">
@@ -412,6 +415,16 @@ a{color:inherit;text-decoration:none}
 
     <div class="hero-scroll-hint" aria-hidden="true">
       <span class="material-symbols-outlined">keyboard_arrow_down</span>
+    </div>
+
+    <!-- Mountain silhouette at bottom of hero — Hailey/Sun Valley feel -->
+    <div class="hero-mountains" aria-hidden="true">
+      <svg viewBox="0 0 1440 120" preserveAspectRatio="none">
+        <!-- Back range (subtle) -->
+        <path class="hero-mountain-back" d="M0,120 L0,80 C120,60 200,35 320,55 C440,75 500,30 640,45 C780,60 860,20 960,40 C1060,60 1140,25 1260,50 C1340,65 1400,55 1440,70 L1440,120 Z"/>
+        <!-- Front range (slightly more visible) -->
+        <path class="hero-mountain-front" d="M0,120 L0,95 C100,80 180,60 280,75 C380,90 460,55 580,70 C700,85 800,50 920,65 C1040,80 1120,45 1240,60 C1340,72 1400,85 1440,90 L1440,120 Z"/>
+      </svg>
     </div>
   </section>
 
@@ -771,6 +784,8 @@ a{color:inherit;text-decoration:none}
     </div>
   </section>
 
+  <div class="wave-divider wave-divider--flip" aria-hidden="true"><svg viewBox="0 0 1440 48" preserveAspectRatio="none"><path class="wave-fill" d="M0,24 C240,0 480,48 720,24 C960,0 1200,48 1440,24 L1440,48 L0,48 Z"/></svg></div>
+
   <!-- ═══════════════════════════════════════════
        MAIL-IN SECTION
   ══════════════════════════════════════════════ -->
@@ -1083,6 +1098,8 @@ a{color:inherit;text-decoration:none}
       </div>
     </div>
   </section>
+
+  <div class="wave-divider wave-divider--mountain" aria-hidden="true"><svg viewBox="0 0 1440 56" preserveAspectRatio="none"><path class="wave-fill" d="M0,28 C180,56 360,8 540,32 C720,56 900,12 1080,28 C1200,38 1320,48 1440,40 L1440,56 L0,56 Z"/></svg></div>
 
   <!-- ═══════════════════════════════════════════
        FAQ

@@ -97,10 +97,58 @@
 
 **What's Next (Ideas for Session 3+):**
 - Parallax scrolling on the hero section background elements
-- Text scramble/reveal effect on section headlines as they enter viewport
 - Animated SVG device illustrations (exploded phone view)
 - Enhanced dark mode with subtle noise/grain texture overlay
 - Custom scrollbar styling to match the theme
 - Floating mountain/tech particles in the hero
 - Scroll-triggered counter animation for stats
 - Interactive before/after slider for repair photos
+
+---
+
+## Session 3 — 2026-03-26 (Opus 4.6)
+
+### What I Did: Text Scramble Reveal — Cipher Decode on Section Headlines
+
+**Focus:** Premium "cipher decode" text effect on all 10 section titles. When a headline scrolls into view, its characters scramble through random glyphs (letters, numbers, symbols) before resolving left-to-right, character by character — like a hacking terminal or a cipher being cracked in real-time.
+
+**How it works:**
+1. Each `[data-scramble]` element starts at `opacity: 0`
+2. IntersectionObserver fires when 30% of the element enters viewport
+3. Text nodes are mapped (preserving `<br>`, `<span>`, and other child elements)
+4. All characters are replaced with random glyphs from the set `ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#$%&*!?+=<>`
+5. Characters resolve left-to-right: each position cycles through 3 random characters (at 25ms intervals) before locking to its real value
+6. Spaces are preserved (never scrambled) so word boundaries stay recognizable
+7. Total effect duration scales with text length — ~1.5-2 seconds for typical headlines
+
+**Visual enhancements:**
+- **Dark mode glow:** During scramble, text gets a subtle blue `text-shadow` (`rgba(79, 142, 247, 0.3)`) that fades out when complete
+- **Light mode:** No glow (clean look), just the character cycling
+- **Transition:** `text-shadow` smoothly fades out over 0.5s when scramble completes
+
+**Accessibility:**
+- `aria-label` set to the real text content during scramble, removed after completion
+- `prefers-reduced-motion: reduce` — text shows immediately, no scramble
+- Works with screen readers throughout
+
+**Integration notes:**
+- Elements with BOTH `data-animate` AND `data-scramble` (2 of 10) have CSS overrides so scramble controls opacity instead of the fade-in
+- The scramble IntersectionObserver is separate from the existing `[data-animate]` observer
+- Complex HTML structures preserved — the mail-in title `No repair shop nearby?<br><span class="text-accent">I'll come to your mailbox.</span>` scrambles correctly with both text nodes animated independently
+
+**Files changed:**
+- `index.html` — added `data-scramble` to all 10 `.section-title` elements
+- `style.css` — added ~45 lines: scramble visibility states, dark mode glow, data-animate override, reduced motion fallback
+- `main.js` — added ~130 lines: text scramble IIFE with `mapTextNodes`, `buildCharMap`, character-by-character resolution, and IntersectionObserver trigger
+
+**Tested:** Dark mode (with blue glow), light mode, desktop (800px), mobile (375px). Complex HTML (br + span) preserved. Zero console errors.
+
+**What's Next (Ideas for Session 4+):**
+- Parallax scrolling on the hero section background elements
+- Animated SVG device illustrations (exploded phone view)
+- Enhanced dark mode with subtle noise/grain texture overlay
+- Custom scrollbar styling to match the theme
+- Floating mountain/tech particles in the hero
+- Scroll-triggered counter animation for stats
+- Interactive before/after slider for repair photos
+- Easter egg: Konami code or click-the-mountain interaction

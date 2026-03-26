@@ -7151,4 +7151,60 @@ body {
     transform: none !important;
     transition: none !important;
   }
+  /* Scramble — just show text immediately */
+  [data-scramble] {
+    opacity: 1 !important;
+  }
+}
+
+
+/* ═══════════════════════════════════════════════
+   TEXT SCRAMBLE REVEAL — Cipher decode on scroll
+   ═══════════════════════════════════════════════ */
+
+/* Before scramble triggers: text is hidden */
+[data-scramble]:not(.scramble-active):not(.scramble-done) {
+  opacity: 0;
+  transition: opacity 0.01s;
+}
+
+/* During scramble: text is visible, monospace feel for the scrambled chars */
+[data-scramble].scramble-active {
+  opacity: 1;
+}
+
+/* After scramble completes */
+[data-scramble].scramble-done {
+  opacity: 1;
+}
+
+/* Subtle glow on the text during scramble (dark mode) */
+[data-scramble].scramble-active {
+  text-shadow: 0 0 8px var(--accent-glow, rgba(79, 142, 247, 0.3));
+}
+[data-scramble].scramble-done {
+  text-shadow: none;
+  transition: text-shadow 0.5s ease;
+}
+
+/* Light mode: no glow, just standard */
+[data-theme="light"] [data-scramble].scramble-active {
+  text-shadow: none;
+}
+
+/* Override data-animate opacity for elements that also have data-scramble
+   so the scramble controls visibility instead of the fade-in */
+[data-animate][data-scramble] {
+  opacity: 0;
+  transform: none;
+  transition: none;
+}
+[data-animate][data-scramble].visible {
+  /* Let scramble handle opacity */
+  opacity: 0;
+  transform: none;
+}
+[data-animate][data-scramble].scramble-active,
+[data-animate][data-scramble].scramble-done {
+  opacity: 1;
 }

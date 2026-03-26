@@ -1399,3 +1399,185 @@
     });
   });
 })();
+
+
+/* ═══════════════════════════════════════════════
+   TEXT SCRAMBLE REVEAL
+   Section titles decode from random characters as they
+   scroll into view — cipher/decode effect, left-to-right wave.
+═══════════════════════════════════════════════ */
+(function() {
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var elements = document.querySelectorAll('[data-scramble]');
+  if (!elements.length) return;
+
+  // Characters to cycle through — mix of tech symbols and alphanumeric
+  var CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#$%&*!?+=<>';
+  var SCRAMBLE_SPEED = 25;     // ms between scramble frames
+  var RESOLVE_DELAY = 30;      // ms stagger between each character resolving (unused — see SCRAMBLE_ROUNDS)
+  var SCRAMBLE_ROUNDS = 3;     // how many random chars each position cycles through before locking
+
+  function randomChar() {
+    return CHARS[Math.floor(Math.random() * CHARS.length)];
+  }
+
+  // Extract text nodes from an element, preserving structure
+  // Returns array of { node, text, isBreak, isElement }
+  function mapTextNodes(el) {
+    var nodes = [];
+    function walk(parent) {
+      for (var i = 0; i < parent.childNodes.length; i++) {
+        var node = parent.childNodes[i];
+        if (node.nodeType === 3) {
+          // Text node
+          if (node.textContent.trim().length > 0 || node.textContent.length > 0) {
+            nodes.push({ node: node, text: node.textContent, isBreak: false, isElement: false });
+          }
+        } else if (node.nodeName === 'BR') {
+          nodes.push({ node: node, text: '', isBreak: true, isElement: true });
+        } else if (node.nodeType === 1) {
+          // Element node (like <span>) — recurse into it
+          walk(node);
+        }
+      }
+    }
+    walk(el);
+    return nodes;
+  }
+
+  // Build a flat array of all characters with references back to their text nodes
+  function buildCharMap(textNodes) {
+    var chars = [];
+    for (var i = 0; i < textNodes.length; i++) {
+      var tn = textNodes[i];
+      if (tn.isBreak) continue;
+      for (var j = 0; j < tn.text.length; j++) {
+        chars.push({
+          nodeIndex: i,
+          charIndex: j,
+          target: tn.text[j],
+          resolved: false,
+          rounds: 0
+        });
+      }
+    }
+    return chars;
+  }
+
+  function scrambleElement(el) {
+    var textNodes = mapTextNodes(el);
+    if (!textNodes.length) return;
+
+    var charMap = buildCharMap(textNodes);
+    if (!charMap.length) return;
+
+    // Preserve real text for screen readers via aria-label
+    if (!el.getAttribute('aria-label')) {
+      el.setAttribute('aria-label', el.textContent);
+    }
+
+    // Initially show all as scrambled
+    var nodeTexts = [];
+    for (var i = 0; i < textNodes.length; i++) {
+      if (textNodes[i].isBreak) {
+        nodeTexts.push('');
+      } else {
+        var scrambled = '';
+        for (var j = 0; j < textNodes[i].text.length; j++) {
+          var ch = textNodes[i].text[j];
+          scrambled += (ch === ' ') ? ' ' : randomChar();
+        }
+        nodeTexts.push(scrambled);
+        textNodes[i].node.textContent = scrambled;
+      }
+    }
+
+    el.classList.add('scramble-active');
+
+    // Resolve characters left-to-right with stagger
+    var resolveIndex = 0;
+    var totalChars = charMap.length;
+
+    function tick() {
+      // Advance the resolve frontier
+      var currentTime = resolveIndex;
+
+      // Scramble all unresolved characters
+      var allDone = true;
+      for (var c = 0; c < totalChars; c++) {
+        var entry = charMap[c];
+        if (entry.resolved) continue;
+
+        var resolveAt = c * SCRAMBLE_ROUNDS;
+
+        if (currentTime >= resolveAt + SCRAMBLE_ROUNDS) {
+          // Lock this character
+          entry.resolved = true;
+          updateChar(entry.nodeIndex, entry.charIndex, entry.target);
+        } else if (currentTime >= resolveAt) {
+          // This char is in its scramble zone
+          allDone = false;
+          if (entry.target !== ' ') {
+            updateChar(entry.nodeIndex, entry.charIndex, randomChar());
+          }
+        } else {
+          allDone = false;
+          if (entry.target !== ' ') {
+            updateChar(entry.nodeIndex, entry.charIndex, randomChar());
+          }
+        }
+      }
+
+      // Write updated text to DOM
+      for (var n = 0; n < textNodes.length; n++) {
+        if (!textNodes[n].isBreak) {
+          textNodes[n].node.textContent = nodeTexts[n];
+        }
+      }
+
+      resolveIndex++;
+
+      if (!allDone) {
+        setTimeout(tick, SCRAMBLE_SPEED);
+      } else {
+        el.classList.remove('scramble-active');
+        el.classList.add('scramble-done');
+        // Remove aria-label so real text is used now
+        el.removeAttribute('aria-label');
+      }
+    }
+
+    function updateChar(nodeIdx, charIdx, ch) {
+      var current = nodeTexts[nodeIdx];
+      nodeTexts[nodeIdx] = current.substring(0, charIdx) + ch + current.substring(charIdx + 1);
+    }
+
+    // Small delay so the scrambled state is visible first
+    setTimeout(tick, 150);
+  }
+
+  // For reduced motion: just show immediately
+  if (reduceMotion) {
+    elements.forEach(function(el) {
+      el.classList.add('scramble-done');
+    });
+    return;
+  }
+
+  // Use IntersectionObserver to trigger scramble on scroll
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (!entry.isIntersecting) return;
+        var el = entry.target;
+        if (el.classList.contains('scramble-active') || el.classList.contains('scramble-done')) return;
+        scrambleElement(el);
+        observer.unobserve(el);
+      });
+    }, { threshold: 0.3, rootMargin: '0px 0px -40px 0px' });
+
+    elements.forEach(function(el) { observer.observe(el); });
+  } else {
+    elements.forEach(function(el) { el.classList.add('scramble-done'); });
+  }
+})();

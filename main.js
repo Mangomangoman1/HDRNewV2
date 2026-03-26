@@ -1246,6 +1246,7 @@
 (function() {
   var timeline = document.getElementById('processTimeline');
   var fill = document.getElementById('timelineFill');
+  var glow = document.getElementById('timelineGlow');
   if (!timeline || !fill) return;
 
   var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -1260,10 +1261,12 @@
 
     if (timelineTop > viewH) {
       fill.style.height = '0%';
+      if (glow) { glow.classList.remove('active'); }
       return;
     }
     if (timelineTop + timelineH < 0) {
       fill.style.height = '100%';
+      if (glow) { glow.classList.remove('active'); }
       return;
     }
 
@@ -1273,6 +1276,14 @@
     var pct = Math.max(0, Math.min(100, (scrolled / total) * 125));
 
     fill.style.height = (reduceMotion ? 100 : pct) + '%';
+
+    // Position the glow dot at the fill's leading edge
+    if (glow && !reduceMotion && pct > 0 && pct < 100) {
+      glow.classList.add('active');
+      glow.style.top = pct + '%';
+    } else if (glow) {
+      glow.classList.remove('active');
+    }
   }
 
   if (!reduceMotion) {

@@ -1297,3 +1297,105 @@
   }
   updateFill();
 })();
+
+
+/* ═══════════════════════════════════════════════
+   MAGNETIC BUTTONS
+   Buttons pull toward cursor within a proximity radius.
+   Uses CSS custom properties for GPU-accelerated transform.
+═══════════════════════════════════════════════ */
+(function() {
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  // Only on pointer/hover devices (not touch-only)
+  var hasPointer = window.matchMedia('(pointer: fine)').matches || window.matchMedia('(hover: hover)').matches;
+  if (!hasPointer) return;
+
+  var MAGNETIC_RADIUS = 80;  // px — attraction zone around button
+  var MAGNETIC_STRENGTH = 0.35; // 0-1 — how far the button moves
+  var buttons = document.querySelectorAll('[data-magnetic]');
+
+  buttons.forEach(function(btn) {
+    // Wrap children in an inner span for counter-shift effect
+    if (!btn.querySelector('.btn-magnetic-inner')) {
+      var inner = document.createElement('span');
+      inner.className = 'btn-magnetic-inner';
+      while (btn.firstChild) inner.appendChild(btn.firstChild);
+      btn.appendChild(inner);
+    }
+
+    var rafId = null;
+
+    function handleMove(e) {
+      if (rafId) return;
+      rafId = requestAnimationFrame(function() {
+        rafId = null;
+        var rect = btn.getBoundingClientRect();
+        var cx = rect.left + rect.width / 2;
+        var cy = rect.top + rect.height / 2;
+        var dx = e.clientX - cx;
+        var dy = e.clientY - cy;
+        var dist = Math.sqrt(dx * dx + dy * dy);
+        var radius = Math.max(rect.width, rect.height) / 2 + MAGNETIC_RADIUS;
+
+        if (dist < radius) {
+          var pull = 1 - (dist / radius);  // 1 at center, 0 at edge
+          var moveX = dx * pull * MAGNETIC_STRENGTH;
+          var moveY = dy * pull * MAGNETIC_STRENGTH;
+          btn.style.transform = 'translate(' + moveX.toFixed(1) + 'px, ' + moveY.toFixed(1) + 'px)';
+          var innerEl = btn.querySelector('.btn-magnetic-inner');
+          if (innerEl) {
+            innerEl.style.transform = 'translate(' + (moveX * 0.3).toFixed(1) + 'px, ' + (moveY * 0.3).toFixed(1) + 'px)';
+          }
+          btn.classList.add('is-magnetic');
+        } else {
+          release();
+        }
+      });
+    }
+
+    function release() {
+      btn.style.transform = '';
+      var innerEl = btn.querySelector('.btn-magnetic-inner');
+      if (innerEl) innerEl.style.transform = '';
+      btn.classList.remove('is-magnetic');
+    }
+
+    document.addEventListener('mousemove', handleMove, { passive: true });
+    btn.addEventListener('mouseleave', release);
+  });
+})();
+
+
+/* ═══════════════════════════════════════════════
+   CARD CURSOR-GLOW
+   Radial spotlight follows mouse across service cards.
+═══════════════════════════════════════════════ */
+(function() {
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  var hasPointer2 = window.matchMedia('(pointer: fine)').matches || window.matchMedia('(hover: hover)').matches;
+  if (!hasPointer2) return;
+
+  var cards = document.querySelectorAll('[data-card-glow]');
+  if (!cards.length) return;
+
+  cards.forEach(function(card) {
+    var rafId = null;
+
+    card.addEventListener('mousemove', function(e) {
+      if (rafId) return;
+      rafId = requestAnimationFrame(function() {
+        rafId = null;
+        var rect = card.getBoundingClientRect();
+        var x = e.clientX - rect.left;
+        var y = e.clientY - rect.top;
+        card.style.setProperty('--glow-x', x + 'px');
+        card.style.setProperty('--glow-y', y + 'px');
+        card.classList.add('card-glow-active');
+      });
+    }, { passive: true });
+
+    card.addEventListener('mouseleave', function() {
+      card.classList.remove('card-glow-active');
+    });
+  });
+})();

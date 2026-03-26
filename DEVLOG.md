@@ -34,7 +34,6 @@
 - `main.js` — enhanced timeline fill tracking with glow dot positioning
 
 **What's Next (Ideas for Future Sessions):**
-- Magnetic button effect on the hero CTA buttons
 - Parallax scrolling on the hero section background elements
 - Animated SVG device illustrations (exploded phone view) for the services cards
 - CSS-only animated tool icons on the service cards (wrench spinning, screen glowing)
@@ -44,3 +43,64 @@
 - Floating mountain particles in the hero (themed to Hailey/Sun Valley)
 - Enhanced dark mode with subtle noise/grain texture overlay
 - Scroll-triggered counter animation for stats (response time, repairs done, etc.)
+
+---
+
+## Session 2 — 2026-03-26 (Opus 4.6)
+
+### What I Did: Magnetic Buttons + Cursor-Tracking Card Glow + Icon Pop
+
+**Focus:** Premium micro-interactions on the hero CTA buttons and service cards — the two most important conversion areas of the page.
+
+**Changes:**
+
+#### Magnetic Buttons (Hero CTAs)
+- Hero "Get a Free Quote" and "See Services" buttons now **magnetically pull toward the cursor** when within 80px radius
+- Inner content has a **counter-shift rubber-band effect** (moves 30% of the button's displacement) for a satisfying fluid feel
+- On cursor leave, button **springs back** with a bouncy easing curve (`cubic-bezier(0.175, 0.885, 0.32, 1.275)`)
+- Inner content automatically wrapped in a `<span class="btn-magnetic-inner">` by JS for the counter-shift
+- Only activates on **pointer/hover devices** — disabled on touch to avoid weird mobile behavior
+
+#### Cursor-Tracking Card Glow (Service Cards)
+- Each service card has a **radial gradient spotlight** that follows the mouse cursor position
+- Uses CSS `::after` pseudo-element with `radial-gradient` centered at `var(--glow-x) var(--glow-y)`
+- Border color shifts to accent blue when cursor is over the card
+- Highlight card (Mail-In) gets a **brighter spotlight** (12% vs 8% opacity)
+- Light mode has a **softer glow** (6% opacity) to match the lighter background
+
+#### Icon Pop Animation
+- Card icons **lift and scale** (`translateY(-3px) scale(1.08)`) on hover with a bouncy spring curve
+- Each icon color variant gets a **matching colored box-shadow** glow (blue, green, purple, orange, cyan, red, indigo)
+- Also triggers on `focus-within` for keyboard accessibility
+
+#### Card Link Arrow Enhancement
+- Card link gap **expands** from 0.3rem to 0.6rem on hover
+- Arrow icon does a **subtle bounce animation** (translateX 4px → 7px → 4px) that loops, drawing the eye
+
+#### Feature Checkmark Stagger
+- Card feature list items **slide in from the left** with 100ms stagger delays
+- Only animates on first appearance (IntersectionObserver `data-animate` integration)
+
+**Technical notes:**
+- All effects use `requestAnimationFrame` throttling to prevent layout thrashing
+- Magnetic buttons use direct `style.transform` for maximum browser compatibility
+- Card glow uses CSS custom properties for the position (set by JS, read by CSS)
+- Full `prefers-reduced-motion` support — all animations disabled
+- Touch-only devices get no hover effects (checked via `pointer: fine` or `hover: hover` media queries)
+
+**Files changed:**
+- `index.html` — added `data-magnetic` to hero CTAs, `data-card-glow` to all 8 service cards
+- `style.css` — added ~150 lines: magnetic button styles, card glow spotlight, icon pop, arrow bounce, checkmark stagger, reduced motion overrides
+- `main.js` — added ~80 lines: magnetic button IIFE with proximity detection, card glow cursor-tracking IIFE
+
+**Tested:** Dark mode, light mode, desktop (1024px), tablet (800px), mobile (375px). Zero console errors.
+
+**What's Next (Ideas for Session 3+):**
+- Parallax scrolling on the hero section background elements
+- Text scramble/reveal effect on section headlines as they enter viewport
+- Animated SVG device illustrations (exploded phone view)
+- Enhanced dark mode with subtle noise/grain texture overlay
+- Custom scrollbar styling to match the theme
+- Floating mountain/tech particles in the hero
+- Scroll-triggered counter animation for stats
+- Interactive before/after slider for repair photos

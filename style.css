@@ -6983,3 +6983,172 @@ body {
     transform: none !important;
   }
 }
+
+
+/* ═══════════════════════════════════════════════
+   MAGNETIC BUTTONS — Fluid cursor-pull effect
+   ═══════════════════════════════════════════════ */
+
+.btn-magnetic {
+  transition: transform 0.25s cubic-bezier(0.23, 1, 0.32, 1),
+              box-shadow 0.25s ease,
+              background 0.2s ease,
+              border-color 0.2s ease;
+  will-change: transform;
+}
+/* Magnetic transform is applied directly via JS style.transform */
+/* Inner content counter-shift for rubber-band feel */
+.btn-magnetic .btn-magnetic-inner {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-sm);
+  transition: transform 0.2s cubic-bezier(0.23, 1, 0.32, 1);
+  will-change: transform;
+}
+/* Snap-back spring when cursor leaves */
+.btn-magnetic:not(.is-magnetic) {
+  transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275),
+              box-shadow 0.3s ease;
+}
+
+
+/* ═══════════════════════════════════════════════
+   CARD CURSOR-GLOW — Spotlight follows mouse
+   ═══════════════════════════════════════════════ */
+
+[data-card-glow] {
+  --glow-x: 50%;
+  --glow-y: 50%;
+  --glow-opacity: 0;
+  position: relative;
+}
+/* Spotlight overlay */
+[data-card-glow]::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(
+    320px circle at var(--glow-x) var(--glow-y),
+    rgba(79, 142, 247, 0.08) 0%,
+    transparent 70%
+  );
+  opacity: var(--glow-opacity);
+  transition: opacity 0.35s ease;
+  pointer-events: none;
+  z-index: 1;
+}
+/* Glow border effect — border brightens near cursor */
+[data-card-glow].card-glow-active {
+  border-color: rgba(79, 142, 247, 0.25);
+  --glow-opacity: 1;
+}
+/* Light mode: warmer spotlight */
+[data-theme="light"] [data-card-glow]::after {
+  background: radial-gradient(
+    320px circle at var(--glow-x) var(--glow-y),
+    rgba(79, 142, 247, 0.06) 0%,
+    transparent 70%
+  );
+}
+/* Highlight card gets a brighter glow */
+.card--highlight[data-card-glow]::after {
+  background: radial-gradient(
+    320px circle at var(--glow-x) var(--glow-y),
+    rgba(79, 142, 247, 0.12) 0%,
+    transparent 70%
+  );
+}
+
+
+/* ═══════════════════════════════════════════════
+   CARD ICON POP — Scale pulse on hover
+   ═══════════════════════════════════════════════ */
+
+.card-icon {
+  transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1),
+              box-shadow 0.35s ease;
+}
+.card:hover .card-icon,
+.card:focus-within .card-icon {
+  transform: translateY(-3px) scale(1.08);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+}
+/* Icon glow matches card color */
+.card:hover .card-icon--blue   { box-shadow: 0 6px 20px rgba(79,142,247,0.2); }
+.card:hover .card-icon--green  { box-shadow: 0 6px 20px rgba(63,185,80,0.2); }
+.card:hover .card-icon--purple { box-shadow: 0 6px 20px rgba(163,113,247,0.2); }
+.card:hover .card-icon--orange { box-shadow: 0 6px 20px rgba(247,129,102,0.2); }
+.card:hover .card-icon--cyan   { box-shadow: 0 6px 20px rgba(57,197,207,0.2); }
+.card:hover .card-icon--red    { box-shadow: 0 6px 20px rgba(248,81,73,0.2); }
+.card:hover .card-icon--indigo { box-shadow: 0 6px 20px rgba(129,140,248,0.2); }
+
+
+/* ═══════════════════════════════════════════════
+   CARD LINK ARROW — Enhanced hover pull
+   ═══════════════════════════════════════════════ */
+
+.card-link {
+  transition: color 0.2s ease, gap 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.card:hover .card-link {
+  gap: 0.6rem;
+}
+.card:hover .card-link .material-symbols-outlined {
+  transform: translateX(4px);
+  animation: card-arrow-bounce 1.5s ease-in-out infinite 0.3s;
+}
+@keyframes card-arrow-bounce {
+  0%, 100% { transform: translateX(4px); }
+  50%      { transform: translateX(7px); }
+}
+
+
+/* ═══════════════════════════════════════════════
+   CARD FEATURE CHECKMARKS — Staggered reveal
+   ═══════════════════════════════════════════════ */
+
+.card-features li {
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+[data-animate]:not(.animated) .card-features li {
+  opacity: 0;
+  transform: translateX(-8px);
+}
+.animated .card-features li:nth-child(1) { transition-delay: 0.1s; }
+.animated .card-features li:nth-child(2) { transition-delay: 0.2s; }
+.animated .card-features li:nth-child(3) { transition-delay: 0.3s; }
+
+
+/* ═══════════════════════════════════════════════
+   REDUCED MOTION — disable all above
+   ═══════════════════════════════════════════════ */
+
+@media (prefers-reduced-motion: reduce) {
+  .btn-magnetic,
+  .btn-magnetic:not(.is-magnetic) {
+    transition: background 0.2s ease, border-color 0.2s ease !important;
+    transform: none !important;
+  }
+  .btn-magnetic .btn-magnetic-inner {
+    transition: none !important;
+    transform: none !important;
+  }
+  [data-card-glow]::after {
+    display: none;
+  }
+  .card-icon {
+    transition: none !important;
+  }
+  .card:hover .card-icon {
+    transform: none !important;
+  }
+  .card:hover .card-link .material-symbols-outlined {
+    animation: none !important;
+  }
+  .card-features li {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+}

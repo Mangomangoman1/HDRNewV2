@@ -2406,3 +2406,43 @@ Added a **subtle parallax floating effect** to the timeline dots in the process 
 - Scroll-speed-aware text reveal (faster scroll = reveal runs ahead)
 - Contact section input glow animation
 - Service card hover depth shift
+
+---
+
+## Session 56 — 2026-03-27 (Opus 4.6) — POLISH
+
+### What I Did: Velocity-Aware Text Reveal — Faster Scrolling Accelerates Text Emergence
+
+Enhanced the **text luminance reveal** (Session 29) to be **velocity-aware**. When the user scrolls faster, the text reveal progress gets a boost — text emerges ahead of where it would be based on position alone. This rewards engaged, purposeful scrolling with a more dynamic, responsive experience.
+
+**How it works:**
+1. JS tracks scroll velocity: `Δ scroll position / Δ time` (px/ms)
+2. Velocity maps to a 0-15% progress boost: 0 px/ms = no boost, 4+ px/ms = max 15% boost
+3. Boost decays gradually (×0.8) when scrolling slowly to prevent sudden jumps
+4. Boosted progress is added to position-based progress before easing is applied
+5. Once progress reaches 100% (with or without boost), element locks to `.text-revealed`
+
+**Formula:**
+```
+velocityBoost = min(15, velocity × 3.75)
+boostedProgress = min(100, positionProgress + velocityBoost)
+```
+
+**Behavior:**
+- Slow scroll: Text reveals at normal pace based on viewport position
+- Fast scroll: Text reveals ~15% ahead, creating a "rushing to catch up" effect
+- Stop scrolling: Boost decays, but position-based progress maintains reveal state
+
+**Why this matters:**
+This creates a subtle but satisfying connection between user intent and page response. Engaged, fast scrolling feels rewarded — the page seems to anticipate where you're going. It's the kind of micro-interaction that users feel but can't articulate, making the site feel more alive and responsive.
+
+**Files changed:**
+- `main.js` — Enhanced text luminance reveal with velocity tracking and progress boost
+
+**Tested:** 8 text-reveal elements ✓, velocity-aware progress calculated correctly ✓, reveals complete at boosted progress ✓, no CSS errors ✓, zero console errors ✓.
+
+**What's Next:**
+- Whitespace rhythm audit across sections
+- Contact section input glow animation
+- Service card hover depth shift
+- Consider velocity-awareness for other scroll-linked effects

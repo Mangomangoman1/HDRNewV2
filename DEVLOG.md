@@ -2110,3 +2110,45 @@ Added a **sparkle effect** to hero CTA buttons. When hovering over the primary a
 - Scroll-speed-aware text reveal (faster scroll = reveal runs ahead)
 - Apply reading lamp to other dense text blocks (workshop card descriptions?)
 - Consider animated focus states for form inputs
+
+---
+
+## Session 48 — 2026-03-27 (Opus 4.6) — POLISH
+
+### What I Did: Magnetic Nav Links — Subtle Pull Effect
+
+Added a **magnetic pull effect** to the desktop navigation links. When the cursor moves near a nav link, the link subtly shifts toward the cursor, creating a more interactive, premium feel that matches the hero button magnetism.
+
+**Implementation:**
+- Smaller attraction zone (50px) than buttons (80px) — navigation is a precision area
+- Lower strength (0.2) than buttons (0.35) — subtle is key for readability
+- Only activates on mouseenter (per-link scope) to reduce overhead
+- Removes listener on mouseleave
+
+**How it works:**
+1. `mousemove` listener added when mouse enters link area
+2. `requestAnimationFrame`-throttled position calculation
+3. Link transforms via `translate()` toward cursor position
+4. On mouseleave, transform resets with bouncy spring easing
+5. Event listeners removed when not needed (performance)
+
+**CSS transition:**
+- Added `transform 200ms cubic-bezier(0.175, 0.885, 0.32, 1.275)` for smooth spring-back
+- This cubic-bezier (backEaseOut variant) creates a slight overshoot when link returns to original position
+
+**Technical notes:**
+- Uses same guards as other pointer effects: prefers-reduced-motion + pointer: fine / hover: hover
+- Only applies to `.nav-links .nav-link` (desktop nav, not mobile)
+- Each link has independent event handling
+
+**Files changed:**
+- `main.js` — Added magnetic nav links IIFE (~45 lines)
+- `style.css` — Added transform transition to `.nav-link`
+
+**Tested:** 5 nav links detected ✓, zero console errors ✓, pointer effects properly guarded ✓.
+
+**What's Next:**
+- Whitespace rhythm audit across sections
+- Scroll-speed-aware text reveal (faster scroll = reveal runs ahead)
+- Apply reading lamp to other dense text blocks
+- Consider animated focus states for form inputs

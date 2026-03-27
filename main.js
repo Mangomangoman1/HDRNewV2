@@ -1781,6 +1781,62 @@
 
 
 /* ═══════════════════════════════════════════════
+   MAGNETIC NAV LINKS
+   Subtle magnetic pull effect on navigation links.
+═══════════════════════════════════════════════ */
+(function() {
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  var hasPointer = window.matchMedia('(pointer: fine)').matches || window.matchMedia('(hover: hover)').matches;
+  if (!hasPointer) return;
+
+  var links = document.querySelectorAll('.nav-links .nav-link');
+  if (!links.length) return;
+
+  var RADIUS = 50;    // px — smaller attraction zone (subtle)
+  var STRENGTH = 0.2; // lower strength for readability
+
+  links.forEach(function(link) {
+    var rafId = null;
+
+    function handleMove(e) {
+      if (rafId) return;
+      rafId = requestAnimationFrame(function() {
+        rafId = null;
+        var rect = link.getBoundingClientRect();
+        var cx = rect.left + rect.width / 2;
+        var cy = rect.top + rect.height / 2;
+        var dx = e.clientX - cx;
+        var dy = e.clientY - cy;
+        var dist = Math.sqrt(dx * dx + dy * dy);
+        var triggerRadius = Math.max(rect.width, rect.height) / 2 + RADIUS;
+
+        if (dist < triggerRadius) {
+          var pull = 1 - (dist / triggerRadius);
+          var moveX = dx * pull * STRENGTH;
+          var moveY = dy * pull * STRENGTH;
+          link.style.transform = 'translate(' + moveX.toFixed(1) + 'px, ' + moveY.toFixed(1) + 'px)';
+        } else {
+          link.style.transform = '';
+        }
+      });
+    }
+
+    function release() {
+      link.style.transform = '';
+    }
+
+    link.addEventListener('mouseenter', function() {
+      document.addEventListener('mousemove', handleMove, { passive: true });
+    });
+    link.addEventListener('mouseleave', function() {
+      document.removeEventListener('mousemove', handleMove);
+      release();
+    });
+  });
+})();
+
+
+/* ═══════════════════════════════════════════════
    CARD CURSOR-GLOW
    Radial spotlight follows mouse across service cards.
 ═══════════════════════════════════════════════ */

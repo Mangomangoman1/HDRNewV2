@@ -839,6 +839,95 @@
     }
   }
 
+  // ─── Hero perspective tilt — text floats in 3D space ────
+  // Subtle 3D rotation of hero text based on mouse position
+  (function heroPerspectiveTilt() {
+    if (prefersReducedMotion) return;
+    
+    var heroInner = document.querySelector('.hero-inner');
+    var hero = document.getElementById('hero');
+    if (!heroInner || !hero) return;
+    
+    // Maximum rotation angles (degrees)
+    var MAX_TILT_X = 2; // Vertical tilt (up/down)
+    var MAX_TILT_Y = 3; // Horizontal tilt (left/right)
+    var LERP = 0.08; // Smoothing factor
+    
+    // Current and target values
+    var currentTiltX = 0;
+    var currentTiltY = 0;
+    var targetTiltX = 0;
+    var targetTiltY = 0;
+    var isAnimating = false;
+    
+    // Set up perspective on parent
+    hero.style.perspective = '1000px';
+    hero.style.perspectiveOrigin = '50% 50%';
+    
+    // Set initial transform style
+    heroInner.style.transformStyle = 'preserve-3d';
+    heroInner.style.willChange = 'transform';
+    
+    function animate() {
+      // Smooth interpolation
+      currentTiltX += (targetTiltX - currentTiltX) * LERP;
+      currentTiltY += (targetTiltY - currentTiltY) * LERP;
+      
+      // Apply transform (negative Y for natural feel — move mouse right, text tilts left)
+      heroInner.style.transform = 'rotateX(' + currentTiltX.toFixed(3) + 'deg) rotateY(' + (-currentTiltY).toFixed(3) + 'deg)';
+      
+      // Continue animation if not settled
+      var diff = Math.abs(targetTiltX - currentTiltX) + Math.abs(targetTiltY - currentTiltY);
+      if (diff > 0.01) {
+        requestAnimationFrame(animate);
+      } else {
+        isAnimating = false;
+      }
+    }
+    
+    function startAnimation() {
+      if (!isAnimating) {
+        isAnimating = true;
+        requestAnimationFrame(animate);
+      }
+    }
+    
+    hero.addEventListener('mousemove', function(e) {
+      // Only apply effect when hero is visible
+      if (window.scrollY > hero.offsetHeight) return;
+      
+      var rect = hero.getBoundingClientRect();
+      var cx = (e.clientX - rect.left) / rect.width; // 0-1
+      var cy = (e.clientY - rect.top) / rect.height; // 0-1
+      
+      // Map to -1 to 1 range
+      var nx = (cx - 0.5) * 2;
+      var ny = (cy - 0.5) * 2;
+      
+      // Set target angles
+      targetTiltY = nx * MAX_TILT_Y;
+      targetTiltX = ny * MAX_TILT_X;
+      
+      startAnimation();
+    }, { passive: true });
+    
+    hero.addEventListener('mouseleave', function() {
+      // Return to neutral
+      targetTiltX = 0;
+      targetTiltY = 0;
+      startAnimation();
+    }, { passive: true });
+    
+    // Reset on scroll past hero
+    window.addEventListener('scroll', function() {
+      if (window.scrollY > hero.offsetHeight * 0.8) {
+        targetTiltX = 0;
+        targetTiltY = 0;
+        startAnimation();
+      }
+    }, { passive: true });
+  })();
+
   // ─── Back-to-top button with progress ring ──────────────
   const backToTop = document.getElementById('backToTop');
   if (backToTop) {

@@ -2951,3 +2951,54 @@ This creates a sense of navigation awareness without adding UI clutter.
 - Whitespace rhythm audit across sections
 - Consider velocity-awareness for other scroll-linked effects
 - Review overall animation complexity — ensure cognitive load is reasonable
+
+---
+
+## Session 67 — 2026-03-27 (Opus 4.6) — POLISH
+
+### What I Did: Hero Perspective Tilt
+
+Added a **3D perspective tilt effect** to the hero section — the entire hero content subtly rotates in 3D space following the mouse cursor, creating a premium "floating" feel seen on sites like Stripe and Linear.
+
+**How it works:**
+1. Parent `.hero` gets `perspective: 1000px` for 3D depth
+2. `.hero-inner` gets `transformStyle: preserve-3d` and tracks mouse position
+3. Mouse position maps to rotation angles: X rotation (±2°) and Y rotation (±3°)
+4. Smooth LERP interpolation (0.08 factor) creates buttery movement
+5. Returns to neutral when mouse leaves or scrolls past hero
+
+**Implementation details:**
+```javascript
+var MAX_TILT_X = 2; // Vertical tilt (up/down)
+var MAX_TILT_Y = 3; // Horizontal tilt (left/right)
+var LERP = 0.08; // Smoothing factor
+
+// Map mouse position to rotation
+targetTiltY = nx * MAX_TILT_Y; // -3° to +3°
+targetTiltX = ny * MAX_TILT_X; // -2° to +2°
+
+// Apply transform (negative Y for natural feel)
+heroInner.style.transform = 'rotateX(' + currentTiltX + 'deg) rotateY(' + (-currentTiltY) + 'deg)';
+```
+
+**Why this matters:**
+- Creates immediate sense of depth and interactivity on page load
+- The hero is the first thing users see — this makes it memorable
+- Subtle enough to not be distracting, premium enough to feel special
+- Complements existing glow blob parallax for layered depth effect
+
+**Performance considerations:**
+- Uses `will-change: transform` for GPU acceleration
+- LERP animation runs only when needed (stops when settled)
+- Disables when scrolled past hero to avoid unnecessary calculations
+- Respects `prefers-reduced-motion`
+
+**Files changed:**
+- `main.js` — Added `heroPerspectiveTilt` IIFE with mouse tracking, LERP animation, and scroll-aware disabling
+
+**Tested:** Perspective 1000px applied ✓, transformStyle preserve-3d applied ✓, transform shows matrix3d after mouse move ✓, returns to near-identity on mouse leave ✓, reduced motion guard ✓, scroll past hero resets tilt ✓, zero console errors ✓.
+
+**What's Next:**
+- Whitespace rhythm audit across sections
+- Consider text reveal animations for section entrances
+- Review overall animation complexity — ensure cognitive load is reasonable

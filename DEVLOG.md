@@ -970,5 +970,50 @@ Total sequence: ~3 seconds. You watch the map build itself like a cartographer d
 **What's Next:**
 - Remaining `transition: all` cleanup
 - Whitespace rhythm audit
-- Mail-in section enhancement
 - Consider scroll-linked parallax for mountains
+
+---
+
+## Session 20 — 2026-03-27 (Opus 4.6) — BOLD
+
+### What I Did: Mail-In Section — Connected Steps Flow + Location Card Hover
+
+**Before:** Three mail-in steps were plain text with static icons. Location cards had basic hover. No entrance animation, no visual flow between steps.
+
+**After:** A connected flow visualization that tells the mail-in story:
+
+**1. Vertical Connector Line**
+A gradient line (`--accent` → purple) runs between the 3 step icons, drawn with `::before` pseudo-element. Uses `scaleY(0→1)` transition triggered by `:has(.mailin-step.visible)` — the line grows from top to bottom when steps scroll into view.
+
+**2. Traveling Dot**
+A glowing accent dot (`::after`) travels along the connector via `@keyframes mailinDotTravel` — starts at step 1, pauses at step 2 midpoint, arrives at step 3, then fades out. Takes 2.5s total with 1s delay after scroll trigger. Creates the sense of a package moving through the process.
+
+**3. Step Icon Entrance**
+Each step icon starts at `scale(0)` and pops to `scale(1)` via the stagger system when scrolling into view. The `cubic-bezier(0.34, 1.56, 0.64, 1)` overshoot creates a satisfying bounce.
+
+**4. Step Hover Effect**
+- Icon lifts 2px with 1.1x scale
+- Box-shadow glow appears
+- Icon background fills solid accent, icon turns white
+- Step label turns accent blue
+
+**5. Location Card Hover**
+- Cards shift right 4px with a left accent border (`box-shadow: -3px 0 0 var(--accent)`)
+- Replaced `transition: all` with specific properties (background, border, transform, shadow)
+
+**Technical:**
+- Uses CSS `:has()` selector (Chrome 105+, Firefox 121+, Safari 15.4+) for connector visibility
+- Graceful fallback: without `:has()` support, steps still animate normally, just no connector
+- `prefers-reduced-motion` covered by existing blanket rule (line 7231)
+
+**Files changed:**
+- `index.html` — added `data-animate` to 3 mail-in steps
+- `style.css` — ~50 lines: connector, dot keyframes, icon entrance, hover effects, location hover
+
+**Tested:** Dark/light mode, desktop/mobile (375px single column). Zero console errors.
+
+**What's Next:**
+- Remaining `transition: all` cleanup (19 rules flagged in Session 12)
+- Whitespace rhythm audit across all sections
+- Consider scroll-linked parallax for hero/mountain elements
+- All major sections now enhanced (hero, services, timeline, workshop, FAQ, contact, pricing, compare, service area, mail-in)

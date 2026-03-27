@@ -1235,3 +1235,41 @@ This is the kind of interaction that makes people click the toggle 10 times just
 - Animation budget audit (count total keyframes + rAF loops, ensure we haven't over-animated)
 - Footer link stagger within columns
 - Consider context-aware spotlight colors
+
+---
+
+## Session 26 — 2026-03-27 (Opus 4.6) — BOLD
+
+### What I Did: Hero Entrance Choreography — Theatrical Staggered Load Animation
+
+Replaced the generic body fade-in with a **6-element staggered hero entrance** where each part of the hero section arrives with its own unique animation character. Previously the entire page faded in with a single 0.6s ease-out — now the hero section plays out like a theatrical curtain call.
+
+**The Sequence (staggered ~120-150ms apart):**
+1. **Eyebrow** (0.2s delay) — slides DOWN from above (unique — everything else slides up), 0.6s duration. Like a curtain parting.
+2. **Headline** (0.35s delay) — slides up 48px with spring overshoot + blur-to-sharp focus effect. The MAIN event. 1s duration with a multi-step spring: up → overshoot -6px → settle back 2px → land. Also scales from 0.97 → 1.005 → 1.0 for a subtle breathing feel.
+3. **Subtitle** (0.55s delay) — standard slide-up with gentle overshoot (-4px → 1px → 0). 0.8s duration.
+4. **Action buttons** (0.7s delay) — scale-in spring (0.92 → 1.02 → 0.995 → 1.0) + slide up. Feels like buttons "popping" into existence. 0.9s duration.
+5. **Trust strip** (0.9s delay) — standard slide-up entrance. 0.8s duration.
+6. **Scroll hint** (1.2s delay) — fade in to 0.6 opacity, then hands off to the existing infinite bounce animation.
+
+**Technical Details:**
+- Pure CSS `@keyframes` — no JS needed for the choreography
+- Each element gets `hero-entrance` class + `data-hero-delay="N"` attribute
+- Animation fill mode `both` ensures elements start invisible and end at final state
+- Body pageIn simplified to just opacity (0.4s) since hero handles its own movement
+- Headline uses `filter: blur(8px)` → `blur(0px)` for a cinematic "focusing" effect
+- All easing: `cubic-bezier(0.16, 1, 0.3, 1)` — aggressive ease-out for spring-like feel
+
+**Reduced Motion:** Full `@media (prefers-reduced-motion: reduce)` block that sets `animation: none`, `opacity: 1`, `transform: none`, `filter: none` on all `.hero-entrance` elements — instant visibility, zero movement.
+
+**Files changed:**
+- `index.html` — added `hero-entrance` class and `data-hero-delay` attributes to 6 hero elements
+- `style.css` — 5 new `@keyframes` (heroEntrance, heroHeadlineEntrance, heroActionsEntrance, heroEyebrowEntrance, heroScrollHintEntrance), stagger delays, reduced-motion guard, simplified pageIn
+
+**Tested:** All 6 elements animate correctly ✓, correct final states (opacity 1, transform none) ✓, correct animation names assigned ✓, typewriter effect still works ✓, dark mode ✓, light mode ✓, scroll hint bounce still works after entrance ✓, zero console errors ✓.
+
+**What's Next:**
+- Whitespace rhythm audit across sections
+- Animation budget audit (count total keyframes + rAF loops)
+- Consider adding individual button stagger within hero-actions (left button arrives before right)
+- Footer link stagger within columns

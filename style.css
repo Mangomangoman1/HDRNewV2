@@ -5271,6 +5271,20 @@ button[type="submit"].btn-error {
   transition: width 50ms linear;
   pointer-events: none;
 }
+/* Scroll velocity glow — comet tail effect when scrolling fast */
+.scroll-progress::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: var(--progress-glow-width, 0px);
+  height: 100%;
+  background: linear-gradient(90deg, transparent, var(--accent), rgba(163,113,247,0.9));
+  filter: blur(var(--progress-glow-blur, 0px));
+  opacity: var(--progress-glow-opacity, 0);
+  transition: opacity 200ms ease-out, filter 150ms ease-out, width 150ms ease-out;
+  pointer-events: none;
+}
 
 /* ─── PAGE LOAD ANIMATION ─────────────────────────────────── */
 body {
@@ -9193,5 +9207,9 @@ body.konami-active .hero-headline {
   }
   .trust-counter.counted {
     animation: none;
+  }
+  /* No velocity glow for reduced motion */
+  .scroll-progress::after {
+    display: none;
   }
 }

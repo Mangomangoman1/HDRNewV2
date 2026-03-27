@@ -549,11 +549,49 @@
   // ─── Scroll progress bar ──────────────────────────────────
   const progressBar = document.getElementById('scrollProgress');
   if (progressBar) {
+    // Scroll velocity tracking for comet tail glow effect
+    let lastScrollY = window.scrollY;
+    let lastScrollTime = performance.now();
+    let velocityDecayTimer = null;
+
     function updateProgress() {
       const scrollTop = window.scrollY;
       const docHeight = document.documentElement.scrollHeight - window.innerHeight;
       const progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
       progressBar.style.width = progress + '%';
+
+      // Calculate scroll velocity (px/ms)
+      const now = performance.now();
+      const dt = now - lastScrollTime;
+      if (dt > 0) {
+        const dy = Math.abs(scrollTop - lastScrollY);
+        const velocity = dy / dt; // px per ms
+
+        // Map velocity to glow intensity (0.5-4 px/ms range maps to 0-1)
+        const intensity = Math.min(velocity / 4, 1);
+
+        // Set glow properties based on velocity
+        const glowWidth = Math.round(20 + intensity * 80); // 20-100px
+        const glowBlur = Math.round(intensity * 8); // 0-8px
+        const glowOpacity = intensity * 0.9; // 0-0.9
+
+        progressBar.style.setProperty('--progress-glow-width', glowWidth + 'px');
+        progressBar.style.setProperty('--progress-glow-blur', glowBlur + 'px');
+        progressBar.style.setProperty('--progress-glow-opacity', glowOpacity.toFixed(2));
+
+        // Clear existing decay timer
+        clearTimeout(velocityDecayTimer);
+
+        // Decay glow after scroll stops
+        velocityDecayTimer = setTimeout(() => {
+          progressBar.style.setProperty('--progress-glow-width', '0px');
+          progressBar.style.setProperty('--progress-glow-blur', '0px');
+          progressBar.style.setProperty('--progress-glow-opacity', '0');
+        }, 150);
+      }
+
+      lastScrollY = scrollTop;
+      lastScrollTime = now;
     }
     window.addEventListener('scroll', updateProgress, { passive: true });
     updateProgress();

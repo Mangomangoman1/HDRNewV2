@@ -1670,3 +1670,46 @@ Initial attempt used CSS custom properties with `calc()` in box-shadow, but `cal
 - Consider applying text reveal to pricing description paragraphs
 - Consider adding subtle tilt to the pricing-statement-inner block
 - Scroll-speed-aware reveal (faster scroll = faster reveal)
+
+---
+
+## Session 37 — 2026-03-27 (Opus 4.6) — POLISH
+
+### What I Did: Scroll Progress Velocity Glow — Comet Tail Effect
+
+Added a **velocity-reactive glow** to the scroll progress bar. When scrolling fast, a trailing purple/blue glow extends from the leading edge of the progress bar — like a comet's tail. When scrolling stops, the glow smoothly fades away.
+
+**How it works:**
+1. JS tracks scroll velocity: `Δ position / Δ time` (pixels per millisecond)
+2. Velocity is mapped to glow intensity: 0.5–4 px/ms range → 0–1 intensity
+3. CSS custom properties control the glow:
+   - `--progress-glow-width`: 20px (idle) → 100px (fast scroll)
+   - `--progress-glow-blur`: 0px → 8px
+   - `--progress-glow-opacity`: 0 → 0.9
+4. `::after` pseudo-element positioned at right edge creates the gradient trail
+5. 150ms decay timer fades glow after scroll stops
+
+**Visual effect:**
+- Slow scroll: No visible glow
+- Medium scroll (~2 px/ms): 50px trailing glow at 50% opacity
+- Fast scroll (~4+ px/ms): Full 100px glow with 8px blur, 90% opacity
+- Stop scrolling: Glow fades over 200ms with smooth easing
+
+**Technical notes:**
+- Uses CSS `filter: blur()` for soft glow edge
+- Gradient: transparent → accent blue → purple for brand consistency
+- `pointer-events: none` on ::after to avoid blocking clicks
+- `transition: opacity 200ms ease-out, filter 150ms, width 150ms` for smooth interpolation
+- Reduced motion: `::after { display: none }` — no velocity tracking overhead
+
+**Files changed:**
+- `style.css` — Added `.scroll-progress::after` with CSS variable-controlled glow, reduced-motion guard
+- `main.js` — Enhanced scroll progress listener with velocity tracking, glow property calculation, decay timer
+
+**Tested:** CSS variables set correctly ✓, ::after pseudo-element renders ✓, glow transitions smoothly ✓, decay timer clears glow ✓, zero console errors ✓.
+
+**What's Next:**
+- Whitespace rhythm audit across sections
+- Consider applying text reveal to pricing description paragraphs
+- Consider adding subtle tilt to the pricing-statement-inner block
+- Scroll-speed-aware text reveal (faster scroll = reveal runs ahead)

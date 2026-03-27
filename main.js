@@ -2439,6 +2439,31 @@
 
 
 /* ═══════════════════════════════════════════════
+   WORKSHOP CARD SHINE SWEEP
+   Diagonal light sweep across workshop cards on hover.
+═══════════════════════════════════════════════ */
+(function() {
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  function initShineSwep() {
+    var cards = document.querySelectorAll('.workshop-card');
+    cards.forEach(function(card) {
+      if (card.querySelector('.shine-sweep')) return;
+      var shine = document.createElement('span');
+      shine.className = 'shine-sweep';
+      card.appendChild(shine);
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initShineSwep);
+  } else {
+    initShineSwep();
+  }
+})();
+
+
+/* ═══════════════════════════════════════════════
    FORM FOCUS RING PULSE
    Expanding ring animation on focus entry.
 ═══════════════════════════════════════════════ */

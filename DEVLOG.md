@@ -2189,3 +2189,43 @@ Added a **focus ring pulse** animation to form inputs. When a user focuses on an
 - Scroll-speed-aware text reveal (faster scroll = reveal runs ahead)
 - Apply reading lamp to other dense text blocks (workshop card descriptions?)
 - Consider hover micro-animation for workshop cards
+
+---
+
+## Session 50 — 2026-03-27 (Opus 4.6) — POLISH
+
+### What I Did: Workshop Card Shine Sweep — Diagonal Light on Hover
+
+Added a **shine sweep effect** to workshop cards. When hovering over a card, a diagonal band of light sweeps across from left to right, creating a premium "catch the light" effect.
+
+**How it works:**
+1. JS creates `.shine-sweep` span inside each workshop card
+2. CSS positions it off-screen to the left (`left: -100%`)
+3. On hover, `left` transitions to `150%` (sweeps across and exits right)
+4. Expo-out easing (`cubic-bezier(0.16, 1, 0.3, 1)`) creates smooth, natural motion
+
+**Visual details:**
+- Width: 50% of card
+- Height: 200% (extends beyond card to cover diagonally)
+- Transform: `skewX(-25deg)` for diagonal angle
+- Gradient: transparent → white 12% → transparent (soft beam)
+- Light mode: brighter white (25% opacity)
+
+**Technical notes:**
+- Can't use `::after` — workshop cards have `data-card-glow` which uses `::after` for cursor spotlight
+- Created `.shine-sweep` span instead for same effect
+- JS waits for DOMContentLoaded to ensure cards exist
+- Guards against duplicate element creation
+- z-index: 2 to layer above card background but below content
+
+**Files changed:**
+- `style.css` — Added `.workshop-card .shine-sweep` styles, hover transition, light mode variant, reduced motion guard
+- `main.js` — Added workshop card shine sweep IIFE (~20 lines)
+
+**Tested:** 4 shine elements created ✓, positioned off-screen (left: -335px) ✓, transition includes left ✓, z-index 2 ✓, zero console errors ✓.
+
+**What's Next:**
+- Whitespace rhythm audit across sections
+- Scroll-speed-aware text reveal (faster scroll = reveal runs ahead)
+- Apply reading lamp to workshop card descriptions
+- Consider applying shine sweep to other card types (service cards?)

@@ -1273,3 +1273,41 @@ Replaced the generic body fade-in with a **6-element staggered hero entrance** w
 - Animation budget audit (count total keyframes + rAF loops)
 - Consider adding individual button stagger within hero-actions (left button arrives before right)
 - Footer link stagger within columns
+
+---
+
+## Session 27 — 2026-03-27 (Opus 4.6) — BOLD
+
+### What I Did: Premium 3D Card Tilt — Specular Glare + Spring Physics + Dynamic Shadows
+
+Completely rewrote the service card 3D tilt system from a basic 6° rotation to a physically realistic interaction with three new features:
+
+**1. Specular Glare Overlay**
+Each card now has a `.card-glare` element — a bright radial gradient spotlight that follows the cursor position across the card surface, like light reflecting off a polished glass surface. In dark mode: `rgba(255,255,255,0.14)` with `mix-blend-mode: overlay`. In light mode: `rgba(255,255,255,0.5)` with `mix-blend-mode: soft-light` — brighter because light backgrounds need more contrast.
+
+**2. Spring Physics Animation**
+Replaced instant transform updates with LERP-based spring interpolation (factor 0.12). The card doesn't snap to position — it smoothly follows the cursor with a physical "mass" feel. On mouseleave, the spring decays gracefully: 7° → 5° (50ms) → 1.5° (200ms) → 0.16° (500ms) → settled (1000ms, inline styles removed). Max tilt increased from 6° to 8° for more dramatic effect.
+
+**3. Dynamic Reactive Shadow**
+Shadow position shifts opposite to tilt direction — when the card tilts right, the shadow falls left. Shadow blur and spread scale with lift amount. Creates the illusion of a physical light source above the card.
+
+**Additional Details:**
+- Card lifts 12px on hover (vs 4px before) with subtle scale (1.012x at max lift)
+- `will-change: transform, box-shadow` for GPU compositing
+- CSS hover transforms suppressed for card-tilt elements — JS owns everything
+- Spring animation only runs `requestAnimationFrame` while needed, stops when settled
+- Works alongside existing `data-card-glow` cursor-tracking blue glow (stacked at different z-indices)
+- Full prefers-reduced-motion guard — no glare elements created, no tilt
+- All 8 service cards + any other `.card-tilt` elements enhanced
+
+**Files changed:**
+- `main.js` — Complete rewrite of card-tilt IIFE: spring animation loop, glare element creation, mouseenter/mousemove/mouseleave handlers with specular positioning and dynamic shadow calculation
+- `style.css` — `.card-glare` styles with dark/light mode variants, `.card.card-tilt` transition override, reduced-motion guard
+
+**Tested:** 8 cards with 8 glare elements created ✓, tilt: perspective(800px) rotateX(6.96deg) rotateY(6.84deg) translateY(-11.6px) ✓, shadow shifts opposite to tilt (-10.3px, 22.1px) ✓, spring decay verified at 50/200/500/1000ms ✓, inline styles fully cleared after settle ✓, dark mode overlay blend ✓, light mode soft-light blend ✓, card-glow still functional alongside glare ✓, zero console errors ✓.
+
+**What's Next:**
+- Whitespace rhythm audit across sections
+- Animation budget audit (count total keyframes + rAF loops)
+- Individual hero button stagger (left arrives before right)
+- Consider applying same spring tilt to Workshop cards and pricing cards

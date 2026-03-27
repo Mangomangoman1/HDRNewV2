@@ -5357,18 +5357,49 @@ body {
 
 /* ─── 3D CARD TILT ────────────────────────────────────────── */
 .card-tilt {
-  transition:
-    border-color 200ms cubic-bezier(0.4, 0, 0.2, 1),
-    box-shadow 350ms cubic-bezier(0.16, 1, 0.3, 1),
-    transform 350ms cubic-bezier(0.16, 1, 0.3, 1);
   transform-style: preserve-3d;
-  will-change: transform;
+  will-change: transform, box-shadow;
 }
-.card-tilt:hover {
-  box-shadow:
-    0 12px 40px rgba(0,0,0,0.2),
-    0 0 0 1px rgba(255,255,255,0.05),
-    0 0 24px var(--accent-dim);
+
+/* ── Specular glare overlay — physically realistic light reflection ── */
+.card-glare {
+  --glare-x: 50%;
+  --glare-y: 50%;
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: 2;
+  opacity: 0;
+  transition: opacity 0.35s ease;
+  background: radial-gradient(
+    280px circle at var(--glare-x) var(--glare-y),
+    rgba(255, 255, 255, 0.14) 0%,
+    rgba(255, 255, 255, 0.04) 30%,
+    transparent 70%
+  );
+  mix-blend-mode: overlay;
+}
+[data-theme="light"] .card-glare {
+  background: radial-gradient(
+    280px circle at var(--glare-x) var(--glare-y),
+    rgba(255, 255, 255, 0.5) 0%,
+    rgba(255, 255, 255, 0.15) 30%,
+    transparent 70%
+  );
+  mix-blend-mode: soft-light;
+}
+
+/* Card-tilt: JS owns transform & shadow — disable CSS hover override */
+.card.card-tilt,
+.card.card-tilt:hover {
+  transition:
+    border-color 200ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card-glare { display: none; }
+  .card-tilt { will-change: auto; }
 }
 
 /* ─── ENHANCED BUTTON HOVER ───────────────────────────────── */

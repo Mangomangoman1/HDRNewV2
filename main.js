@@ -838,22 +838,106 @@
     });
   }
 
-  /* ── 3D card tilt ────────────────────── */
-  document.querySelectorAll('.card-tilt').forEach(card => {
-    card.addEventListener('mousemove', e => {
-      const rect = card.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
-      const midX = rect.width / 2;
-      const midY = rect.height / 2;
-      const rotY = ((x - midX) / midX) * 6; // max 6deg
-      const rotX = ((midY - y) / midY) * 6;
-      card.style.transform = `perspective(600px) rotateX(${rotX}deg) rotateY(${rotY}deg)`;
+  /* ── 3D card tilt with specular glare + dynamic shadow ────────────────────── */
+  (function() {
+    var prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (prefersReduced) return;
+
+    document.querySelectorAll('.card-tilt').forEach(function(card) {
+      // Create specular glare overlay
+      var glare = document.createElement('div');
+      glare.className = 'card-glare';
+      glare.setAttribute('aria-hidden', 'true');
+      card.appendChild(glare);
+
+      // State for spring animation
+      var current = { rotX: 0, rotY: 0, lift: 0 };
+      var target = { rotX: 0, rotY: 0, lift: 0 };
+      var rafId = null;
+      var isHovered = false;
+      var SPRING = 0.12; // spring stiffness (0-1)
+      var MAX_TILT = 8; // degrees
+      var MAX_LIFT = 12; // px
+
+      function lerp(a, b, t) { return a + (b - a) * t; }
+
+      function animate() {
+        current.rotX = lerp(current.rotX, target.rotX, SPRING);
+        current.rotY = lerp(current.rotY, target.rotY, SPRING);
+        current.lift = lerp(current.lift, target.lift, SPRING);
+
+        // Apply transform
+        card.style.transform =
+          'perspective(800px) rotateX(' + current.rotX.toFixed(2) + 'deg) rotateY(' + current.rotY.toFixed(2) + 'deg) translateY(' + (-current.lift).toFixed(1) + 'px) scale(' + (1 + current.lift * 0.001).toFixed(4) + ')';
+
+        // Dynamic shadow — shifts opposite to tilt
+        var shadowX = -current.rotY * 1.5;
+        var shadowY = current.rotX * 1.5 + current.lift;
+        var shadowBlur = 20 + current.lift * 2;
+        var shadowSpread = current.lift * 0.3;
+        card.style.boxShadow =
+          shadowX.toFixed(1) + 'px ' +
+          shadowY.toFixed(1) + 'px ' +
+          shadowBlur.toFixed(0) + 'px ' +
+          shadowSpread.toFixed(0) + 'px rgba(0,0,0,' + (0.08 + current.lift * 0.008).toFixed(3) + ')';
+
+        // Check if animation can stop
+        var settled = Math.abs(current.rotX - target.rotX) < 0.05 &&
+                      Math.abs(current.rotY - target.rotY) < 0.05 &&
+                      Math.abs(current.lift - target.lift) < 0.1;
+        if (settled && !isHovered) {
+          card.style.transform = '';
+          card.style.boxShadow = '';
+          rafId = null;
+          return;
+        }
+        rafId = requestAnimationFrame(animate);
+      }
+
+      function startAnim() {
+        if (!rafId) rafId = requestAnimationFrame(animate);
+      }
+
+      card.addEventListener('mouseenter', function() {
+        isHovered = true;
+        glare.style.opacity = '1';
+        startAnim();
+      });
+
+      card.addEventListener('mousemove', function(e) {
+        var rect = card.getBoundingClientRect();
+        var x = e.clientX - rect.left;
+        var y = e.clientY - rect.top;
+        var normalX = x / rect.width;   // 0-1
+        var normalY = y / rect.height;  // 0-1
+        var midX = normalX - 0.5;       // -0.5 to 0.5
+        var midY = normalY - 0.5;
+
+        target.rotY = midX * MAX_TILT * 2;
+        target.rotX = -midY * MAX_TILT * 2;
+        target.lift = MAX_LIFT;
+
+        // Position specular glare — follows cursor but offset for realistic light reflection
+        glare.style.setProperty('--glare-x', (normalX * 100).toFixed(1) + '%');
+        glare.style.setProperty('--glare-y', (normalY * 100).toFixed(1) + '%');
+
+        // Set border accent side — the edge nearest the cursor glows
+        card.style.setProperty('--edge-x', (normalX * 100).toFixed(1) + '%');
+        card.style.setProperty('--edge-y', (normalY * 100).toFixed(1) + '%');
+
+        startAnim();
+      });
+
+      card.addEventListener('mouseleave', function() {
+        isHovered = false;
+        target.rotX = 0;
+        target.rotY = 0;
+        target.lift = 0;
+        glare.style.opacity = '0';
+        startAnim();
+      });
     });
-    card.addEventListener('mouseleave', () => {
-      card.style.transform = 'perspective(600px) rotateX(0) rotateY(0)';
-    });
-  });
+  })();
 
   /* ═══════════════════════════════════════════════
    HERO PARTICLES — Tech dust & repair sparks

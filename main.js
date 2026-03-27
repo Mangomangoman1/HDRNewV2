@@ -2451,3 +2451,26 @@
     pulseObserver.observe(el);
   });
 })();
+
+// ─── READING LAMP — PRICING TEXT LUMINANCE ──────────────────────────
+// Pricing paragraphs start dimmed and "light up" as user scrolls to them
+(function readingLampInit() {
+  var pricingBodies = document.querySelectorAll('.pricing-body');
+  if (!pricingBodies.length || !('IntersectionObserver' in window)) return;
+
+  var readingObserver = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('reading-lit');
+        readingObserver.unobserve(entry.target);
+      }
+    });
+  }, {
+    threshold: 0.3,
+    rootMargin: '0px 0px -15% 0px'
+  });
+
+  pricingBodies.forEach(function(p) {
+    readingObserver.observe(p);
+  });
+})();

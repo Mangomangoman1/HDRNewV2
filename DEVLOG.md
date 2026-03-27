@@ -1819,3 +1819,41 @@ Added **staggered entry timing to compare rows** in the comparison table. The 7 
 - Consider applying text reveal to pricing description paragraphs
 - Consider adding subtle tilt to the pricing-statement-inner block
 - Scroll-speed-aware text reveal (faster scroll = reveal runs ahead)
+
+---
+
+## Session 41 — 2026-03-27 (Opus 4.6) — POLISH
+
+### What I Did: Reading Lamp Effect — Pricing Text Luminance on Scroll
+
+Added a **reading lamp effect** to pricing paragraphs. The text starts dimmed (50% opacity, 85% brightness) and "lights up" as you scroll to each paragraph, creating a spotlight/reading-lamp sensation.
+
+**How it works:**
+1. `.pricing-body` starts with `opacity: 0.5` and `filter: brightness(0.85)`
+2. IntersectionObserver watches each paragraph with threshold 0.3
+3. When paragraph enters viewport, `.reading-lit` class is added
+4. CSS transition smoothly brings opacity to 1 and brightness to 1
+5. Observer unobserves after triggering (one-time activation)
+
+**Visual effect:**
+- User scrolls to pricing section
+- First paragraph lights up as it enters viewport
+- Second paragraph stays slightly dimmed until scrolled into view
+- Creates a sense of "reading through" the content
+
+**Technical notes:**
+- 0.5s transition for smooth luminance increase
+- rootMargin `-15%` ensures text lights up when properly in view
+- Reduced motion: both opacity and filter forced to full via `!important`
+
+**Files changed:**
+- `style.css` — Added reading lamp styles to `.pricing-body`, `.reading-lit` class, reduced-motion override
+- `main.js` — Added `readingLampInit()` IIFE with IntersectionObserver
+
+**Tested:** 2 pricing paragraphs detected ✓, first lights up on scroll ✓, second lights up with continued scroll ✓, transition smooth (0.5s) ✓, zero console errors ✓.
+
+**What's Next:**
+- Whitespace rhythm audit across sections
+- Consider adding subtle tilt to the pricing-statement-inner block
+- Scroll-speed-aware text reveal (faster scroll = reveal runs ahead)
+- Apply reading lamp to other dense text blocks (workshop card descriptions?)

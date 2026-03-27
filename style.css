@@ -1439,6 +1439,14 @@ ul { list-style: none; }
   line-height: 1.75;
   color: var(--text-primary);
   margin-bottom: var(--space-lg);
+  /* Reading lamp effect — text brightens on scroll */
+  opacity: 0.5;
+  filter: brightness(0.85);
+  transition: opacity 0.5s ease, filter 0.5s ease;
+}
+.pricing-body.reading-lit {
+  opacity: 1;
+  filter: brightness(1);
 }
 .pricing-highlight {
   font-weight: 700;
@@ -9269,5 +9277,10 @@ body.konami-active .hero-headline {
   .workshop-grid .workshop-card[data-animate],
   .compare-row[data-animate] {
     transition-delay: 0ms !important;
+  }
+  /* No reading lamp dimming for reduced motion */
+  .pricing-body {
+    opacity: 1 !important;
+    filter: none !important;
   }
 }

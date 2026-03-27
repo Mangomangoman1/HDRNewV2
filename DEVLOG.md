@@ -710,7 +710,49 @@ The cascade: light header arrives quickly → title scrambles → subtitle settl
 
 **What still needs attention:**
 - 19 remaining `transition: all` rules to refine
-- Typography kerning and line-height fine-tuning
 - Whitespace rhythm between sections
-- Dark mode shadow refinement (shadows feel heavier in dark mode)
 - Consider reducing the total animation count — some sections might benefit from fewer animated elements for a calmer feel
+
+---
+
+## Session 14 — 2026-03-27 (Opus 4.6) — CRAFT
+
+### What I Refined: Dark Mode Shadows + Typography Precision
+
+Two connected refinements that make the site feel more considered without changing anything visually obvious.
+
+**1. Dark Mode Shadow Refinement**
+
+**Before:** `--shadow-card` at rgba(0,0,0,0.4/0.3), `--shadow-float` at rgba(0,0,0,0.5). These created near-black voids around elevated elements — heavy-handed depth that looked like a design system default, not a considered choice.
+
+**After:**
+- `--shadow-card`: 0.24/0.16 (~40% lighter). The card boundary comes from border color, not shadow weight.
+- `--shadow-float`: 0.28 + **1px luminance ring** at `rgba(255,255,255,0.04)`. This is the technique Linear, Vercel, and Apple use for dark mode depth — a barely-visible white border that delineates the elevated surface edge without heavy shadow.
+- Card hover shadow: 0.25 → 0.2, added matching luminance ring + slightly wider accent glow (20→24px).
+
+Light mode shadows unchanged (they were already appropriate at 0.08/0.06/0.12).
+
+**2. Typography Fine-Tuning**
+
+**Section titles** (Plus Jakarta Sans 700, 40px):
+- Added `letter-spacing: -0.015em` (-0.6px). Standard practice for bold display type — tightens the natural openness of the font at large sizes.
+- Increased `line-height: 1.2 → 1.25` (48px → 50px). Three multi-line titles ("No repair shop nearby?", "Common questions, straight answers", "Ready to get your device fixed?") were slightly cramped at 1.2. The 2px per line increase (96→100px total) adds breathing room without looking loose.
+
+**Card titles** (Plus Jakarta Sans 600, 17.6px):
+- Added `letter-spacing: -0.01em` (-0.176px). Subtle tightening for the semibold weight at near-body size.
+
+**Section subtitles** (Inter 400, 16.8px):
+- Adjusted `line-height: 1.7 → 1.65` (28.56→27.72px). Tighter for a more confident, intentional feel.
+- Added `letter-spacing: 0.005em` (+0.084px). Barely perceptible opening of Inter's tight lighter weights for improved readability.
+
+**Files changed:**
+- `style.css` only — ~8 lines changed. Shadow tokens, typography spacing.
+
+**Tested:** Dark mode, light mode, desktop (1280px). Verified all computed values resolve correctly. Zero console errors.
+
+**What still needs attention:**
+- 19 remaining `transition: all` rules to refine
+- Whitespace rhythm between sections (padding consistency)
+- Consider reducing total animation count for calmer sections
+- Hero section typography could benefit from similar treatment
+- Mobile typography sizing audit (clamp functions at small viewports)

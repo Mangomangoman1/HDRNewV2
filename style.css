@@ -74,9 +74,10 @@ html.theme-transition *::after {
   --radius-xl:  24px;
   --radius-pill: 999px;
 
-  /* Shadows */
-  --shadow-card:  0 1px 3px rgba(0,0,0,0.4), 0 4px 16px rgba(0,0,0,0.3);
-  --shadow-float: 0 8px 32px rgba(0,0,0,0.5);
+  /* Shadows — dark mode uses subtler shadows since bg is already dark;
+     depth comes from border luminance + slight elevation glow */
+  --shadow-card:  0 1px 3px rgba(0,0,0,0.24), 0 4px 12px rgba(0,0,0,0.16);
+  --shadow-float: 0 8px 24px rgba(0,0,0,0.28), 0 0 0 1px rgba(255,255,255,0.04);
 
   /* ── Motion tokens ──
      Purposeful motion language:
@@ -352,14 +353,16 @@ ul { list-style: none; }
   font-family: var(--font-display);
   font-size: clamp(1.75rem, 4vw, 2.5rem);
   font-weight: 700;
-  line-height: 1.2;
+  line-height: 1.25;
+  letter-spacing: -0.015em;
   color: var(--text-primary);
   margin-bottom: var(--space-md);
 }
 .section-sub {
   font-size: 1.05rem;
   color: var(--text-secondary);
-  line-height: 1.7;
+  line-height: 1.65;
+  letter-spacing: 0.005em;
 }
 .text-accent { color: var(--accent); }
 
@@ -954,6 +957,7 @@ ul { list-style: none; }
   font-family: var(--font-display);
   font-size: 1.1rem;
   font-weight: 600;
+  letter-spacing: -0.01em;
   color: var(--text-primary);
   margin-bottom: var(--space-sm);
 }
@@ -4737,7 +4741,10 @@ body {
   will-change: transform;
 }
 .card-tilt:hover {
-  box-shadow: 0 12px 40px rgba(0,0,0,0.25), 0 0 20px var(--accent-dim);
+  box-shadow:
+    0 12px 40px rgba(0,0,0,0.2),
+    0 0 0 1px rgba(255,255,255,0.05),
+    0 0 24px var(--accent-dim);
 }
 
 /* ─── ENHANCED BUTTON HOVER ───────────────────────────────── */

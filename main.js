@@ -2703,3 +2703,30 @@
     readingObserver.observe(p);
   });
 })();
+
+// ─── WAVE DIVIDER ANIMATION ─────────────────────────────────────────
+// Triggers gentle undulating wave animation when wave dividers enter viewport
+(function waveAnimationInit() {
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  var waves = document.querySelectorAll('.wave-divider');
+  if (!waves.length || !('IntersectionObserver' in window)) return;
+
+  var waveObserver = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('wave-visible');
+        // Keep observing so animation starts/stops based on visibility
+      } else {
+        entry.target.classList.remove('wave-visible');
+      }
+    });
+  }, {
+    threshold: 0.1,
+    rootMargin: '50px 0px 50px 0px'
+  });
+
+  waves.forEach(function(wave) {
+    waveObserver.observe(wave);
+  });
+})();

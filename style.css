@@ -6087,6 +6087,55 @@ body {
 }
 .wave-fill { fill: var(--bg-alt); }
 
+/* Wave animation — gentle flowing motion when visible via transforms */
+.wave-divider.wave-visible svg {
+  animation: waveFlow 4s ease-in-out infinite;
+  transform-origin: center center;
+}
+.wave-divider.wave-visible.wave-divider--flip svg {
+  animation-delay: -1s; /* Offset for variety */
+}
+.wave-divider.wave-visible.wave-divider--mountain svg {
+  animation: waveFlowSubtle 5s ease-in-out infinite;
+  animation-delay: -2s;
+}
+
+/* Gentle undulating flow using scale and translate transforms */
+@keyframes waveFlow {
+  0%, 100% {
+    transform: scaleY(1) translateY(0);
+  }
+  25% {
+    transform: scaleY(1.05) translateY(-1px);
+  }
+  50% {
+    transform: scaleY(0.95) translateY(2px);
+  }
+  75% {
+    transform: scaleY(1.03) translateY(-1px);
+  }
+}
+
+@keyframes waveFlowSubtle {
+  0%, 100% {
+    transform: scaleY(1) translateX(0);
+  }
+  33% {
+    transform: scaleY(1.03) translateX(4px);
+  }
+  66% {
+    transform: scaleY(0.97) translateX(-4px);
+  }
+}
+
+/* Reduced motion — no wave animation */
+@media (prefers-reduced-motion: reduce) {
+  .wave-divider.wave-visible svg,
+  .wave-divider.wave-visible.wave-divider--mountain svg {
+    animation: none;
+  }
+}
+
 /* ─── PAGE LOAD CURTAIN ───────────────────────────────────── */
 .page-curtain {
   position: fixed;

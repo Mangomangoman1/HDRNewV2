@@ -2298,3 +2298,41 @@ Added a **spring bounce animation** to FAQ accordion arrows. When toggling an FA
 - Scroll-speed-aware text reveal (faster scroll = reveal runs ahead)
 - Apply reading lamp to workshop card descriptions
 - Consider subtle hover state for footer links
+
+---
+
+## Session 53 — 2026-03-27 (Opus 4.6) — POLISH
+
+### What I Did: Animated Wave Dividers — Gentle Flowing Motion
+
+Added **subtle undulating animation** to the wave dividers between sections. When a wave divider enters the viewport, it begins a gentle flowing motion — scaleY pulsing and slight vertical drift — like gentle water lapping at a shore. This makes the section transitions feel more alive and organic.
+
+**How it works:**
+1. IntersectionObserver watches all 3 `.wave-divider` elements
+2. When a wave enters viewport, `.wave-visible` class is added
+3. CSS animation begins: `waveFlow` (4s) or `waveFlowSubtle` (5s)
+4. When wave leaves viewport, class is removed and animation stops
+5. Animation restarts naturally each time wave re-enters view
+
+**Animation details:**
+- `waveFlow`: scaleY oscillates 1 → 1.05 → 0.95 → 1.03 → 1 with subtle translateY drift
+- `waveFlowSubtle`: gentler scaleY 1 → 1.03 → 0.97 → 1 with lateral translateX drift
+- Different delays on each wave (-1s, -2s) for organic non-synchronized feel
+
+**Technical notes:**
+- Attempted CSS `d: path()` animation for morphing SVG paths, but browser support is limited
+- Pivoted to transform-based animation (scaleY + translate) for universal compatibility
+- Uses SVG element as animation target (not path fill)
+- Animation only runs while visible (IntersectionObserver toggle) — saves CPU
+
+**Files changed:**
+- `style.css` — Added `.wave-divider.wave-visible svg` animation rules, `@keyframes waveFlow`, `@keyframes waveFlowSubtle`, reduced-motion guard
+- `main.js` — Added `waveAnimationInit()` IIFE with IntersectionObserver
+
+**Tested:** 3 wave dividers ✓, `waveFlow` animation on first wave ✓, `waveFlowSubtle` on mountain wave ✓, class added/removed on scroll ✓, zero console errors ✓.
+
+**What's Next:**
+- Whitespace rhythm audit across sections
+- Scroll-speed-aware text reveal (faster scroll = reveal runs ahead)
+- Apply reading lamp to workshop card descriptions
+- Consider subtle hover state for footer links

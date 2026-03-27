@@ -925,5 +925,50 @@ The "Hailey Device Repair" badge pulses once with a green ring animation (0→8p
 **What's Next:**
 - Remaining `transition: all` cleanup
 - Whitespace rhythm between sections
-- Mail-in section map interaction
-- Service area section could use visual treatment
+- Mail-in section could use visual treatment
+
+---
+
+## Session 19 — 2026-03-27 (Opus 4.6) — BOLD
+
+### What I Did: Service Area Map — Choreographed Entrance + Interactive Towns
+
+**Before:** SVG map appeared instantly with all elements visible. Towns had basic hover brightness. No entrance animation, no sense of discovery.
+
+**After:** A carefully choreographed map reveal that tells a geographic story:
+
+**Entrance Choreography (timed sequence when map scrolls into view):**
+1. **0.3s** — Mountain silhouettes fade in (bg layer, 0→0.3/0.2 opacity)
+2. **0.6s** — Highway 75 fades in with dashed road appearance
+3. **0.8s** — Big Wood River **draws itself in** from south to north (stroke-dashoffset 480→0 over 2s) — the most dramatic element
+4. **1.2s** — Bellevue pops in (southernmost town, scale 0.6→1 with overshoot bounce)
+5. **1.5s** — Hailey pops in (home base, accent blue)
+6. **1.8s** — Ketchum pops in
+7. **2.0s** — Sun Valley pops in (northernmost)
+8. **1.8s** — HWY 75 label fades in
+9. **2.3s** — Distance marker lines fade in
+10. **2.5s** — "~12 mi" labels fade last
+
+Total sequence: ~3 seconds. You watch the map build itself like a cartographer drawing it.
+
+**Interactive Town Hover:**
+- Towns scale to 1.15× on hover with a drop-shadow glow
+- Town labels turn accent blue
+- Cursor set to pointer
+
+**Implementation:**
+- Added semantic classes to SVG elements (area-mountain, area-highway, area-river, area-hwy-label, area-distance, area-distance-label) instead of fragile nth-child selectors
+- All CSS-driven via `.area-map.visible` — no extra JS needed
+- The section stagger system handles the data-animate timing automatically
+
+**Files changed:**
+- `index.html` — added classes to SVG paths, lines, texts (7 elements)
+- `style.css` — ~65 lines of choreography CSS
+
+**Tested:** Dark/light mode, desktop/mobile (375px static single-column). River draws in, towns stagger south-to-north, distance markers appear last. Zero console errors.
+
+**What's Next:**
+- Remaining `transition: all` cleanup
+- Whitespace rhythm audit
+- Mail-in section enhancement
+- Consider scroll-linked parallax for mountains

@@ -2135,13 +2135,82 @@ ul { list-style: none; }
   filter: drop-shadow(0 4px 24px rgba(0, 0, 0, 0.08));
 }
 
+/* ── Service Area: Map entrance choreography ── */
+
+/* Mountain silhouettes fade in */
+.area-mountain {
+  opacity: 0;
+  transition: opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.3s;
+}
+.area-map.visible .area-mountain-1 { opacity: 0.3; }
+.area-map.visible .area-mountain-2 { opacity: 0.2; }
+
+/* Highway 75 fades in with mountains (keeps dashed look) */
+.area-highway {
+  opacity: 0;
+  transition: opacity 1s cubic-bezier(0.16, 1, 0.3, 1) 0.6s;
+}
+.area-map.visible .area-highway { opacity: 0.8; }
+
+/* Big Wood River draw-in (follows highway with delay) */
+.area-river {
+  stroke-dasharray: 480;
+  stroke-dashoffset: 480;
+  transition: stroke-dashoffset 2s cubic-bezier(0.16, 1, 0.3, 1) 0.8s;
+}
+.area-map.visible .area-river {
+  stroke-dashoffset: 0;
+}
+
+/* HWY 75 label fades in after road draws */
+.area-hwy-label {
+  opacity: 0;
+  transition: opacity 500ms 1.8s;
+}
+.area-map.visible .area-hwy-label { opacity: 0.75; }
+
+/* Town dots: stagger pop-in south to north along the highway */
 .area-town {
-  cursor: default;
-  transition: opacity var(--transition);
+  cursor: pointer;
+  opacity: 0;
+  transform: scale(0.6);
+  transform-origin: center;
+  transition:
+    opacity 500ms cubic-bezier(0.16, 1, 0.3, 1),
+    transform 500ms cubic-bezier(0.34, 1.56, 0.64, 1),
+    filter 200ms;
 }
-.area-town:hover circle {
-  filter: brightness(1.2);
+.area-town--bellevue  { transition-delay: 1.2s; }
+.area-town--hailey    { transition-delay: 1.5s; }
+.area-town--ketchum   { transition-delay: 1.8s; }
+.area-town--sunvalley { transition-delay: 2.0s; }
+
+.area-map.visible .area-town {
+  opacity: 1;
+  transform: scale(1);
 }
+
+/* Town hover: glow + scale + accent color */
+.area-town:hover {
+  transform: scale(1.15) !important;
+  filter: drop-shadow(0 0 6px var(--accent));
+}
+.area-town:hover text {
+  fill: var(--accent) !important;
+}
+
+/* Distance markers and labels fade in last */
+.area-distance {
+  opacity: 0;
+  transition: opacity 600ms 2.3s;
+}
+.area-map.visible .area-distance { opacity: 0.45; }
+
+.area-distance-label {
+  opacity: 0;
+  transition: opacity 600ms 2.5s;
+}
+.area-map.visible .area-distance-label { opacity: 0.7; }
 
 .area-info {
   display: flex;

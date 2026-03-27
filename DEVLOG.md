@@ -2366,3 +2366,43 @@ Extended the **reading lamp effect** (previously applied to pricing paragraphs) 
 - Scroll-speed-aware text reveal (faster scroll = reveal runs ahead)
 - Consider subtle hover state for footer links
 - Subtle parallax on process/timeline section
+
+---
+
+## Session 55 — 2026-03-27 (Opus 4.6) — POLISH
+
+### What I Did: Timeline Dot Parallax — Floating Depth Effect
+
+Added a **subtle parallax floating effect** to the timeline dots in the process section. As you scroll through the timeline, each dot floats gently up and down at a slightly different rate, creating an organic sense of depth — like bubbles rising at different speeds.
+
+**How it works:**
+1. JS calculates scroll progress through the timeline section (0–1 range)
+2. Each dot gets a unique offset based on its index (`i * 0.12`)
+3. A sine wave function creates smooth oscillation: `sin(progress * 2π) * 15px`
+4. CSS `--parallax-y` variable is set on each dot, driving the transform
+5. Animation only runs when timeline is in viewport (performance optimization)
+
+**Animation details:**
+- Max offset: ±15px vertical movement
+- Stagger factor: 0.12 per dot (dots float out of phase)
+- Uses sine wave for smooth, organic motion
+- Preserves scale(1.08) on active dots
+
+**Technical notes:**
+- CSS `transform: translateY(var(--parallax-y))` on `.timeline-dot`
+- `will-change: transform` for GPU acceleration
+- requestAnimationFrame throttling for smooth 60fps
+- Full `prefers-reduced-motion` support — no parallax for users who request it
+- When timeline is out of view, resets parallax to 0px (no wasted cycles)
+
+**Files changed:**
+- `style.css` — Added `--parallax-y` custom property, updated transform declarations
+- `main.js` — Added `timelineDotParallaxInit()` IIFE with scroll listener
+
+**Tested:** 5 timeline dots ✓, parallax values change on scroll ✓, staggered offset per dot ✓, active dot scale preserved ✓, zero console errors ✓.
+
+**What's Next:**
+- Whitespace rhythm audit across sections
+- Scroll-speed-aware text reveal (faster scroll = reveal runs ahead)
+- Contact section input glow animation
+- Service card hover depth shift

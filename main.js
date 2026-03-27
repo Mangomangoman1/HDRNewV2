@@ -1714,6 +1714,64 @@
 
 
 /* ═══════════════════════════════════════════════
+   TIMELINE DOT PARALLAX
+   Timeline dots float gently as you scroll through
+   the section, creating subtle depth perception.
+═══════════════════════════════════════════════ */
+(function timelineDotParallaxInit() {
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  var dots = document.querySelectorAll('.timeline-dot');
+  var timeline = document.getElementById('processTimeline');
+  if (!dots.length || !timeline) return;
+
+  var PARALLAX_STRENGTH = 15; // max px offset
+  var lastScrollY = window.scrollY;
+  var ticking = false;
+
+  function updateParallax() {
+    var rect = timeline.getBoundingClientRect();
+    var viewH = window.innerHeight;
+
+    // Only animate when timeline is in view
+    if (rect.top > viewH || rect.bottom < 0) {
+      dots.forEach(function(dot) {
+        dot.style.setProperty('--parallax-y', '0px');
+      });
+      return;
+    }
+
+    // Calculate progress through timeline (0 = top of section at bottom of viewport, 1 = bottom at top)
+    var scrolled = viewH - rect.top;
+    var total = viewH + rect.height;
+    var progress = Math.max(0, Math.min(1, scrolled / total));
+
+    // Apply staggered parallax to each dot
+    dots.forEach(function(dot, i) {
+      // Each dot has a slightly different parallax offset based on its position
+      var dotOffset = i * 0.12; // Stagger factor
+      var effectiveProgress = progress + dotOffset;
+      // Sine wave for smooth floating effect
+      var offset = Math.sin(effectiveProgress * Math.PI * 2) * PARALLAX_STRENGTH;
+      dot.style.setProperty('--parallax-y', offset + 'px');
+    });
+  }
+
+  window.addEventListener('scroll', function() {
+    if (!ticking) {
+      requestAnimationFrame(function() {
+        updateParallax();
+        ticking = false;
+      });
+      ticking = true;
+    }
+  }, { passive: true });
+
+  updateParallax();
+})();
+
+
+/* ═══════════════════════════════════════════════
    MAGNETIC BUTTONS
    Buttons pull toward cursor within a proximity radius.
    Uses CSS custom properties for GPU-accelerated transform.

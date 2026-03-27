@@ -8502,6 +8502,10 @@ body {
   justify-content: center;
   z-index: 1;
   transition: border-color 0.4s, background 0.4s, box-shadow 0.4s, transform 0.3s;
+  /* Parallax floating effect */
+  --parallax-y: 0px;
+  transform: translateY(var(--parallax-y));
+  will-change: transform;
 }
 .timeline-dot .material-symbols-outlined {
   font-size: 1.2rem;
@@ -8513,7 +8517,7 @@ body {
   border-color: var(--accent);
   background: var(--accent-dim);
   box-shadow: 0 0 16px var(--accent-glow);
-  transform: scale(1.08);
+  transform: translateY(var(--parallax-y)) scale(1.08);
 }
 .timeline-step.visible .timeline-dot .material-symbols-outlined {
   color: var(--accent);

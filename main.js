@@ -142,11 +142,24 @@
     });
   }
 
-  // ─── Nav: scroll shadow ──────────────────────────────────
+  // ─── Nav: scroll shadow with depth-based intensity ────────
   const nav = document.getElementById('nav');
   if (nav) {
+    // Shadow intensity scales from 0 at top to 1 at ~50% page depth
+    const maxDepthPx = window.innerHeight * 2; // ~2 viewports of scroll
     window.addEventListener('scroll', () => {
-      nav.classList.toggle('scrolled', window.scrollY > 10);
+      const scrollY = window.scrollY;
+      nav.classList.toggle('scrolled', scrollY > 10);
+      if (scrollY > 10) {
+        const depth = Math.min(scrollY / maxDepthPx, 1);
+        // Calculate shadow values: blur 8-24px, spread 0-4px, opacity 0.15-0.4
+        const blur = 8 + depth * 16;
+        const spread = depth * 4;
+        const opacity = 0.15 + depth * 0.25;
+        nav.style.boxShadow = `0 2px ${blur.toFixed(1)}px ${spread.toFixed(1)}px rgba(0,0,0,${opacity.toFixed(3)})`;
+      } else {
+        nav.style.boxShadow = '';
+      }
     }, { passive: true });
   }
 

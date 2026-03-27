@@ -483,7 +483,7 @@ ul { list-style: none; }
   background: rgba(248,250,252,0.9);
 }
 .nav.scrolled {
-  box-shadow: 0 2px 16px rgba(0,0,0,0.3);
+  /* Shadow set dynamically via JS based on scroll depth */
   border-bottom-color: transparent;
 }
 /* Gradient accent line replaces border on scroll */

@@ -1633,4 +1633,40 @@ Added a subtle ambient pulse animation to the hero glow blobs when there's no mo
 - Consider applying text reveal to pricing description paragraphs
 - Consider adding subtle tilt to the pricing-statement-inner block
 - Scroll-speed-aware reveal (faster scroll = faster reveal)
-- Sticky nav shadow intensity based on scroll depth
+
+---
+
+## Session 36 — 2026-03-27 (Opus 4.6) — POLISH
+
+### What I Did: Dynamic Nav Shadow — Depth-Based Intensity
+
+The nav shadow now **intensifies as you scroll deeper** into the page, creating a sense of the header floating higher above increasingly dense content.
+
+**How it works:**
+1. JS calculates scroll depth as a ratio: `scrollY / (innerHeight * 2)` clamped to 0-1
+2. Shadow properties scale linearly with depth:
+   - **Blur**: 8px → 24px (increases by 16px over scroll range)
+   - **Spread**: 0px → 4px (adds soft glow at depth)
+   - **Opacity**: 0.15 → 0.4 (darkens progressively)
+3. Shadow set directly via `nav.style.boxShadow` for reliable cross-browser support
+
+**Why JS direct assignment instead of CSS calc():**
+Initial attempt used CSS custom properties with `calc()` in box-shadow, but `calc()` values don't resolve correctly in shadow blur/spread/opacity positions when using CSS variables. The computed style returned the literal string `calc(8px + 0.5 * 16px)` rather than a resolved value like `16px`. Direct JS shadow assignment guarantees correct rendering.
+
+**Visual progression:**
+- Top of page (scroll < 10px): No shadow
+- Shallow scroll (100px): Subtle shadow `0 2px 8.8px 0.4px rgba(0,0,0,0.16)`
+- Mid-page (1000px): Medium shadow `0 2px 16px 2px rgba(0,0,0,0.28)`
+- Deep scroll (2000px+): Maximum shadow `0 2px 24px 4px rgba(0,0,0,0.4)`
+
+**Files changed:**
+- `style.css` — Simplified `.nav.scrolled` to just `border-bottom-color: transparent`
+- `main.js` — Enhanced scroll listener to calculate and apply dynamic shadow values
+
+**Tested:** Shadow scales correctly at 50/500/1500/3000px scroll positions ✓, clears shadow when scrolled back to top ✓, zero console errors ✓.
+
+**What's Next:**
+- Whitespace rhythm audit across sections
+- Consider applying text reveal to pricing description paragraphs
+- Consider adding subtle tilt to the pricing-statement-inner block
+- Scroll-speed-aware reveal (faster scroll = faster reveal)

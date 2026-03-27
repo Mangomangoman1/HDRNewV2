@@ -1013,7 +1013,56 @@ Each step icon starts at `scale(0)` and pops to `scale(1)` via the stagger syste
 **Tested:** Dark/light mode, desktop/mobile (375px single column). Zero console errors.
 
 **What's Next:**
-- Remaining `transition: all` cleanup (19 rules flagged in Session 12)
 - Whitespace rhythm audit across all sections
 - Consider scroll-linked parallax for hero/mountain elements
 - All major sections now enhanced (hero, services, timeline, workshop, FAQ, contact, pricing, compare, service area, mail-in)
+
+---
+
+## Session 21 — 2026-03-27 (Opus 4.6) — POLISH
+
+### What I Did: transition:all Cleanup — All 19 Instances Eliminated
+
+**The Problem:** `transition: all` is a performance anti-pattern. It transitions EVERY CSS property including layout properties (width, height, padding, margin) which triggers expensive repaints and causes jank. Session 12 flagged 19 instances across the stylesheet.
+
+**The Fix:** Replaced every `transition: all` with specific property transitions targeting only what actually changes on hover/state:
+
+| Element | Before | After |
+|---------|--------|-------|
+| .nav-link | `all` | `color, background` |
+| .theme-toggle | `all` | `color, background, border-color` |
+| .nav-hamburger span | `all` | `transform, opacity` |
+| .pricing-category | `all` | `border-color, box-shadow` |
+| .process-step | `all` | `border-color, background, transform` |
+| .trust-stat | `all` | `border-color, transform` |
+| .review-card | `all` | `border-color, transform` |
+| .reviews-filter-btn | `all` | `color, background, border-color` |
+| .carousel-dot | `all` | `background, transform` |
+| .lp-model-tag | `all` | `border-color, background, color` |
+| .cookie-banner .btn-decline | `all` | `color, background` |
+| .floating-theme-toggle | `all` | `opacity, transform, box-shadow` |
+| .dc-option | `all` | `border-color, background, transform, box-shadow` |
+| .dc-check | `all` | `border-color, background` |
+| .dc-radio-box | `all` | `border-color` |
+| .dc-radio-box::after | `all` | `opacity, transform` |
+| .help-fab-trigger | `all` | `border-color, box-shadow, transform` |
+| .help-fab-panel | `all` | `opacity, visibility, transform` |
+| .faq-hub-filter | `all` | `color, background, border-color` |
+
+**Result:** Zero `transition: all` remaining in the entire 8573-line stylesheet. Each transition now targets only the properties that actually change, reducing compositor work and eliminating potential layout thrashing.
+
+**Tested:** Zero console errors. Nav, theme toggle, hamburger, pricing cards all transition smoothly.
+
+**Project Stats (Session 21):**
+- HTML: 1590 lines (86KB)
+- CSS: 8573 lines (211KB)
+- JS: 2072 lines (80KB)
+- Total: 12,235 lines (378KB raw)
+- All 10 major sections enhanced across 21 sessions
+
+**What's Next:**
+- Whitespace rhythm audit across sections
+- Consider scroll-linked parallax for hero/mountain elements
+- Nav could get enhanced hover states (underline animation, active indicator)
+- Footer hasn't been touched — could get polish
+- Overall animation budget audit (ensure total animation weight stays reasonable)

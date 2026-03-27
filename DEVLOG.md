@@ -597,5 +597,72 @@ Enter the classic Konami code on any page and you get:
 - Service page enhancements (not just index.html)
 - Performance audit + Lighthouse score
 - Accessibility audit (keyboard nav, screen reader)
-- Seasonal theme auto-rotation
-- Animated page transitions
+
+---
+
+## Session 12 — 2026-03-27 (Opus 4.6) — CRAFT PIVOT
+
+### Shift: The brief was updated to prioritize craft over quantity. "Less is more. Refinement over addition."
+
+### What I Refined: Motion System + Theme Crossfade
+
+**The diagnosis:** The site had 24 instances of `transition: all var(--transition)` — a lazy pattern that animates every CSS property, causes repaints on unintended properties, and makes everything feel the same speed. The single `--transition: 200ms cubic-bezier(0.4, 0, 0.2, 1)` was Material Design's standard easing — functional but not distinctive. The dark↔light theme toggle was an instant, jarring color swap.
+
+**1. Motion Token System**
+Added purposeful CSS custom properties (documented, not just used):
+- `--ease-out: cubic-bezier(0.16, 1, 0.3, 1)` — decelerate into rest (arrivals)
+- `--ease-in: cubic-bezier(0.7, 0, 1, 0.84)` — accelerate away (departures)
+- `--ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1)` — overshoot and settle (playful)
+- `--ease-smooth: cubic-bezier(0.4, 0, 0.2, 1)` — standard (ambient)
+- `--dur-fast: 120ms`, `--dur-normal: 200ms`, `--dur-slow: 350ms`, `--dur-theme: 500ms`
+
+Note: CSS custom properties in `transition` shorthand don't resolve in all browsers. Used literal bezier values in actual transition rules; tokens serve as documentation and for future use in JS.
+
+**2. Replaced Key `transition: all` with Specific Properties**
+
+**Buttons (`.btn`):**
+- `background-color 120ms ease-smooth` — snappy color response
+- `border-color 120ms ease-smooth`
+- `color 120ms ease-smooth`
+- `box-shadow 200ms ease-out` — shadow settles more slowly for depth
+- `transform 120ms ease-spring` — spring overshoot for press/hover
+
+**Cards (`.card`, `.card-tilt`):**
+- `border-color 200ms ease-smooth` — quick border response
+- `box-shadow 350ms ease-out` — shadow arrives and settles like weight
+- `transform 350ms ease-out` — card lifts with physical deceleration
+- Hover overrides to `ease-spring` — spring on hover-in, ease-out on leave
+
+**Contact methods:**
+- `border-color/bg-color 200ms ease-smooth`
+- `transform 200ms ease-out`, `box-shadow 350ms ease-out`
+
+**Form inputs:**
+- `border-color 200ms ease-smooth`
+- `box-shadow 350ms ease-out` — the focus glow expands slowly
+- `color 200ms ease-smooth`
+
+**3. Smooth Theme Crossfade**
+- `html.theme-transition` class applies 500ms ease-out transitions to `background-color`, `border-color`, `color`, `box-shadow`, `fill`, `stroke` on ALL elements (via `*` selector with `!important`)
+- JS adds class on toggle click, removes after 550ms
+- Skips on initial page load (`announce === false`)
+- Respects `prefers-reduced-motion` — no crossfade animation
+- `clearTimeout` prevents class stacking on rapid toggles
+
+Verified crossfade: sampled background-color at 0/100/250/400/600ms. Colors interpolate smoothly from light (248,249,251) → mid (42,45,51 at 250ms) → dark (13,17,23) with the ease-out curve creating a "quick start, gentle settle" feel.
+
+**Why this matters:** Nobody notices good timing, but everyone *feels* it. A button that responds in 120ms with a spring overshoot feels alive. A card that lifts with 350ms deceleration feels weighty. A theme toggle that crossfades over 500ms feels like a breathing, living thing instead of a switch flip.
+
+**Files changed:**
+- `style.css` — added motion tokens, theme crossfade rule (~20 lines), replaced 5 `transition: all` instances with specific property transitions
+- `main.js` — added theme-transition class management to setTheme (~8 lines)
+
+**Remaining `transition: all` instances:** 19 left (nav items, pricing cards, process steps, etc.). These can be refined in future sessions as part of the ongoing craft work.
+
+**What still needs attention:**
+- 19 remaining `transition: all` rules to refine
+- Typography kerning and line-height fine-tuning
+- Scroll animation choreography (enter/exit timing)
+- Whitespace rhythm between sections
+- Service card hover timing vs new card-tilt timing alignment
+- Dark mode shadow refinement (shadows feel heavier in dark mode)

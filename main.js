@@ -13,6 +13,16 @@
   const THEME_KEY = 'hdr-theme';
 
   function setTheme(theme, announce) {
+    // Smooth crossfade: add transition class, swap theme, remove after animation
+    var skipTransition = announce === false; // Don't animate on initial page load
+    if (!skipTransition && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      html.classList.add('theme-transition');
+      // Remove after transition completes (500ms + 50ms buffer)
+      clearTimeout(html._themeTransitionTimer);
+      html._themeTransitionTimer = setTimeout(function() {
+        html.classList.remove('theme-transition');
+      }, 550);
+    }
     html.setAttribute('data-theme', theme);
     localStorage.setItem(THEME_KEY, theme);
     if (announce !== false) announceToSR(theme === 'dark' ? 'Dark theme enabled' : 'Light theme enabled');

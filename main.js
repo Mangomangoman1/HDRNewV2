@@ -3399,3 +3399,89 @@
     });
   });
 })();
+
+// ─── Viewport-centered section glow ─────────────────────────
+// Adds a subtle background glow to the section that contains viewport center
+(function viewportCenteredGlow() {
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  var sections = document.querySelectorAll('.section[id]');
+  if (!sections.length) return;
+
+  var currentActiveSection = null;
+  var ticking = false;
+
+  function findCenteredSection() {
+    var viewportCenter = window.innerHeight / 2;
+    var containingSection = null;
+
+    // Find the section that contains the viewport center
+    for (var i = 0; i < sections.length; i++) {
+      var section = sections[i];
+      var rect = section.getBoundingClientRect();
+      
+      // Check if viewport center is within this section
+      if (rect.top <= viewportCenter && rect.bottom >= viewportCenter) {
+        containingSection = section;
+        break;
+      }
+    }
+
+    // Fallback: find section closest to viewport center
+    if (!containingSection) {
+      var closestSection = null;
+      var closestDistance = Infinity;
+
+      sections.forEach(function(section) {
+        var rect = section.getBoundingClientRect();
+        // Distance from viewport center to nearest edge of section
+        var distToTop = Math.abs(rect.top - viewportCenter);
+        var distToBottom = Math.abs(rect.bottom - viewportCenter);
+        var distance = Math.min(distToTop, distToBottom);
+
+        if (rect.bottom > 0 && rect.top < window.innerHeight) {
+          if (distance < closestDistance) {
+            closestDistance = distance;
+            closestSection = section;
+          }
+        }
+      });
+
+      containingSection = closestSection;
+    }
+
+    return containingSection;
+  }
+
+  function updateActiveSection() {
+    var centered = findCenteredSection();
+
+    if (centered !== currentActiveSection) {
+      // Remove from previous
+      if (currentActiveSection) {
+        currentActiveSection.classList.remove('section-centered');
+      }
+
+      // Add to new
+      if (centered) {
+        centered.classList.add('section-centered');
+      }
+
+      currentActiveSection = centered;
+    }
+
+    ticking = false;
+  }
+
+  function onScroll() {
+    if (!ticking) {
+      requestAnimationFrame(updateActiveSection);
+      ticking = true;
+    }
+  }
+
+  window.addEventListener('scroll', onScroll, { passive: true });
+  
+  // Initial check
+  updateActiveSection();
+})();

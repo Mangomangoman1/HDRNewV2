@@ -3217,3 +3217,83 @@ Added **native CSS scroll-driven animations** using `animation-timeline: scroll(
 - Add scroll-driven depth for pricing cards and workshop cards
 - Whitespace rhythm audit across sections
 - Review overall animation complexity — ensure cognitive load is reasonable
+
+---
+
+## Session 71 — 2026-03-27 (Opus 4.6) — POLISH
+
+### What I Did: Enhanced Focus States + Viewport-Centered Section Glow
+
+Added two complementary features that improve both accessibility and visual experience.
+
+**1. Enhanced Keyboard Focus Ring**
+
+Replaced the basic solid outline focus state with an animated, glowing focus ring:
+- Focus ring expands from 0px to 4px offset with spring easing
+- Subtle pulsing glow animation (2s cycle) draws attention
+- Interactive elements (buttons, links, inputs) get box-shadow enhancement
+- Respects `prefers-reduced-motion` — falls back to static outline
+
+```css
+@keyframes focusRingExpand {
+  0% { outline-offset: 0px; outline-width: 1px; opacity: 0.5; }
+  100% { outline-offset: 4px; outline-width: 2px; opacity: 1; }
+}
+
+@keyframes focusRingPulse {
+  0%, 100% { box-shadow: 0 0 0 0 transparent; }
+  50% { box-shadow: 0 0 12px 2px var(--accent-glow); }
+}
+
+:focus-visible {
+  animation: focusRingExpand 0.2s cubic-bezier(0.34, 1.56, 0.64, 1) forwards,
+             focusRingPulse 2s ease-in-out 0.2s infinite;
+}
+```
+
+**Why it matters:**
+- Keyboard navigation is an accessibility requirement
+- Many users rely on focus indicators (not just screen reader users)
+- Premium sites have equally thoughtful focus states as hover states
+- The glow draws attention without being garish
+
+**2. Viewport-Centered Section Glow**
+
+The section containing the viewport center gets a subtle ambient glow:
+- JavaScript detects which section contains the vertical center of the viewport
+- That section receives `.section-centered` class
+- CSS adds a radial gradient glow behind the section content
+- Glow transitions smoothly (0.6s) as user scrolls between sections
+
+```css
+.section.section-centered::before {
+  background: radial-gradient(
+    ellipse at center,
+    var(--accent-glow) 0%,
+    transparent 70%
+  );
+  opacity: 0.15;
+  filter: blur(60px);
+}
+```
+
+**Theme awareness:**
+- Dark mode: 15% opacity, accent-glow color
+- Light mode: 8% opacity, solid accent color
+
+**Why it matters:**
+- Creates a subtle "reading spotlight" effect
+- Helps users feel oriented on long pages
+- Adds ambient atmosphere without distraction
+- Complements the scroll-based accent hue shift from Session 69
+
+**Files changed:**
+- `style.css` — Added focus ring animations, section-centered glow styles
+- `main.js` — Added `viewportCenteredGlow` IIFE with scroll listener
+
+**Tested:** Focus ring animation triggers on keyboard focus ✓, focus ring expands with spring easing ✓, interactive elements get box-shadow ✓, section-centered class updates on scroll ✓, glow transitions smoothly between sections ✓, light mode has reduced opacity ✓, reduced motion guard ✓, zero console errors ✓.
+
+**What's Next:**
+- Whitespace rhythm audit across sections
+- Review overall animation complexity — ensure cognitive load is reasonable
+- Consider adding focus-within glow for form groups

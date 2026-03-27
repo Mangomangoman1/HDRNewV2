@@ -2669,3 +2669,67 @@ Enhanced the **Recently Fixed ticker** with micro-interactions that make each re
 - Consider velocity-awareness for other scroll-linked effects
 - Consider subtle loading state animations for form submission
 - Review overall animation complexity — ensure cognitive load is reasonable
+
+---
+
+## Session 62 — 2026-03-27 (Opus 4.6) — POLISH
+
+### What I Did: Form Submit Celebration — Shimmer Loading + Confetti Burst
+
+Enhanced the **contact form submission experience** with premium loading and celebration effects:
+
+**1. Submit Button Shimmer (Loading State):**
+- When button is disabled (sending), a shimmer gradient sweeps across it
+- Gradient uses `linear-gradient(90deg, transparent → white 25% → transparent)`
+- 1.5s infinite loop animation (`submitShimmer`)
+- Button opacity stays at 0.85 (more visible than before)
+- Shimmer uses `::after` pseudo-element with `inset: 0`
+
+**2. Success State Enhancement:**
+- Button gets `success-glow` class alongside `btn-success`
+- Dual animation: `btnSuccessBounce` + `btnSuccessGlow`
+- Green glow pulses outward (0 → 20px spread → 0) over 1 second
+- Creates a satisfying "pulse of light" celebration
+
+**3. Confetti Burst:**
+- On form success, 25 colorful particles burst from the button
+- Colors: green, blue, orange, pink, purple, cyan
+- Particles fan upward and outward with random angles (-70° to +70°)
+- Each particle: random size (6-12px), random duration (2-3s), random delay (0-150ms)
+- `confettiBurst` keyframe: explode outward → fall with gravity + rotation
+- Container auto-removes after 4 seconds
+
+**CSS animations:**
+```css
+@keyframes submitShimmer {
+  0%   { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+@keyframes btnSuccessGlow {
+  0%   { box-shadow: 0 0 0 0 rgba(52, 211, 153, 0.5); }
+  50%  { box-shadow: 0 0 20px 8px rgba(52, 211, 153, 0.3); }
+  100% { box-shadow: 0 0 0 0 rgba(52, 211, 153, 0); }
+}
+@keyframes confettiBurst {
+  0%   { opacity: 1; transform: translate(0, 0) rotate(0deg); }
+  10%  { opacity: 1; transform: translate(var(--tx), var(--ty)) rotate(90deg); }
+  100% { opacity: 0; transform: translate(var(--tx), calc(var(--ty) + 300px)) rotate(720deg); }
+}
+```
+
+**Technical notes:**
+- Confetti creation function checks `prefers-reduced-motion` first
+- Reduced motion: shimmer hidden (`display: none`), confetti animation disabled
+- Confetti uses CSS custom properties (`--tx`, `--ty`) for per-particle spread
+- JS creates confetti dynamically and cleans up after animation
+
+**Files changed:**
+- `style.css` — Added shimmer ::after, success glow animation, confetti styles
+- `main.js` — Added `createConfetti()` function, enhanced success handler
+
+**Tested:** Button disabled state shows shimmer ✓, success adds btnSuccessBounce+btnSuccessGlow ✓, confetti container creates 5 particles (test) ✓, confettiBurst animation applied ✓, zero console errors ✓.
+
+**What's Next:**
+- Whitespace rhythm audit across sections
+- Consider velocity-awareness for other scroll-linked effects
+- Review overall animation complexity — ensure cognitive load is reasonable

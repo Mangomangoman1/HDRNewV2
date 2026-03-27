@@ -2527,19 +2527,69 @@
   var formSuccess = document.getElementById('formSuccess');
   var formError = document.getElementById('formError');
 
+  // Confetti burst function for form success
+  function createConfetti(buttonEl) {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    
+    var container = document.createElement('div');
+    container.className = 'confetti-container';
+    document.body.appendChild(container);
+    
+    var rect = buttonEl.getBoundingClientRect();
+    var centerX = rect.left + rect.width / 2;
+    var centerY = rect.top + rect.height / 2;
+    
+    var colors = ['#34d399', '#4f8ef7', '#f59e0b', '#ec4899', '#8b5cf6', '#06b6d4'];
+    var particleCount = 25;
+    
+    for (var i = 0; i < particleCount; i++) {
+      var particle = document.createElement('div');
+      particle.className = 'confetti';
+      particle.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+      particle.style.left = centerX + 'px';
+      particle.style.top = centerY + 'px';
+      
+      // Random spread direction - fan upward and outward
+      var angle = (Math.random() * 140 - 70) * Math.PI / 180; // -70 to +70 degrees from vertical
+      var velocity = 80 + Math.random() * 120; // 80-200px
+      var tx = Math.sin(angle) * velocity;
+      var ty = -Math.cos(angle) * velocity * 0.8; // Upward bias
+      
+      particle.style.setProperty('--tx', tx + 'px');
+      particle.style.setProperty('--ty', ty + 'px');
+      particle.style.animationDelay = (Math.random() * 0.15) + 's';
+      particle.style.animationDuration = (2 + Math.random() * 1) + 's';
+      
+      // Vary particle size
+      var size = 6 + Math.random() * 6;
+      particle.style.width = size + 'px';
+      particle.style.height = size + 'px';
+      
+      container.appendChild(particle);
+    }
+    
+    // Clean up after animation
+    setTimeout(function() {
+      container.remove();
+    }, 4000);
+  }
+  
   // Mutation observer to detect when success/error appear
   if (formSuccess) {
     var successObserver = new MutationObserver(function(mutations) {
       mutations.forEach(function(m) {
         if (m.attributeName === 'class' && formSuccess.classList.contains('visible')) {
-          // Success! Animate the button
-          submitBtn.classList.add('btn-success');
+          // Success! Animate the button with glow
+          submitBtn.classList.add('btn-success', 'success-glow');
           submitBtn.innerHTML = '<span class="material-symbols-outlined" aria-hidden="true">check_circle</span> Sent!';
           submitBtn.disabled = false;
+          
+          // Trigger confetti burst
+          createConfetti(submitBtn);
 
           // Clean up after animation
           setTimeout(function() {
-            submitBtn.classList.remove('btn-success');
+            submitBtn.classList.remove('btn-success', 'success-glow');
           }, 2000);
         }
       });

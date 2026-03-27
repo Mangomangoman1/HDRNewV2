@@ -884,5 +884,46 @@ Each dot scales to 1.08x, gets an accent blue border, glowing box-shadow, and a 
 **What's Next:**
 - Remaining `transition: all` cleanup
 - Whitespace rhythm between sections
-- The "Compare" / trust metrics section could use visual enhancement
 - Mail-in section has potential for a stunning map interaction
+
+---
+
+## Session 18 — 2026-03-27 (Opus 4.6) — BOLD
+
+### What I Did: Compare Section — Animated Row Reveals + Icon Choreography
+
+**Before:** A static comparison table with all 7 rows visible immediately. Check/X icons were static. No entrance animation, no visual hierarchy, no sense of progression.
+
+**After:** A choreographed comparison table that tells the story of "why choose us" row by row:
+
+**1. Row-by-row stagger entrance**
+Each of the 7 compare rows now has `data-animate` and enters via the section-scoped stagger system (Session 13). Rows slide up 12px and fade in with 60ms spacing between each, creating a waterfall reveal effect. The compare-table itself also animates as the section lead.
+
+**2. Check icon bounce-in**
+Green check_circle icons start at `scale(0)` and pop to `scale(1)` via `cubic-bezier(0.34, 1.56, 0.64, 1)` — an overshoot curve that creates a satisfying bounce. 150ms delay after the row fades in so it feels sequenced: row slides in → check pops.
+
+**3. X icon fade-in**
+Orange cancel icons start at `opacity: 0` and fade to 0.6 with a 200ms delay. The subtle opacity makes the "them" column feel deliberately muted against the winning "us" column.
+
+**4. "Us" column green tint**
+`.compare-cell--us` in visible rows gets `rgba(63, 185, 80, 0.03)` background — just enough to create a column-wide green cast that subconsciously says "this side wins."
+
+**5. Row hover effects**
+- Feature label turns accent blue
+- "Us" cell green tint intensifies to 0.06
+- Check icon scales up to 1.15x
+
+**6. Header badge pulse**
+The "Hailey Device Repair" badge pulses once with a green ring animation (0→8px box-shadow) when the table becomes visible, drawing the eye to the winning column.
+
+**Files changed:**
+- `index.html` — added `data-animate` + `data-compare-row` to 7 rows
+- `style.css` — ~55 lines: icon animations, column tint, hover effects, badge pulse, row entrance override
+
+**Tested:** Dark/light mode, desktop/mobile (375px stacks to single column correctly). Zero console errors.
+
+**What's Next:**
+- Remaining `transition: all` cleanup
+- Whitespace rhythm between sections
+- Mail-in section map interaction
+- Service area section could use visual treatment

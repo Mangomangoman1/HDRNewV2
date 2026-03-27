@@ -2296,6 +2296,71 @@ ul { list-style: none; }
   opacity: 0.6;
 }
 
+/* ── Compare: "Us" column winner glow ── */
+.compare-cell--us {
+  position: relative;
+}
+/* Subtle green tint on the "us" column in visible rows */
+.compare-row.visible .compare-cell--us {
+  background: rgba(63, 185, 80, 0.03);
+}
+
+/* ── Compare: Check icon pop animation ── */
+.compare-row .compare-check {
+  transform: scale(0);
+  transition: transform 400ms cubic-bezier(0.34, 1.56, 0.64, 1) 150ms; /* bounce with delay after row entrance */
+}
+.compare-row.visible .compare-check {
+  transform: scale(1);
+}
+
+/* ── Compare: X icon fade ── */
+.compare-row .compare-x {
+  opacity: 0;
+  transition: opacity 350ms cubic-bezier(0.4, 0, 0.2, 1) 200ms;
+}
+.compare-row.visible .compare-x {
+  opacity: 0.6;
+}
+
+/* ── Compare: Row entrance stagger (uses data-compare-row for nth delays) ── */
+.compare-row[data-animate] {
+  transform: translateY(12px);
+  opacity: 0;
+  transition:
+    opacity 400ms cubic-bezier(0.16, 1, 0.3, 1),
+    transform 500ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.compare-row[data-animate].visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ── Compare: Enhanced row hover ── */
+.compare-row:hover .compare-cell--us {
+  background: rgba(63, 185, 80, 0.06);
+}
+.compare-row:hover .compare-check {
+  transform: scale(1.15);
+  transition-duration: 200ms;
+}
+.compare-row:hover .compare-cell--feature {
+  color: var(--accent);
+}
+
+/* ── Compare: Header badge animation ── */
+.compare-badge--us {
+  box-shadow: 0 0 0 0 rgba(63, 185, 80, 0);
+  transition: box-shadow 300ms;
+}
+.compare-table.visible .compare-badge--us {
+  animation: compareBadgePulse 1.5s ease-out 0.5s;
+}
+@keyframes compareBadgePulse {
+  0%   { box-shadow: 0 0 0 0 rgba(63, 185, 80, 0.3); }
+  100% { box-shadow: 0 0 0 8px rgba(63, 185, 80, 0); }
+}
+
 /* Compare responsive */
 @media (max-width: 640px) {
   .compare-header,

@@ -732,14 +732,29 @@
     }
   }
 
-  // ─── Back-to-top button ──────────────────────────────────
+  // ─── Back-to-top button with progress ring ──────────────
   const backToTop = document.getElementById('backToTop');
   if (backToTop) {
-    window.addEventListener('scroll', () => {
-      backToTop.classList.toggle('visible', window.scrollY > 500);
+    var progressRing = backToTop.querySelector('.back-to-top-ring-progress');
+    var circumference = 2 * Math.PI * 20; // r=20
+    
+    window.addEventListener('scroll', function() {
+      var scrollY = window.scrollY;
+      backToTop.classList.toggle('visible', scrollY > 500);
+      
+      // Update progress ring
+      if (progressRing) {
+        var docHeight = document.documentElement.scrollHeight - window.innerHeight;
+        var scrollRatio = docHeight > 0 ? Math.min(1, scrollY / docHeight) : 0;
+        var offset = circumference * (1 - scrollRatio);
+        progressRing.style.strokeDashoffset = offset;
+        
+        // Add complete class when fully scrolled (>98%)
+        backToTop.classList.toggle('scroll-complete', scrollRatio > 0.98);
+      }
     }, { passive: true });
 
-    backToTop.addEventListener('click', () => {
+    backToTop.addEventListener('click', function() {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     });
   }

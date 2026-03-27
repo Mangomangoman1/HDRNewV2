@@ -2581,3 +2581,44 @@ Added a **sibling depth focus effect** to both service cards and workshop cards.
 - Consider velocity-awareness for other scroll-linked effects
 - Consider subtle loading state animations for form submission
 - Review overall animation complexity — ensure cognitive load is reasonable
+
+---
+
+## Session 60 — 2026-03-27 (Opus 4.6) — POLISH
+
+### What I Did: Back-to-Top Progress Ring — Circular Scroll Indicator
+
+Added a **scroll progress ring** around the back-to-top button. As the user scrolls down the page, a circular SVG ring progressively fills around the button, providing a secondary visual indicator of scroll depth that's always visible in the corner.
+
+**How it works:**
+1. SVG with two circles: background ring (faint) and progress ring
+2. Progress ring uses `stroke-dasharray` and `stroke-dashoffset` to create the fill effect
+3. JS calculates scroll ratio (0-1) and sets the offset: `circumference * (1 - ratio)`
+4. At >98% scrolled, ring turns green with a glow effect (`.scroll-complete`)
+
+**Visual design:**
+- Background ring: 15% opacity white, 2px stroke
+- Progress ring: 70% opacity white, 2px stroke with smooth transition
+- On hover: ring turns fully white with subtle glow
+- At page bottom: ring turns green (#34d399) with green glow
+
+**Technical details:**
+- SVG positioned absolute, 3px outside the button (50x50 on 44x44 button)
+- `transform: rotate(-90deg)` so progress starts from top
+- Circumference = 2πr = 125.66 (r=20)
+- Scroll ratio mapped to dashoffset: 125.66 (0%) → 0 (100%)
+- 100ms ease-out transition for smooth fill animation
+- Reduced motion: transition disabled
+
+**Files changed:**
+- `index.html` — Added SVG rings inside back-to-top button (2 circles)
+- `style.css` — Added ring styles, progress animation, complete state, hover glow, reduced-motion guard
+- `main.js` — Enhanced scroll listener to calculate and set ring progress
+
+**Tested:** Ring fills progressively on scroll ✓, offset 0 at bottom (full ring) ✓, green color at scroll-complete ✓, hover glow works ✓, zero console errors ✓.
+
+**What's Next:**
+- Whitespace rhythm audit across sections
+- Consider velocity-awareness for other scroll-linked effects
+- Consider subtle loading state animations for form submission
+- Review overall animation complexity — ensure cognitive load is reasonable

@@ -9421,6 +9421,35 @@ body {
   mix-blend-mode: soft-light;
 }
 
+/* ─── SCROLL VIGNETTE — depth immersion overlay ──────── */
+.scroll-vignette {
+  position: fixed;
+  inset: 0;
+  z-index: 9996;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 400ms ease-out;
+  background: radial-gradient(
+    ellipse 100% 100% at 50% 50%,
+    transparent 40%,
+    rgba(0, 0, 0, 0.08) 70%,
+    rgba(0, 0, 0, 0.15) 100%
+  );
+  will-change: opacity;
+}
+/* Vignette intensifies as user scrolls deeper */
+.scroll-vignette.active {
+  opacity: var(--vignette-intensity, 0);
+}
+[data-theme="light"] .scroll-vignette {
+  background: radial-gradient(
+    ellipse 100% 100% at 50% 50%,
+    transparent 50%,
+    rgba(0, 0, 0, 0.03) 75%,
+    rgba(0, 0, 0, 0.06) 100%
+  );
+}
+
 /* ─── CURSOR SPOTLIGHT — ambient glow follows mouse ──── */
 .cursor-spotlight {
   position: fixed;
@@ -10037,6 +10066,10 @@ body.konami-active .hero-headline {
   }
   /* No velocity glow for reduced motion */
   .scroll-progress::after {
+    display: none;
+  }
+  /* No scroll vignette for reduced motion */
+  .scroll-vignette {
     display: none;
   }
   /* No section entry pulse for reduced motion */

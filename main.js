@@ -144,6 +144,8 @@
 
   // ─── Nav: scroll shadow with depth-based intensity ────────
   const nav = document.getElementById('nav');
+  const scrollVignette = document.querySelector('.scroll-vignette');
+  const vignetteReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   if (nav) {
     // Shadow intensity scales from 0 at top to 1 at ~50% page depth
     const maxDepthPx = window.innerHeight * 2; // ~2 viewports of scroll
@@ -157,8 +159,21 @@
         const spread = depth * 4;
         const opacity = 0.15 + depth * 0.25;
         nav.style.boxShadow = `0 2px ${blur.toFixed(1)}px ${spread.toFixed(1)}px rgba(0,0,0,${opacity.toFixed(3)})`;
+        
+        // Update vignette intensity — subtle depth immersion effect
+        if (scrollVignette && !vignetteReducedMotion) {
+          // Vignette fades in starting at 20% scroll depth, max at 80%
+          const vignetteDepth = Math.max(0, (depth - 0.2) / 0.6);
+          const vignetteIntensity = Math.min(vignetteDepth, 1);
+          scrollVignette.style.setProperty('--vignette-intensity', vignetteIntensity.toFixed(3));
+          scrollVignette.classList.toggle('active', vignetteIntensity > 0.01);
+        }
       } else {
         nav.style.boxShadow = '';
+        // Reset vignette at top
+        if (scrollVignette) {
+          scrollVignette.classList.remove('active');
+        }
       }
     }, { passive: true });
   }

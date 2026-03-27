@@ -2780,3 +2780,57 @@ Added a subtle but delightful hover interaction to the **"★ Trusted Local Tech
 - Whitespace rhythm audit across sections
 - Consider velocity-awareness for other scroll-linked effects
 - Review overall animation complexity — ensure cognitive load is reasonable
+
+---
+
+## Session 64 — 2026-03-27 (Opus 4.6) — POLISH
+
+### What I Did: Scroll Vignette — Depth Immersion Overlay
+
+Added a **scroll-driven vignette effect** that creates a subtle sense of depth immersion as users scroll deeper into the page. The viewport edges gradually darken with a radial gradient, focusing attention toward the center of the screen.
+
+**How it works:**
+1. Fixed overlay (`scroll-vignette`) with radial gradient: transparent center → dark edges
+2. JS tracks scroll depth (reuses the nav shadow calculation)
+3. Vignette begins fading in at 20% scroll depth, reaches full intensity at 80%
+4. CSS custom property `--vignette-intensity` controls opacity dynamically
+5. `.active` class toggles the overlay visibility
+
+**Visual design:**
+- Dark mode: Stronger effect — edges darken to 15% black at full intensity
+- Light mode: Softer effect — edges darken to only 6% black (subtle)
+- Effect is imperceptible at first, grows gradually as user commits to scrolling
+- Creates a natural "tunnel vision" that focuses attention on content
+
+**Technical details:**
+```css
+.scroll-vignette.active {
+  opacity: var(--vignette-intensity, 0);
+}
+```
+```javascript
+// Vignette fades in starting at 20% scroll depth, max at 80%
+const vignetteDepth = Math.max(0, (depth - 0.2) / 0.6);
+const vignetteIntensity = Math.min(vignetteDepth, 1);
+```
+
+**Math breakdown:**
+- 0px scroll → intensity 0 (invisible)
+- 200px scroll → intensity ~0.005 (barely perceptible)
+- 500px scroll → intensity ~0.5 (half strength)
+- 1000px+ scroll → intensity 1 (full effect)
+
+**Why this matters:**
+This is an ambient effect users won't consciously notice, but it subtly communicates "you're deep in content now" — the visual equivalent of pulling curtains closed when watching a movie. It increases perceived focus and reduces peripheral distraction.
+
+**Files changed:**
+- `index.html` — Added `.scroll-vignette` overlay div after cursor spotlight
+- `style.css` — Added scroll-vignette base styles, active state, light mode variant, z-index 9996 (below cursor spotlight and noise)
+- `main.js` — Extended nav scroll handler to update vignette intensity based on scroll depth
+
+**Tested:** Vignette element exists ✓, position fixed ✓, z-index 9996 ✓, opacity 0 default ✓, opacity matches --vignette-intensity when active ✓, radial gradient applied ✓, reduced motion guard added ✓, zero console errors ✓.
+
+**What's Next:**
+- Whitespace rhythm audit across sections
+- Consider velocity-awareness for other scroll-linked effects
+- Review overall animation complexity — ensure cognitive load is reasonable

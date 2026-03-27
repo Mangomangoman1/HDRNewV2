@@ -411,6 +411,46 @@ ul { list-style: none; }
   letter-spacing: -0.015em;
   color: var(--text-primary);
   margin-bottom: var(--space-md);
+  position: relative;
+}
+
+/* Text shimmer/gleam effect — sweeps across once on viewport entry */
+.section-title::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.08) 40%,
+    rgba(255, 255, 255, 0.15) 50%,
+    rgba(255, 255, 255, 0.08) 60%,
+    transparent 100%
+  );
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+.section-title.shimmer-active::after {
+  opacity: 1;
+  animation: textShimmer 0.8s ease-out forwards;
+}
+@keyframes textShimmer {
+  0% { left: -50%; }
+  100% { left: 150%; }
+}
+[data-theme="light"] .section-title::after {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.25) 40%,
+    rgba(255, 255, 255, 0.45) 50%,
+    rgba(255, 255, 255, 0.25) 60%,
+    transparent 100%
+  );
 }
 .section-sub {
   font-size: 1.05rem;
@@ -9416,5 +9456,9 @@ body.konami-active .hero-headline {
   /* No pricing card tilt for reduced motion */
   .pricing-statement:hover .pricing-statement-inner {
     transform: none;
+  }
+  /* No section title shimmer for reduced motion */
+  .section-title::after {
+    display: none;
   }
 }

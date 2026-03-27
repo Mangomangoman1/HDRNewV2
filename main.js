@@ -2494,6 +2494,31 @@
   });
 })();
 
+// ─── SECTION TITLE SHIMMER ────────────────────────────────────────
+// Light gleam sweeps across section titles once when they enter viewport
+(function titleShimmerInit() {
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  var titles = document.querySelectorAll('.section-title');
+  if (!titles.length || !('IntersectionObserver' in window)) return;
+
+  var shimmerObserver = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting && !entry.target.classList.contains('shimmer-active')) {
+        entry.target.classList.add('shimmer-active');
+        shimmerObserver.unobserve(entry.target);
+      }
+    });
+  }, {
+    threshold: 0.3,
+    rootMargin: '0px 0px -10% 0px'
+  });
+
+  titles.forEach(function(el) {
+    shimmerObserver.observe(el);
+  });
+})();
+
 // ─── READING LAMP — PRICING TEXT LUMINANCE ──────────────────────────
 // Pricing paragraphs start dimmed and "light up" as user scrolls to them
 (function readingLampInit() {

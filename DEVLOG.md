@@ -1939,4 +1939,45 @@ Enhanced the **cursor spotlight** to shift color based on which section the user
 - Whitespace rhythm audit across sections
 - Scroll-speed-aware text reveal (faster scroll = reveal runs ahead)
 - Apply reading lamp to other dense text blocks (workshop card descriptions?)
-- Micro-animation for FAQ accordion arrow rotation
+- Consider animated focus states for form inputs
+
+---
+
+## Session 44 — 2026-03-27 (Opus 4.6) — POLISH
+
+### What I Did: Section Title Text Shimmer — Light Gleam on Scroll Entry
+
+Added a **text shimmer/gleam effect** to section titles. When a section title enters the viewport, a subtle light sweeps across the text from left to right — like a highlight passing over premium text.
+
+**How it works:**
+1. `::after` pseudo-element positioned absolute over title
+2. Linear gradient creates a soft white highlight bar (50% width)
+3. Initially positioned at `left: -100%` with `opacity: 0`
+4. IntersectionObserver watches section titles (threshold 0.3)
+5. When title enters viewport, `.shimmer-active` class is added
+6. `opacity: 1` + `animation: textShimmer 0.8s ease-out` sweeps gradient across
+7. Animation goes from `left: -50%` to `left: 150%` for full coverage
+8. `forwards` preserves end state (off-screen right)
+
+**Visual effect:**
+- Light gleam sweeps left-to-right across title text
+- 0.8s duration for elegant, not-too-fast sweep
+- One-shot animation (doesn't repeat)
+
+**Technical notes:**
+- `position: relative` added to `.section-title` for pseudo-element positioning
+- Dark mode: 8%→15% white opacity gradient
+- Light mode: 25%→45% white opacity gradient (brighter to show through lighter background)
+- Reduced motion: `::after { display: none }` — no shimmer
+
+**Files changed:**
+- `style.css` — Added `.section-title::after` shimmer pseudo-element, `.shimmer-active::after` animation, `@keyframes textShimmer`, light mode variant, reduced-motion guard
+- `main.js` — Added `titleShimmerInit()` IIFE with IntersectionObserver
+
+**Tested:** 11 section titles found ✓, shimmer triggers on scroll to services ✓, shimmer triggers on scroll to pricing ✓, light mode gradient applying correctly ✓, zero console errors ✓.
+
+**What's Next:**
+- Whitespace rhythm audit across sections
+- Scroll-speed-aware text reveal (faster scroll = reveal runs ahead)
+- Apply reading lamp to other dense text blocks (workshop card descriptions?)
+- Consider animated focus states for form inputs

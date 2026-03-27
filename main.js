@@ -2534,6 +2534,29 @@
   });
 })();
 
+// ─── GOOGLE STAR PULSE ────────────────────────────────────────────
+// Golden glow pulse on the "Leave a Review" star when it enters viewport
+(function starPulseInit() {
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  var starIcon = document.querySelector('.gbp-star-icon');
+  if (!starIcon || !('IntersectionObserver' in window)) return;
+
+  var starObserver = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting && !entry.target.classList.contains('star-pulse')) {
+        entry.target.classList.add('star-pulse');
+        starObserver.unobserve(entry.target);
+      }
+    });
+  }, {
+    threshold: 0.5,
+    rootMargin: '0px 0px -10% 0px'
+  });
+
+  starObserver.observe(starIcon);
+})();
+
 // ─── READING LAMP — PRICING TEXT LUMINANCE ──────────────────────────
 // Pricing paragraphs start dimmed and "light up" as user scrolls to them
 (function readingLampInit() {

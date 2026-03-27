@@ -2022,3 +2022,45 @@ Added a **visual arrival indicator** when users click anchor links to navigate t
 - Scroll-speed-aware text reveal (faster scroll = reveal runs ahead)
 - Apply reading lamp to other dense text blocks (workshop card descriptions?)
 - Consider animated focus states for form inputs
+
+---
+
+## Session 46 — 2026-03-27 (Opus 4.6) — POLISH
+
+### What I Did: Google Reviews Star Pulse — Golden Glow Animation
+
+Added a **golden glow pulse animation** to the star icon in the "Leave a Review" card when it enters the viewport. The star briefly scales up, rotates slightly, and glows with a warm golden aura — drawing attention to the review CTA.
+
+**How it works:**
+1. Added `.gbp-star-icon` class to the star icon in the review card
+2. IntersectionObserver watches the star (threshold 0.5)
+3. When star enters viewport, `.star-pulse` class is added
+4. CSS animation plays: scale + rotate + golden drop-shadow glow
+5. 1.5s duration with ease-out for organic feel
+6. Animation ends with subtle persistent glow
+
+**Animation keyframes:**
+- 0%: Normal state, no shadow
+- 15%: Scale 1.15, rotate 8°, bright golden glow (12px, 80% opacity)
+- 30%: Scale 1.05, rotate -4° (overshoot recoil), glow fading (8px, 60%)
+- 50%: Scale 1.02, settling, glow dimming (6px, 40%)
+- 100%: Normal scale, subtle residual glow (2px, 20%)
+
+**Technical notes:**
+- Uses `filter: drop-shadow()` for natural icon glow (works with icon shapes)
+- Gold color: `rgba(251, 188, 4, ...)` matches Google's star color
+- Spring-like animation with rotation overshoot creates organic feel
+- Reduced motion guard: no animation, no filter
+
+**Files changed:**
+- `index.html` — Added `.gbp-star-icon` class to star icon
+- `style.css` — Added star-pulse animation and keyframes
+- `main.js` — Added `starPulseInit()` IIFE with IntersectionObserver
+
+**Tested:** Star pulse triggers on scroll to Google section ✓, animation name starPulse ✓, golden drop-shadow filter applied ✓, zero console errors ✓.
+
+**What's Next:**
+- Whitespace rhythm audit across sections
+- Scroll-speed-aware text reveal (faster scroll = reveal runs ahead)
+- Apply reading lamp to other dense text blocks (workshop card descriptions?)
+- Consider animated focus states for form inputs

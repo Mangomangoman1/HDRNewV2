@@ -7364,6 +7364,37 @@ body {
   font-size: 0.82rem;
   color: var(--text-muted);
 }
+
+/* Golden star pulse animation on viewport entry */
+.gbp-star-icon {
+  transition: filter 0.3s ease, transform 0.3s ease;
+}
+.gbp-star-icon.star-pulse {
+  animation: starPulse 1.5s ease-out forwards;
+}
+@keyframes starPulse {
+  0% {
+    filter: drop-shadow(0 0 0 transparent);
+    transform: scale(1);
+  }
+  15% {
+    filter: drop-shadow(0 0 12px rgba(251, 188, 4, 0.8));
+    transform: scale(1.15) rotate(8deg);
+  }
+  30% {
+    filter: drop-shadow(0 0 8px rgba(251, 188, 4, 0.6));
+    transform: scale(1.05) rotate(-4deg);
+  }
+  50% {
+    filter: drop-shadow(0 0 6px rgba(251, 188, 4, 0.4));
+    transform: scale(1.02) rotate(0deg);
+  }
+  100% {
+    filter: drop-shadow(0 0 2px rgba(251, 188, 4, 0.2));
+    transform: scale(1) rotate(0deg);
+  }
+}
+
 @media (max-width: 640px) {
   .gbp-cards { grid-template-columns: 1fr; max-width: 320px; margin: 0 auto; }
 }
@@ -9505,5 +9536,10 @@ body.konami-active .hero-headline {
   /* No section title shimmer for reduced motion */
   .section-title::after {
     display: none;
+  }
+  /* No star pulse for reduced motion */
+  .gbp-star-icon.star-pulse {
+    animation: none;
+    filter: none;
   }
 }

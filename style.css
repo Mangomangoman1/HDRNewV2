@@ -457,6 +457,10 @@ ul { list-style: none; }
   color: var(--text-primary);
   margin-bottom: var(--space-md);
   position: relative;
+  /* Magnetic effect preparation */
+  will-change: transform;
+  transition: transform 0s; /* JS handles interpolation */
+  cursor: default;
 }
 
 /* Text shimmer/gleam effect — sweeps across once on viewport entry */

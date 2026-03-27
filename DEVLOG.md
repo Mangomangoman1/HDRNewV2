@@ -2834,3 +2834,54 @@ This is an ambient effect users won't consciously notice, but it subtly communic
 - Whitespace rhythm audit across sections
 - Consider velocity-awareness for other scroll-linked effects
 - Review overall animation complexity — ensure cognitive load is reasonable
+
+---
+
+## Session 65 — 2026-03-27 (Opus 4.6) — POLISH
+
+### What I Did: Magnetic Section Titles
+
+Added a **magnetic effect to section titles** — when the cursor moves near a section title (within 150px), the title subtly shifts toward the cursor, creating a premium, interactive feel that makes the typography feel responsive and alive.
+
+**How it works:**
+1. Each section title gets individual mousemove/mouseleave event listeners
+2. When cursor enters the 150px radius, distance from center is calculated
+3. Shift strength scales inversely with distance (closer = stronger pull)
+4. Maximum shift is 8px in any direction
+5. Movement is smoothly interpolated using `LERP = 0.1` factor
+6. Title returns to original position when cursor leaves
+
+**Implementation details:**
+```javascript
+var MAGNETIC_RADIUS = 150; // px — cursor must be within this distance
+var MAX_SHIFT = 8; // px — maximum shift amount
+var LERP = 0.1; // smoothing factor for buttery animation
+
+// Strength calculation: closer = stronger
+var strength = 1 - (distance / MAGNETIC_RADIUS);
+var shift = strength * MAX_SHIFT;
+```
+
+**Example behavior:**
+- Cursor 54px from center → title shifts ~4.76px toward cursor
+- Cursor 100px from center → title shifts ~2.67px toward cursor
+- Cursor 150px+ from center → no shift
+
+**Why this matters:**
+Magnetic effects are a hallmark of premium web design (seen on sites like Linear, Vercel, and Stripe). This subtle interaction makes the page feel responsive to the user's presence without being distracting. It's the kind of detail that users feel more than see.
+
+**CSS preparation:**
+- Added `will-change: transform` for GPU optimization
+- Set `cursor: default` since titles aren't clickable
+- No transition needed — JS handles smooth interpolation via RAF
+
+**Files changed:**
+- `style.css` — Added will-change, cursor styles to .section-title
+- `main.js` — Added magneticTitlesInit IIFE with mouse tracking and smooth interpolation
+
+**Tested:** 11 section titles found ✓, will-change:transform applied ✓, cursor:default applied ✓, position:relative ✓, magnetic math verified (54px distance → ~4.76px shift) ✓, smooth interpolation working ✓, pointer check guards for touch devices ✓, reduced motion guard ✓, zero console errors ✓.
+
+**What's Next:**
+- Whitespace rhythm audit across sections
+- Consider velocity-awareness for other scroll-linked effects
+- Review overall animation complexity — ensure cognitive load is reasonable

@@ -2969,3 +2969,84 @@
     waveObserver.observe(wave);
   });
 })();
+
+// ─── MAGNETIC SECTION TITLES ────────────────────────────────────────
+// Section titles subtly shift toward cursor when nearby
+(function magneticTitlesInit() {
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  var hasPointer = window.matchMedia('(pointer: fine)').matches || window.matchMedia('(hover: hover)').matches;
+  if (!hasPointer) return;
+
+  var titles = document.querySelectorAll('.section-title');
+  if (!titles.length) return;
+
+  // Magnetic effect parameters
+  var MAGNETIC_RADIUS = 150; // px — cursor must be within this distance
+  var MAX_SHIFT = 8; // px — maximum shift amount
+  var LERP = 0.1; // smoothing factor
+
+  titles.forEach(function(title) {
+    var currentX = 0;
+    var currentY = 0;
+    var targetX = 0;
+    var targetY = 0;
+    var rafId = null;
+    var isAnimating = false;
+
+    function tick() {
+      currentX += (targetX - currentX) * LERP;
+      currentY += (targetY - currentY) * LERP;
+
+      // Apply transform
+      title.style.transform = 'translate(' + currentX.toFixed(2) + 'px, ' + currentY.toFixed(2) + 'px)';
+
+      // Continue animation if not settled
+      if (Math.abs(targetX - currentX) > 0.1 || Math.abs(targetY - currentY) > 0.1) {
+        rafId = requestAnimationFrame(tick);
+      } else {
+        isAnimating = false;
+        if (targetX === 0 && targetY === 0) {
+          title.style.transform = '';
+        }
+      }
+    }
+
+    function startAnimation() {
+      if (!isAnimating) {
+        isAnimating = true;
+        tick();
+      }
+    }
+
+    title.addEventListener('mousemove', function(e) {
+      var rect = title.getBoundingClientRect();
+      var centerX = rect.left + rect.width / 2;
+      var centerY = rect.top + rect.height / 2;
+
+      var dx = e.clientX - centerX;
+      var dy = e.clientY - centerY;
+      var distance = Math.sqrt(dx * dx + dy * dy);
+
+      if (distance < MAGNETIC_RADIUS) {
+        // Calculate shift amount based on distance (closer = stronger)
+        var strength = 1 - (distance / MAGNETIC_RADIUS);
+        var shift = strength * MAX_SHIFT;
+
+        // Normalize direction and apply shift
+        targetX = (dx / distance) * shift || 0;
+        targetY = (dy / distance) * shift || 0;
+      } else {
+        targetX = 0;
+        targetY = 0;
+      }
+
+      startAnimation();
+    }, { passive: true });
+
+    title.addEventListener('mouseleave', function() {
+      targetX = 0;
+      targetY = 0;
+      startAnimation();
+    });
+  });
+})();

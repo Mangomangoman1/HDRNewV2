@@ -12,12 +12,66 @@
   const themeToggle = document.getElementById('themeToggle');
   const THEME_KEY = 'hdr-theme';
 
-  function setTheme(theme, announce) {
-    // Smooth crossfade: add transition class, swap theme, remove after animation
-    var skipTransition = announce === false; // Don't animate on initial page load
-    if (!skipTransition && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+  // Track whether a reveal animation is in progress
+  var revealInProgress = false;
+
+  function setTheme(theme, announce, triggerEl) {
+    var skipTransition = announce === false;
+    var prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    // Block all theme changes while reveal is animating
+    if (revealInProgress) return;
+
+    // Try circular reveal if we have a trigger element and no reduced motion
+    if (!skipTransition && !prefersReduced && triggerEl) {
+      revealInProgress = true;
+      var rect = triggerEl.getBoundingClientRect();
+      var cx = rect.left + rect.width / 2;
+      var cy = rect.top + rect.height / 2;
+
+      // Create overlay with the TARGET theme colors
+      var overlay = document.createElement('div');
+      overlay.className = 'theme-reveal';
+      overlay.style.setProperty('--reveal-x', cx + 'px');
+      overlay.style.setProperty('--reveal-y', cy + 'px');
+
+      // Set the overlay background to the target theme's base color
+      if (theme === 'dark') {
+        overlay.style.background = '#0d1117';
+      } else {
+        overlay.style.background = '#f8f9fb';
+      }
+
+      document.body.appendChild(overlay);
+
+      // Force reflow then start animation
+      overlay.offsetHeight;
+      overlay.classList.add('expanding');
+
+      // When animation ends, swap theme and clean up
+      function finishReveal() {
+        if (!overlay.parentNode) return; // Already removed
+        html.setAttribute('data-theme', theme);
+        localStorage.setItem(THEME_KEY, theme);
+        // Brief delay to let the theme paint, then remove overlay
+        requestAnimationFrame(function() {
+          requestAnimationFrame(function() {
+            if (overlay.parentNode) overlay.remove();
+            revealInProgress = false;
+          });
+        });
+      }
+      overlay.addEventListener('animationend', finishReveal);
+      // Safety timeout in case animationend doesn't fire
+      setTimeout(finishReveal, 800);
+
+      if (announce !== false) announceToSR(theme === 'dark' ? 'Dark theme enabled' : 'Light theme enabled');
+      return;
+    }
+
+    // Fallback: simple crossfade
+    if (!skipTransition && !prefersReduced) {
       html.classList.add('theme-transition');
-      // Remove after transition completes (500ms + 50ms buffer)
       clearTimeout(html._themeTransitionTimer);
       html._themeTransitionTimer = setTimeout(function() {
         html.classList.remove('theme-transition');
@@ -53,18 +107,18 @@
   }
 
   if (themeToggle) {
-    themeToggle.addEventListener('click', () => {
+    themeToggle.addEventListener('click', function() {
       const current = html.getAttribute('data-theme');
-      setTheme(current === 'dark' ? 'light' : 'dark');
+      setTheme(current === 'dark' ? 'light' : 'dark', true, themeToggle);
     });
   }
 
   // Floating theme toggle (available on all pages)
   const floatingToggle = document.getElementById('floatingThemeToggle');
   if (floatingToggle) {
-    floatingToggle.addEventListener('click', () => {
+    floatingToggle.addEventListener('click', function() {
       const current = html.getAttribute('data-theme');
-      setTheme(current === 'dark' ? 'light' : 'dark');
+      setTheme(current === 'dark' ? 'light' : 'dark', true, floatingToggle);
     });
   }
 

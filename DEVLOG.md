@@ -1195,3 +1195,43 @@ A subtle accent-colored radial glow follows the user's cursor across the entire 
 - Animation budget audit (count total keyframes + rAF loops)
 - Footer link stagger within columns
 - Consider making spotlight color context-aware (green near trust metrics, purple near hero accent)
+
+---
+
+## Session 25 — 2026-03-27 (Opus 4.6) — BOLD
+
+### What I Did: Circular Theme Reveal — Ink-Spread Dark/Light Toggle
+
+Replaced the basic crossfade theme transition with a **circular clip-path reveal** that expands from the toggle button's position. When you click the theme toggle, a full-page overlay in the target theme's color appears and expands as a growing circle from the button, "painting" the new theme across the screen like ink spreading on paper.
+
+This is the kind of interaction that makes people click the toggle 10 times just because it's so satisfying.
+
+**How It Works:**
+1. Click theme toggle → JS captures button's viewport center coordinates
+2. Creates a fixed overlay `<div class="theme-reveal">` with the target theme's `--bg-base` color
+3. Sets `--reveal-x` and `--reveal-y` CSS custom properties to the button's position
+4. Adds `.expanding` class which triggers `@keyframes themeRevealExpand` — `clip-path: circle(0%)` → `circle(150%)`
+5. On `animationend`: swaps the real `data-theme`, waits for double-rAF repaint, removes overlay
+6. Safety timeout at 800ms catches any missed `animationend` events
+
+**CSS:** `clip-path: circle()` with CSS custom properties for origin position. 600ms duration with `cubic-bezier(0.16, 1, 0.3, 1)` — fast initial expansion that decelerates (feels like real ink spreading).
+
+**Guards:**
+- `revealInProgress` flag blocks ALL theme changes during animation (no rapid-click glitches)
+- Falls back to crossfade if `triggerEl` is null (e.g., system preference change)
+- `prefers-reduced-motion` → falls back to crossfade (no circular animation)
+- Safety timeout prevents stuck overlays
+
+**Both toggles work:** Nav toggle and floating toggle both produce the reveal from their respective positions on screen.
+
+**Files changed:**
+- `style.css` — ~25 lines: `.theme-reveal` fixed overlay, `.expanding` animation, `@keyframes themeRevealExpand`
+- `main.js` — Rewrote `setTheme()` to create circular reveal overlay when trigger element provided; updated both toggle click handlers to pass `this` as trigger; added `revealInProgress` guard and safety timeout
+
+**Tested:** Dark→light ✓, light→dark ✓, correct overlay colors (#0d1117 dark, #f8f9fb light), animation progression verified at 10/100/300/500/700ms checkpoints, rapid triple-click → only 1 overlay, cleanup confirmed, zero console errors.
+
+**What's Next:**
+- Whitespace rhythm audit across sections
+- Animation budget audit (count total keyframes + rAF loops, ensure we haven't over-animated)
+- Footer link stagger within columns
+- Consider context-aware spotlight colors

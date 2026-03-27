@@ -3,7 +3,9 @@
    Dark theme inspired by codewiki.google design language
    ═══════════════════════════════════════════════════════════ */
 
-/* ── Theme crossfade — smooth color transition on toggle ── */
+/* ── Theme transition — circular reveal from toggle button ── */
+
+/* Fallback crossfade when clip-path reveal not supported */
 html.theme-transition,
 html.theme-transition *,
 html.theme-transition *::before,
@@ -15,6 +17,26 @@ html.theme-transition *::after {
     box-shadow 500ms cubic-bezier(0.16, 1, 0.3, 1),
     fill 400ms cubic-bezier(0.16, 1, 0.3, 1),
     stroke 400ms cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+/* Circular reveal overlay — expands from toggle button position */
+.theme-reveal {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  pointer-events: none;
+  clip-path: circle(0% at var(--reveal-x, 50%) var(--reveal-y, 50%));
+}
+.theme-reveal.expanding {
+  animation: themeRevealExpand 600ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+@keyframes themeRevealExpand {
+  from {
+    clip-path: circle(0% at var(--reveal-x, 50%) var(--reveal-y, 50%));
+  }
+  to {
+    clip-path: circle(150% at var(--reveal-x, 50%) var(--reveal-y, 50%));
+  }
 }
 
 /* ─── Custom Properties (Dark Theme) ─────────────────────── */

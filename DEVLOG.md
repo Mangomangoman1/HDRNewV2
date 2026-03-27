@@ -426,6 +426,70 @@ Enter the classic Konami code on any page and you get:
 - Animated SVG device illustrations (exploded phone view)
 - Interactive before/after slider for repair photos
 - Service page enhancements (not just index.html)
-- FAQ accordion animation refinements
 - Contact form micro-interactions
 - Review the cumulative file sizes and performance
+
+---
+
+## Session 9 — 2026-03-27 (Opus 4.6)
+
+### What I Did: Premium FAQ Accordion — Smooth Height, Accent Bar, Number Badges, Keyboard Nav
+
+**Focus:** Transform the basic native `<details>` FAQ accordion into a premium-feeling interactive experience with smooth height animations, visual indicators, and full keyboard navigation.
+
+**1. Smooth Height Animation (Open + Close)**
+- Intercepts native `<details>` click to prevent instant toggle
+- **Opening:** Sets `[open]` → measures `scrollHeight` → starts at `height: 0` → transitions to target height with spring easing `cubic-bezier(0.34, 1.12, 0.64, 1)`
+- **Closing:** Captures current height → transitions to `height: 0` with deceleration easing → removes `[open]` attribute after animation completes
+- Opacity fades in/out alongside height (opacity 70% speed for open, 50% for close — answer text fades before container fully closes)
+- Duration: 300ms. Clean transition styles are removed after each animation.
+- `isAnimating` guard prevents double-clicks during transition
+
+**2. Left Accent Bar**
+- `::before` pseudo-element on `.faq-item`: 3px wide, full height, accent color
+- Hidden by default: `transform: scaleY(0)` from `transform-origin: center`
+- Slides in on open with spring easing: `scaleY(1)` over 350ms
+- Creates a clear visual indicator of which FAQ is expanded
+
+**3. CSS Counter Number Badges**
+- `counter-reset: faq-counter` on `.faq-list`
+- Each `.faq-item` increments the counter
+- `::before` on `.faq-question` displays `counter(faq-counter, decimal-leading-zero)` — shows "01", "02", etc.
+- Muted gray at 50% opacity when closed
+- Transitions to accent color, full opacity when open
+- Min-width: 1.8rem for stable alignment
+
+**4. Keyboard Navigation**
+- Arrow keys (↑/↓) move focus between FAQ questions
+- Event listener on `.faq-list` catches `ArrowUp`/`ArrowDown` keydown
+- Wraps around: pressing ↓ on the last item focuses the first
+- Works with existing focus-visible outline (2px accent blue)
+
+**5. Scroll-In Stagger**
+- Each FAQ item gets a `--faq-idx` CSS custom property (0-6)
+- Used for `transition-delay: calc(var(--faq-idx) * 80ms)` on the existing `[data-animate]` scroll-in system
+- Items appear one-by-one as you scroll to the FAQ section
+
+**6. Inner Wrapper**
+- JS wraps each `.faq-answer`'s children in a `.faq-answer-inner` div
+- This separates padding (inner) from height animation (outer)
+- `.faq-answer--managed` class prevents double-wrapping
+- Fallback: if JS fails to load, `.faq-answer:not(.faq-answer--managed)` provides padding
+
+**7. CSS Height Fix**
+- Added `height: 0` on `.faq-answer` and `height: auto` on `.faq-item[open] .faq-answer`
+- Ensures closed answers don't contribute to item height in modern Chrome where `<details>` uses content-visibility rather than display:none
+
+**Files changed:**
+- `style.css` — rewrote ~120 lines: accent bar, number badges with CSS counters, spring-curve chevron, focus-visible ring, answer height management, stagger delay, reduced motion fallback
+- `main.js` — added ~115 lines: smooth toggle IIFE with open/close height animation, inner wrapper creation, keyboard navigation, stagger index setup
+
+**Tested:** Dark mode, light mode, desktop (1024px). Open/close animations smooth. Accent bar slides in/out. Number badges show 01-07 with color transition. Keyboard arrows navigate between items. Zero console errors.
+
+**What's Next (Ideas for Session 10+):**
+- Animated SVG device illustrations (exploded phone view)
+- Interactive before/after slider for repair photos
+- Service page enhancements (not just index.html)
+- Contact form micro-interactions
+- Review cumulative file sizes and performance
+- "The Workshop" section with tools/craft theme

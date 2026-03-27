@@ -1979,3 +1979,146 @@
     });
   }
 })();
+
+
+/* ═══════════════════════════════════════════════
+   FAQ ACCORDION — Smooth height animation
+   Intercepts native <details> toggle to add
+   smooth open/close height transitions, keyboard
+   navigation, and staggered scroll-in indices.
+═══════════════════════════════════════════════ */
+(function() {
+  var faqItems = document.querySelectorAll('.faq-list .faq-item');
+  if (!faqItems.length) return;
+
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var ANIMATION_DURATION = reduceMotion ? 0 : 300; // ms
+
+  // Set stagger index CSS custom property for scroll-in
+  faqItems.forEach(function(item, i) {
+    item.style.setProperty('--faq-idx', i);
+  });
+
+  // Wrap each answer's content for padding management
+  faqItems.forEach(function(item) {
+    var answer = item.querySelector('.faq-answer');
+    if (!answer || answer.classList.contains('faq-answer--managed')) return;
+
+    // Wrap children in .faq-answer-inner
+    var inner = document.createElement('div');
+    inner.className = 'faq-answer-inner';
+    while (answer.firstChild) {
+      inner.appendChild(answer.firstChild);
+    }
+    answer.appendChild(inner);
+    answer.classList.add('faq-answer--managed');
+  });
+
+  // If reduced motion, skip animation management
+  if (reduceMotion) return;
+
+  // ── Smooth toggle handler ──
+  faqItems.forEach(function(item) {
+    var summary = item.querySelector('summary');
+    var answer = item.querySelector('.faq-answer');
+    if (!summary || !answer) return;
+
+    var isAnimating = false;
+
+    summary.addEventListener('click', function(e) {
+      e.preventDefault();
+      if (isAnimating) return;
+
+      if (item.hasAttribute('open')) {
+        // ── CLOSING ──
+        closeItem(item, answer);
+      } else {
+        // ── OPENING ──
+        openItem(item, answer);
+      }
+    });
+
+    function openItem(detailsEl, answerEl) {
+      isAnimating = true;
+
+      // Set open attribute first so content is rendered
+      detailsEl.setAttribute('open', '');
+
+      // Measure the target height
+      var targetHeight = answerEl.scrollHeight;
+
+      // Start from 0
+      answerEl.style.height = '0px';
+      answerEl.style.opacity = '0';
+      answerEl.style.overflow = 'hidden';
+      answerEl.style.transition = 'height ' + ANIMATION_DURATION + 'ms cubic-bezier(0.34, 1.12, 0.64, 1), opacity ' + Math.round(ANIMATION_DURATION * 0.7) + 'ms ease';
+
+      // Force reflow
+      answerEl.offsetHeight;
+
+      // Animate to target
+      answerEl.style.height = targetHeight + 'px';
+      answerEl.style.opacity = '1';
+
+      // Clean up after animation
+      setTimeout(function() {
+        answerEl.style.height = '';
+        answerEl.style.overflow = '';
+        answerEl.style.transition = '';
+        answerEl.style.opacity = '';
+        isAnimating = false;
+      }, ANIMATION_DURATION + 50);
+    }
+
+    function closeItem(detailsEl, answerEl) {
+      isAnimating = true;
+
+      // Set current height explicitly for transition start
+      var currentHeight = answerEl.scrollHeight;
+      answerEl.style.height = currentHeight + 'px';
+      answerEl.style.overflow = 'hidden';
+      answerEl.style.transition = 'height ' + ANIMATION_DURATION + 'ms cubic-bezier(0.34, 0, 0.64, 1), opacity ' + Math.round(ANIMATION_DURATION * 0.5) + 'ms ease';
+
+      // Force reflow
+      answerEl.offsetHeight;
+
+      // Animate to 0
+      answerEl.style.height = '0px';
+      answerEl.style.opacity = '0';
+
+      // Remove open after animation
+      setTimeout(function() {
+        detailsEl.removeAttribute('open');
+        answerEl.style.height = '';
+        answerEl.style.overflow = '';
+        answerEl.style.transition = '';
+        answerEl.style.opacity = '';
+        isAnimating = false;
+      }, ANIMATION_DURATION + 50);
+    }
+  });
+
+  // ── Keyboard navigation: arrow keys between FAQ items ──
+  var faqList = document.querySelector('.faq-list');
+  if (faqList) {
+    faqList.addEventListener('keydown', function(e) {
+      if (e.key !== 'ArrowDown' && e.key !== 'ArrowUp') return;
+
+      var focused = document.activeElement;
+      if (!focused || !focused.matches('.faq-question')) return;
+
+      e.preventDefault();
+      var summaries = Array.from(faqList.querySelectorAll('.faq-question'));
+      var idx = summaries.indexOf(focused);
+      if (idx === -1) return;
+
+      var nextIdx;
+      if (e.key === 'ArrowDown') {
+        nextIdx = (idx + 1) % summaries.length;
+      } else {
+        nextIdx = (idx - 1 + summaries.length) % summaries.length;
+      }
+      summaries[nextIdx].focus();
+    });
+  }
+})();

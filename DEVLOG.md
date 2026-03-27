@@ -662,7 +662,55 @@ Verified crossfade: sampled background-color at 0/100/250/400/600ms. Colors inte
 **What still needs attention:**
 - 19 remaining `transition: all` rules to refine
 - Typography kerning and line-height fine-tuning
-- Scroll animation choreography (enter/exit timing)
 - Whitespace rhythm between sections
-- Service card hover timing vs new card-tilt timing alignment
 - Dark mode shadow refinement (shadows feel heavier in dark mode)
+
+---
+
+## Session 13 — 2026-03-27 (Opus 4.6) — CRAFT
+
+### What I Refined: Scroll Entrance Choreography
+
+**The problem:** Every `[data-animate]` element appeared at the same time when scrolling into view. The parent-based stagger counter only staggered siblings within the same parent div, so section headers (eyebrow, title, sub) and content (cards, lists) animated independently. This felt flat — like a curtain being pulled away rather than a story being told.
+
+**The fix: Section-level choreography with tiered timing**
+
+**1. Auto-inject `data-animate` on section headers**
+JS now automatically adds `data-animate="fade"` to `.section-eyebrow` and `data-animate` to `.section-sub` elements inside `.section-header` containers. No HTML changes needed — the JS does this before the observer starts. This means 9 eyebrows and 6 subtitles now participate in the stagger system without touching any HTML.
+
+**2. Section-scoped stagger instead of parent-scoped**
+Changed the stagger counter from `parentElement` (immediate parent) to `closest('section, .section')` (section ancestor). Now ALL animated elements within a section share one stagger counter, creating cross-hierarchy choreography:
+- Header elements (eyebrow, sub): 100ms spacing (slots 0, 1, 2)
+- Content elements (cards, items): 60ms spacing (slots 3, 4, 5...)
+- Capped at 600ms total to avoid excessive waits
+
+**3. Tiered animation curves by element type**
+- **Eyebrows** (`.section-eyebrow[data-animate]`): 8px rise, 350ms opacity / 400ms transform — light, quick, arrives first
+- **Subtitles** (`.section-sub[data-animate]`): 12px rise, 450ms opacity / 500ms transform — gentle, follows eyebrow
+- **Default content** (`[data-animate]`): 20px rise (reduced from 24), 500ms opacity / 600ms transform — heavier, settles in
+
+All use `cubic-bezier(0.16, 1, 0.3, 1)` — the ease-out curve from Session 12's motion system. Consistent language.
+
+**4. Reduced default translateY from 24px to 20px**
+24px felt slightly too dramatic. 20px is enough vertical motion to register but subtle enough to feel considered rather than showy.
+
+**Measured choreography (Workshop section):**
+- Eyebrow: 161ms
+- Title (scramble): 161ms (independent observer)
+- Subtitle: 256ms (+95ms after eyebrow)
+- First card: 295ms (+39ms after sub)
+
+The cascade: light header arrives quickly → title scrambles → subtitle settles → content fills in below. Each element type has appropriate weight to its motion.
+
+**Files changed:**
+- `main.js` — added section-header data-animate injection (~12 lines), replaced parent-based stagger with section-scoped stagger with tiered delays (~25 lines)
+- `style.css` — added eyebrow and subtitle specific animation rules (~16 lines), reduced default translateY, updated bezier to ease-out
+
+**Tested:** Dark mode, light mode, desktop (1024px), mobile (375px). Verified stagger timing with performance.now() sampling. Zero console errors.
+
+**What still needs attention:**
+- 19 remaining `transition: all` rules to refine
+- Typography kerning and line-height fine-tuning
+- Whitespace rhythm between sections
+- Dark mode shadow refinement (shadows feel heavier in dark mode)
+- Consider reducing the total animation count — some sections might benefit from fewer animated elements for a calmer feel

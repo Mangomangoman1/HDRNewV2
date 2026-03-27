@@ -160,27 +160,55 @@
     });
   }
 
-  // ─── Scroll animations (IntersectionObserver) ────────────
+  // ─── Scroll animation choreography ────────────────────────
+  // Auto-add data-animate to section headers for entrance choreography.
+  // Eyebrow → title (via scramble) → subtitle → content
+  document.querySelectorAll('.section-header').forEach(function(header) {
+    var eyebrow = header.querySelector('.section-eyebrow');
+    var sub = header.querySelector('.section-sub');
+    // Only add if not already animated
+    if (eyebrow && !eyebrow.hasAttribute('data-animate')) {
+      eyebrow.setAttribute('data-animate', 'fade');
+    }
+    if (sub && !sub.hasAttribute('data-animate')) {
+      sub.setAttribute('data-animate', '');
+    }
+  });
+
   const animEls = document.querySelectorAll('[data-animate]');
 
   if ('IntersectionObserver' in window && animEls.length) {
-    // Track per-parent stagger counters so concurrent siblings animate in sequence
-    const parentCounters = new WeakMap();
+    // Track per-section stagger counters for choreographed entrance
+    // Elements within the same <section> ancestor stagger together
+    const sectionCounters = new WeakMap();
+
+    function getSection(el) {
+      var s = el.closest('section, .section');
+      return s || el.parentElement;
+    }
 
     const observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
         if (!entry.isIntersecting) return;
-        const parent = entry.target.parentElement;
-        const count = parentCounters.get(parent) || 0;
-        parentCounters.set(parent, count + 1);
-        // Cap stagger at ~5 items to avoid long delays
-        const delay = Math.min(count, 5) * 80;
-        setTimeout(() => {
+        var section = getSection(entry.target);
+        var count = sectionCounters.get(section) || 0;
+        sectionCounters.set(section, count + 1);
+        // Stagger: first 3 items get 100ms spacing (header choreography),
+        // then items 4+ get 60ms spacing (content fills in faster)
+        var delay;
+        if (count < 3) {
+          delay = count * 100; // 0, 100, 200ms for header elements
+        } else {
+          delay = 200 + (count - 2) * 60; // 260, 320, 380... for content
+        }
+        // Cap at 600ms total to avoid excessive waits
+        delay = Math.min(delay, 600);
+        setTimeout(function() {
           entry.target.classList.add('visible');
         }, delay);
         observer.unobserve(entry.target);
       });
-    }, { threshold: 0.1, rootMargin: '0px 0px -32px 0px' });
+    }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
 
     animEls.forEach(el => observer.observe(el));
   } else {

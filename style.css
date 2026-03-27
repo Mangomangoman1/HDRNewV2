@@ -4686,14 +4686,33 @@ body {
 }
 
 /* ─── ANIMATIONS ──────────────────────────────────────────── */
+/* ── Scroll entrance animations ──
+   Choreographed via JS stagger: eyebrow(0) → title(100) → sub(200) → content(260+)
+   Uses ease-out-quint for a natural "arriving and settling" feel */
 [data-animate] {
   opacity: 0;
-  transform: translateY(24px);
-  transition: opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1), transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  transform: translateY(20px);
+  transition:
+    opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
 }
 [data-animate].visible {
   opacity: 1;
   transform: translateY(0);
+}
+/* Eyebrows: lighter entrance — shorter distance, faster */
+.section-eyebrow[data-animate] {
+  transform: translateY(8px);
+  transition:
+    opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+/* Subtitles: gentle entrance */
+.section-sub[data-animate] {
+  transform: translateY(12px);
+  transition:
+    opacity 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
 }
 /* Slide-left variant */
 [data-animate="slide-left"] { transform: translateX(-32px); }

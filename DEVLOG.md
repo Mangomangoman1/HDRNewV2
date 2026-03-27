@@ -1108,7 +1108,52 @@ Fixed the existing `updateActiveNav()` JS function that was broken since origina
 **Tested:** Dark/light mode. Active tracking: Services → Pricing → Contact highlights correctly on scroll. Logo hover glow works. Scrolled gradient line at 0.6 opacity. Mobile stagger animation. Zero console errors.
 
 **What's Next:**
-- Footer polish (hasn't been touched)
 - Whitespace rhythm audit
 - Consider scroll-linked parallax for hero mountains
 - Animation budget audit
+
+---
+
+## Session 23 — 2026-03-27 (Opus 4.6) — BOLD
+
+### What I Did: Footer Polish — Gradient Lines, Link Underlines, Heartbeat, Entrance Animation
+
+The footer is the last thing users see and it was the last untouched section. Now it matches the premium feel of the rest of the site.
+
+**1. Gradient Accent Top Line**
+Replaced `border-top: 1px solid` with a `::before` pseudo-element gradient line: `transparent 5% → accent 35% → purple 65% → transparent 95%` at 0.5 opacity. Matches the nav's scrolled gradient line for visual consistency.
+
+**2. Column Heading Enhancement**
+Added a subtle accent underline (`border-bottom: 1px solid rgba(accent, 0.15)`) under each column heading ("Services", "Resources", "Contact"). Used `align-self: flex-start` instead of `display: inline-block` since columns use flexbox layout. Increased letter-spacing to 0.1em.
+
+**3. Link Hover — Sliding Underline + Shift**
+Footer links now have a `::after` underline that slides in from left (0 → 100% width) with a 3px right shift on hover. Used `align-self: flex-start` to prevent links from stretching full column width.
+
+**4. Footer Bottom — Gradient Separator**
+Replaced `border-top` with a `::before` gradient: `transparent → border-subtle → border-subtle → transparent`. Creates a cleaner, more refined separation.
+
+**5. Heartbeat ❤️**
+Wrapped the heart emoji in a `<span class="footer-heart">` with a `@keyframes heartbeat` animation: double-pump rhythm (scale 1 → 1.2 → 1 → 1.15 → 1) over 2 seconds.
+
+**6. Entrance Animation**
+Added `data-animate` to footer-brand and all 3 footer-col elements. They now stagger in when scrolled into view using the existing section-scoped choreography system.
+
+**7. Light Mode Adjustments**
+Added specific light-mode overrides: gradient at 0.4 opacity, column heading border at 0.2 alpha, link underline uses #60a5fa (lighter blue).
+
+**Files changed:**
+- `style.css` — ~45 lines: gradient lines, link underlines, column heading borders, heartbeat keyframes
+- `index.html` — 4 data-animate attributes, footer-heart span wrapper
+
+**Tested:** Dark mode, light mode, mobile responsive (375px). Footer entrance animation fires correctly. Zero console errors.
+
+**Project Stats (Session 23):**
+- All 10 major sections + nav + footer enhanced across 23 sessions
+- Zero `transition: all` in stylesheet
+
+**What's Next:**
+- Whitespace rhythm audit across sections
+- Scroll-linked parallax for hero mountains
+- Animation budget audit (count total keyframes, ensure total animation weight is reasonable)
+- Consider adding scroll-based opacity fade to the noise overlay
+- Footer links could get staggered entrance within each column

@@ -10238,3 +10238,189 @@ body.konami-active .hero-headline {
 [data-theme="light"] .split-revealed .split-char {
   transform: translateY(0) rotateX(0deg);
 }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   SCROLL-DRIVEN PARALLAX DEPTH (CSS-only)
+   Uses native animation-timeline for subtle depth effects while elements
+   are visible — COMPLEMENTS existing JS-based entrance animations
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Feature detection: only apply if scroll-driven animations are supported */
+@supports (animation-timeline: view()) {
+  
+  /* ── Hero background depth parallax ────────────────────────────────────── */
+  /* Background elements move slower than foreground as page scrolls */
+  @keyframes heroBgDepthShift {
+    0% {
+      transform: translateY(0) scale(1);
+    }
+    100% {
+      transform: translateY(-40px) scale(1.02);
+    }
+  }
+  
+  .hero-bg-grid {
+    animation: heroBgDepthShift linear;
+    animation-timeline: scroll();
+    animation-range: 0% 40%;
+  }
+  
+  /* Mountains shift at different rate for depth */
+  @keyframes heroMountainsShift {
+    0% {
+      transform: translateY(0);
+    }
+    100% {
+      transform: translateY(-60px);
+    }
+  }
+  
+  .hero-mountains {
+    animation: heroMountainsShift linear;
+    animation-timeline: scroll();
+    animation-range: 0% 35%;
+  }
+  
+  /* Particles drift up slightly faster */
+  @keyframes heroParticlesShift {
+    0% {
+      transform: translateY(0);
+    }
+    100% {
+      transform: translateY(-100px);
+    }
+  }
+  
+  .hero-particles {
+    animation: heroParticlesShift linear;
+    animation-timeline: scroll();
+    animation-range: 0% 30%;
+  }
+  
+  /* Hero badge moves faster (appears closer to viewer) */
+  @keyframes heroBadgeShift {
+    0% {
+      transform: translateY(0) scale(1);
+    }
+    100% {
+      transform: translateY(60px) scale(0.95);
+      opacity: 0.7;
+    }
+  }
+  
+  .hero-badge {
+    animation: heroBadgeShift linear;
+    animation-timeline: scroll();
+    animation-range: 0% 25%;
+  }
+  
+  /* Scroll hint fades faster as user starts scrolling */
+  @keyframes scrollHintFadeOnScroll {
+    0% {
+      opacity: 0.6;
+      transform: translateY(0);
+    }
+    100% {
+      opacity: 0;
+      transform: translateY(-20px);
+    }
+  }
+  
+  .scroll-hint {
+    animation: scrollHintFadeOnScroll linear forwards;
+    animation-timeline: scroll();
+    animation-range: 0% 10%;
+  }
+  
+  /* ── Section divider wave depth ────────────────────────────────────────── */
+  /* Wave dividers shift slightly as they pass through viewport */
+  @keyframes waveDividerDepth {
+    0% {
+      transform: translateY(-10px) scaleY(1.1);
+    }
+    100% {
+      transform: translateY(10px) scaleY(0.95);
+    }
+  }
+  
+  .wave-divider svg {
+    animation: waveDividerDepth linear;
+    animation-timeline: view();
+    animation-range: entry 0% exit 100%;
+  }
+  
+  /* ── Visible elements get subtle view-linked depth ─────────────────────── */
+  /* Cards get a subtle depth shift while passing through viewport */
+  @keyframes cardViewDepth {
+    0% {
+      --card-depth-offset: -8px;
+    }
+    50% {
+      --card-depth-offset: 0px;
+    }
+    100% {
+      --card-depth-offset: 8px;
+    }
+  }
+  
+  .card.visible {
+    animation: cardViewDepth linear;
+    animation-timeline: view();
+    animation-range: entry 50% exit 50%;
+  }
+  
+  /* ── Section eyebrow parallax ──────────────────────────────────────────── */
+  /* Section eyebrow labels drift slightly while visible */
+  @keyframes eyebrowDrift {
+    0% {
+      transform: translateY(-5px);
+      letter-spacing: 0.15em;
+    }
+    50% {
+      transform: translateY(0);
+      letter-spacing: 0.2em;
+    }
+    100% {
+      transform: translateY(5px);
+      letter-spacing: 0.15em;
+    }
+  }
+  
+  .section-eyebrow {
+    animation: eyebrowDrift linear;
+    animation-timeline: view();
+    animation-range: entry 20% exit 80%;
+  }
+  
+  /* ── Footer depth shift ────────────────────────────────────────────────── */
+  /* Footer rises up as it enters view */
+  @keyframes footerRise {
+    0% {
+      transform: translateY(30px);
+    }
+    100% {
+      transform: translateY(0);
+    }
+  }
+  
+  .footer-inner {
+    animation: footerRise linear forwards;
+    animation-timeline: view();
+    animation-range: entry 0% entry 60%;
+  }
+}
+
+/* ── Reduced motion: disable all scroll-driven animations ──────────────── */
+@media (prefers-reduced-motion: reduce) {
+  @supports (animation-timeline: view()) {
+    .hero-inner,
+    .hero-badge,
+    .scroll-hint,
+    .wave-divider svg,
+    .card.visible,
+    .section-eyebrow,
+    .footer-inner {
+      animation: none !important;
+    }
+  }
+}

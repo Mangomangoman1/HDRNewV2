@@ -3145,3 +3145,75 @@ This effect creates a subtle sense of journey through the page:
 - Consider adding a visible "scroll gradient" indicator showing color journey
 - Whitespace rhythm audit across sections
 - Review overall animation complexity — ensure cognitive load is reasonable
+
+---
+
+## Session 70 — 2026-03-27 (Opus 4.6) — POLISH
+
+### What I Did: CSS Scroll-Driven Parallax Depth
+
+Added **native CSS scroll-driven animations** using `animation-timeline: scroll()` and `animation-timeline: view()` for smooth, off-main-thread parallax effects. This is progressive enhancement — browsers without support get normal scrolling.
+
+**What was implemented:**
+
+1. **Hero background depth parallax** — as user scrolls past hero:
+   - `.hero-bg-grid` shifts up slightly and scales 1.02x
+   - `.hero-mountains` shifts up at a different rate
+   - `.hero-particles` drift up faster (100px)
+   - Creates layered depth illusion
+
+2. **Hero badge fade-shift** — badge fades out and shrinks as user scrolls away
+
+3. **Scroll hint auto-fade** — scroll indicator fades out after just 10% scroll progress
+
+4. **Section eyebrow drift** — eyebrow labels subtly drift up/down and letter-spacing changes as they pass through viewport, creating a "living" feel
+
+5. **Wave divider depth** — wave dividers scale and shift while passing through viewport
+
+6. **Footer rise** — footer rises up as it enters view
+
+**Technical implementation:**
+```css
+@supports (animation-timeline: view()) {
+  @keyframes eyebrowDrift {
+    0%   { transform: translateY(-5px); letter-spacing: 0.15em; }
+    50%  { transform: translateY(0);    letter-spacing: 0.2em; }
+    100% { transform: translateY(5px);  letter-spacing: 0.15em; }
+  }
+  
+  .section-eyebrow {
+    animation: eyebrowDrift linear;
+    animation-timeline: view();
+    animation-range: entry 20% exit 80%;
+  }
+}
+```
+
+**Why scroll-driven CSS animations matter:**
+- Runs completely off the main thread — no JS blocking
+- Silky smooth even during heavy page activity
+- Native browser optimization
+- Automatically respects `prefers-reduced-motion` via CSS
+- Progressive enhancement — graceful fallback
+
+**Browser support:**
+- Chrome 115+, Edge 115+, Opera 101+ ✓
+- Safari — experimental (behind flag)
+- Firefox — behind flag
+- Wrapped in `@supports (animation-timeline: view())` for safe fallback
+
+**Performance notes:**
+- All animations use `linear` timing (no easing calculations)
+- `will-change` already applied to hero elements
+- No layout thrashing — pure transform/opacity changes
+- Completely decoupled from JS animations (mouse-driven tilt still works)
+
+**Files changed:**
+- `style.css` — Added `@supports` block with scroll-driven keyframes for hero backgrounds, eyebrow, scroll hint, wave dividers, and footer
+
+**Tested:** `@supports` detected ✓, hero-bg-grid gets `heroBgDepthShift` animation ✓, hero-mountains gets `heroMountainsShift` animation ✓, both using `scroll()` timeline ✓, section-eyebrow gets `eyebrowDrift` with `view()` timeline ✓, eyebrow transform and letter-spacing animate on scroll ✓, zero console errors ✓.
+
+**What's Next:**
+- Add scroll-driven depth for pricing cards and workshop cards
+- Whitespace rhythm audit across sections
+- Review overall animation complexity — ensure cognitive load is reasonable

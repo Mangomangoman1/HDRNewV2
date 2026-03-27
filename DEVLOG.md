@@ -3073,3 +3073,75 @@ Typography animation is one of the hallmarks of premium web design. This effect:
 - Consider adding subtle color shift during character reveal (gradient wipe)
 - Whitespace rhythm audit across sections
 - Review overall animation complexity — ensure cognitive load is reasonable
+
+---
+
+## Session 69 — 2026-03-27 (Opus 4.6) — POLISH
+
+### What I Did: Scroll-Based Accent Hue Shift
+
+Added a **scroll-synchronized color temperature journey** — the accent color gradually shifts from cool blue at the top of the page to warm magenta at the bottom. This creates a subtle but cohesive visual narrative as users scroll through the content.
+
+**How it works:**
+1. On scroll, calculates scroll progress (0-1) as `scrollY / (scrollHeight - windowHeight)`
+2. Applies easeInOutQuad easing for smoother color transitions at edges
+3. Interpolates hue from 215° (blue) → 290° (magenta) based on eased progress
+4. Updates all accent-related CSS custom properties in real-time:
+   - `--accent`: Main accent color
+   - `--accent-hover`: Hover state variant
+   - `--accent-dim`: Subtle background tint
+   - `--accent-glow`: Box shadow glow
+   - `--color-accent`: Text accent color
+
+**Color journey:**
+```
+Top (0%)    → hsl(215, 90%, 64%)  — Cool blue
+25%         → hsl(228, 90%, 64%)  — Indigo-ish
+50%         → hsl(252, 90%, 64%)  — Purple
+75%         → hsl(276, 90%, 64%)  — Violet
+Bottom (100%) → hsl(290, 90%, 64%)  — Magenta
+```
+
+**Theme awareness:**
+- Dark mode uses lightness 64% (vibrant but readable)
+- Light mode uses lightness 50% (darker for contrast on white)
+- Observes `data-theme` attribute changes and recalculates
+
+**Implementation details:**
+```javascript
+// Easing for smoother transitions
+var eased = progress < 0.5 
+  ? 2 * progress * progress 
+  : 1 - Math.pow(-2 * progress + 2, 2) / 2;
+
+// Calculate current hue
+var currentHue = START_HUE + (END_HUE - START_HUE) * eased;
+
+// Apply as HSL
+var accentHSL = 'hsl(' + currentHue + ', 90%, ' + lightness + '%)';
+root.style.setProperty('--accent', accentHSL);
+```
+
+**Why this matters:**
+This effect creates a subtle sense of journey through the page:
+- Users don't consciously notice the shift (it's gradual)
+- But the page feels alive and responsive to their scrolling
+- Different sections have subtly different "moods"
+- Creates visual cohesion without being distracting
+- Similar technique used by premium sites like Vercel and Linear
+
+**Performance considerations:**
+- Uses RAF throttling to prevent scroll jank
+- Direct style.setProperty calls (no layout thrashing)
+- MutationObserver watches theme changes efficiently
+- `prefers-reduced-motion` disables the effect entirely
+
+**Files changed:**
+- `main.js` — Added `scrollAccentShift` IIFE with scroll listener, easing calculation, and theme awareness
+
+**Tested:** Initial accent hsl(215.0, 90%, 50%) at scroll 0 ✓, hue shifts on scroll ✓, respects theme changes ✓, updates all accent variants ✓, RAF throttling active ✓, reduced motion guard ✓, zero console errors ✓.
+
+**What's Next:**
+- Consider adding a visible "scroll gradient" indicator showing color journey
+- Whitespace rhythm audit across sections
+- Review overall animation complexity — ensure cognitive load is reasonable

@@ -2301,6 +2301,86 @@
 
 
 /* ═══════════════════════════════════════════════
+   SCROLL-BASED ACCENT HUE SHIFT
+   Creates a visual temperature journey — blue at top
+   gradually warms toward purple/magenta as user scrolls.
+═══════════════════════════════════════════════ */
+(function scrollAccentShift() {
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  
+  // Define color journey: hue values (HSL)
+  // Blue (215°) → Indigo (240°) → Purple (270°) → Magenta (290°)
+  var START_HUE = 215; // Blue at top
+  var END_HUE = 290;   // Magenta at bottom
+  var SATURATION = 90; // Keep it vibrant
+  var LIGHTNESS_DARK = 64;  // For dark mode
+  var LIGHTNESS_LIGHT = 50; // For light mode (darker for contrast)
+  
+  var root = document.documentElement;
+  var ticking = false;
+  
+  function updateAccentColor() {
+    var scrollY = window.scrollY;
+    var docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    if (docHeight <= 0) return;
+    
+    // Calculate scroll progress (0-1)
+    var progress = Math.min(1, Math.max(0, scrollY / docHeight));
+    
+    // Ease the progress for smoother transitions
+    // Using easeInOutQuad: slower at edges, faster in middle
+    var eased = progress < 0.5 
+      ? 2 * progress * progress 
+      : 1 - Math.pow(-2 * progress + 2, 2) / 2;
+    
+    // Calculate current hue
+    var currentHue = START_HUE + (END_HUE - START_HUE) * eased;
+    
+    // Check current theme
+    var isDark = root.getAttribute('data-theme') !== 'light';
+    var lightness = isDark ? LIGHTNESS_DARK : LIGHTNESS_LIGHT;
+    
+    // Generate colors
+    var accentHSL = 'hsl(' + currentHue.toFixed(1) + ', ' + SATURATION + '%, ' + lightness + '%)';
+    var accentHoverHSL = 'hsl(' + currentHue.toFixed(1) + ', ' + SATURATION + '%, ' + (lightness + (isDark ? 8 : -10)) + '%)';
+    var accentDim = 'hsla(' + currentHue.toFixed(1) + ', ' + SATURATION + '%, ' + lightness + '%, ' + (isDark ? '0.12' : '0.06') + ')';
+    var accentGlow = 'hsla(' + currentHue.toFixed(1) + ', ' + SATURATION + '%, ' + lightness + '%, ' + (isDark ? '0.25' : '0.15') + ')';
+    
+    // Apply to custom properties
+    root.style.setProperty('--accent', accentHSL);
+    root.style.setProperty('--accent-hover', accentHoverHSL);
+    root.style.setProperty('--accent-dim', accentDim);
+    root.style.setProperty('--accent-glow', accentGlow);
+    
+    // Also update the text accent color
+    root.style.setProperty('--color-accent', accentHSL);
+  }
+  
+  window.addEventListener('scroll', function() {
+    if (!ticking) {
+      requestAnimationFrame(function() {
+        updateAccentColor();
+        ticking = false;
+      });
+      ticking = true;
+    }
+  }, { passive: true });
+  
+  // Initial call
+  updateAccentColor();
+  
+  // Also update when theme changes
+  var observer = new MutationObserver(function(mutations) {
+    mutations.forEach(function(mutation) {
+      if (mutation.attributeName === 'data-theme') {
+        updateAccentColor();
+      }
+    });
+  });
+  observer.observe(root, { attributes: true, attributeFilter: ['data-theme'] });
+})();
+
+/* ═══════════════════════════════════════════════
    KONAMI CODE EASTER EGG
    ↑↑↓↓←→←→BA triggers a brief "arcade mode"
    with CRT scanlines, green tint, and a fun toast.

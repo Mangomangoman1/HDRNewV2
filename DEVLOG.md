@@ -2446,3 +2446,52 @@ This creates a subtle but satisfying connection between user intent and page res
 - Contact section input glow animation
 - Service card hover depth shift
 - Consider velocity-awareness for other scroll-linked effects
+
+---
+
+## Session 57 — 2026-03-27 (Opus 4.6) — POLISH
+
+### What I Did: Contact Form Input Glow Animation — Breathing + Ripple Wave
+
+Enhanced the **contact form focus effects** with two new animations that make form inputs feel alive and premium:
+
+1. **Glow Breathing** — While an input is focused, the box-shadow subtly pulses (3px → 5px → 3px spread) in a 2-second cycle. This creates a calm, living feel while the user is typing, drawing attention without distraction.
+
+2. **Ripple Wave** — When an input first receives focus, a secondary ring (after the initial pulse) expands outward and fades. This double-ripple effect makes the focus transition feel more substantial.
+
+**How it works:**
+1. On focus, JS adds `focus-pulsing` class (existing behavior)
+2. After 150ms, JS creates a `.focus-ripple-wave` div that animates outward
+3. After 350ms (when initial box-shadow transition completes), `focus-breathing` class is added
+4. CSS animation `inputGlowBreathe` kicks in with the breathing glow
+5. On blur, `focus-breathing` class is removed, stopping the animation cleanly
+
+**CSS animations:**
+```css
+@keyframes inputGlowBreathe {
+  0%, 100% { box-shadow: 0 0 0 3px var(--accent-glow)... }
+  50% { box-shadow: 0 0 0 5px var(--accent-glow)... }
+}
+@keyframes focusRingRipple {
+  0% { opacity: 0.5; transform: scale(0.98); }
+  100% { opacity: 0; transform: scale(1.15); }
+}
+```
+
+**Technical notes:**
+- Breathing animation delayed 350ms to avoid conflicting with initial transition
+- Ripple element is dynamically created and auto-removed after animation
+- Full `prefers-reduced-motion` support
+- Animation class removed on blur for clean state management
+
+**Files changed:**
+- `style.css` — Added `.focus-breathing:focus` animation rule, `@keyframes inputGlowBreathe`, `.focus-ripple-wave` styles, `@keyframes focusRingRipple`, updated reduced motion guards
+- `main.js` — Enhanced focus handler to add breathing class after delay, create ripple element, remove breathing on blur
+
+**Tested:** Name input focus ✓, breathing animation visible (3px-5px shadow pulse) ✓, ripple wave created ✓, classes removed on blur ✓, zero console errors ✓.
+
+**What's Next:**
+- Whitespace rhythm audit across sections
+- Service card hover depth shift
+- Consider velocity-awareness for other scroll-linked effects
+- FAQ answer text reading lamp effect

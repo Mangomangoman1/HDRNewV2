@@ -3185,6 +3185,21 @@ a.contact-method:hover .contact-method-icon .material-symbols-outlined {
   box-shadow: 0 0 0 3px var(--accent-glow), 0 4px 12px -2px rgba(99, 102, 241, 0.15);
   transform: scale(1.012);
 }
+/* Focus glow breathing — subtle pulsing while typing */
+.form-group input.focus-breathing:focus,
+.form-group select.focus-breathing:focus,
+.form-group textarea.focus-breathing:focus {
+  animation: inputGlowBreathe 2s ease-in-out infinite;
+  animation-delay: 0.35s; /* Start after initial box-shadow transition */
+}
+@keyframes inputGlowBreathe {
+  0%, 100% {
+    box-shadow: 0 0 0 3px var(--accent-glow), 0 4px 12px -2px rgba(99, 102, 241, 0.15);
+  }
+  50% {
+    box-shadow: 0 0 0 5px var(--accent-glow), 0 6px 16px -2px rgba(99, 102, 241, 0.25);
+  }
+}
 
 /* ─── Focus ring pulse — expands outward on focus entry ─── */
 .form-group.focus-pulsing::before {
@@ -3197,6 +3212,17 @@ a.contact-method:hover .contact-method-icon .material-symbols-outlined {
   animation: focusRingPulse 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
   pointer-events: none;
   z-index: 5;
+}
+/* Secondary ripple wave — JS-created element */
+.focus-ripple-wave {
+  position: absolute;
+  inset: -8px;
+  border-radius: calc(var(--radius-md) + 8px);
+  border: 1px solid var(--accent);
+  opacity: 0;
+  animation: focusRingRipple 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  pointer-events: none;
+  z-index: 4;
 }
 @keyframes focusRingPulse {
   0% {
@@ -3211,13 +3237,32 @@ a.contact-method:hover .contact-method-icon .material-symbols-outlined {
     transform: scale(1.08);
   }
 }
+@keyframes focusRingRipple {
+  0% {
+    opacity: 0.5;
+    transform: scale(0.98);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.15);
+  }
+}
 
-/* Reduced motion: skip scale pop */
+/* Reduced motion: skip scale pop and breathing animation */
 @media (prefers-reduced-motion: reduce) {
   .form-group input:focus,
   .form-group select:focus,
-  .form-group textarea:focus {
+  .form-group textarea:focus,
+  .form-group input.focus-breathing:focus,
+  .form-group select.focus-breathing:focus,
+  .form-group textarea.focus-breathing:focus {
     transform: none;
+    animation: none;
+  }
+  .form-group.focus-pulsing::before,
+  .focus-ripple-wave {
+    animation: none;
+    opacity: 0;
   }
 }
 /* Focus underline animation */

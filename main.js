@@ -2568,6 +2568,7 @@
 (function() {
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
   var groups = document.querySelectorAll('.form-group');
   if (!groups.length) return;
 
@@ -2577,9 +2578,30 @@
 
     input.addEventListener('focus', function() {
       group.classList.add('focus-pulsing');
+      
+      // Create secondary ripple wave after a short delay
+      setTimeout(function() {
+        var ripple = document.createElement('div');
+        ripple.className = 'focus-ripple-wave';
+        group.appendChild(ripple);
+        
+        // Clean up after animation
+        ripple.addEventListener('animationend', function() {
+          ripple.remove();
+        });
+      }, 150);
+      
+      // Add breathing class after initial transition completes
+      setTimeout(function() {
+        input.classList.add('focus-breathing');
+      }, 350);
+    });
+    
+    input.addEventListener('blur', function() {
+      input.classList.remove('focus-breathing');
     });
 
-    // Remove after animation completes
+    // Remove pulse class after animation completes
     group.addEventListener('animationend', function(e) {
       if (e.animationName === 'focusRingPulse') {
         group.classList.remove('focus-pulsing');

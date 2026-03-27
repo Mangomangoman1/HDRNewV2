@@ -1556,4 +1556,40 @@ Added a delightful microinteraction — on first scroll (>5px), the scroll hint 
 - Consider applying text reveal to pricing description paragraphs
 - Consider adding subtle tilt to the pricing-statement-inner block
 - Scroll-speed-aware reveal (faster scroll = faster reveal)
-- Contact form input focus "pop" animation
+
+---
+
+## Session 34 — 2026-03-27 (Opus 4.6) — POLISH
+
+### What I Did: Contact Form Input Focus "Pop" Animation
+
+Added a subtle scale-up effect when form inputs receive focus — creates tactile feedback that makes the form feel more responsive.
+
+**How it works:**
+- On focus: inputs scale to 1.012 (1.2% larger) with spring easing
+- Enhanced box-shadow: added soft drop shadow in addition to the existing accent glow ring
+- On blur: smoothly transitions back to normal scale
+
+**Technical details:**
+- Added `transform 250ms cubic-bezier(0.34, 1.56, 0.64, 1)` to base input transition
+- Added `transform: scale(1.012)` to `:focus` state
+- Added secondary shadow: `0 4px 12px -2px rgba(99, 102, 241, 0.15)`
+- `transform-origin: center` for centered scaling
+- Reduced-motion media query skips the scale transform
+
+**Applies to:**
+- Text inputs (name, contact)
+- Select dropdowns (device)
+- Textareas (issue description)
+
+**Files changed:**
+- `style.css` — Added transform transition, scale on focus, reduced-motion fallback
+
+**Tested:** Scale to 1.012 on focus ✓, spring transition smooth ✓, blur returns to scale(1) ✓, works on all input types ✓, zero console errors ✓.
+
+**What's Next:**
+- Whitespace rhythm audit across sections
+- Consider applying text reveal to pricing description paragraphs
+- Consider adding subtle tilt to the pricing-statement-inner block
+- Scroll-speed-aware reveal (faster scroll = faster reveal)
+- Button ripple effect on click (Material-style)

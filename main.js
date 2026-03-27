@@ -467,6 +467,21 @@
       const navH = nav ? nav.offsetHeight : 64;
       const top = target.getBoundingClientRect().top + window.scrollY - navH - 16;
       window.scrollTo({ top, behavior: 'smooth' });
+
+      // Highlight pulse on arrival — brief accent ring around section eyebrow
+      if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        var eyebrow = target.querySelector('.section-eyebrow');
+        if (eyebrow && !eyebrow.classList.contains('anchor-pulse')) {
+          // Small delay to sync with scroll arrival
+          setTimeout(function() {
+            eyebrow.classList.add('anchor-pulse');
+            // Clean up after animation
+            setTimeout(function() {
+              eyebrow.classList.remove('anchor-pulse');
+            }, 800);
+          }, Math.min(400, Math.abs(top - window.scrollY) / 3));
+        }
+      }
     });
   });
 

@@ -1981,3 +1981,44 @@ Added a **text shimmer/gleam effect** to section titles. When a section title en
 - Scroll-speed-aware text reveal (faster scroll = reveal runs ahead)
 - Apply reading lamp to other dense text blocks (workshop card descriptions?)
 - Consider animated focus states for form inputs
+
+---
+
+## Session 45 — 2026-03-27 (Opus 4.6) — POLISH
+
+### What I Did: Anchor Navigation Arrival Pulse — "You Are Here" Highlight
+
+Added a **visual arrival indicator** when users click anchor links to navigate to sections. The target section's eyebrow badge does a satisfying scale-up + glow ring animation, signaling "you have arrived here."
+
+**How it works:**
+1. User clicks nav link (e.g., "Services")
+2. Existing smooth scroll behavior kicks in
+3. After a calculated delay based on scroll distance, `.anchor-pulse` class is added to target section's eyebrow
+4. CSS animation plays: scale 1 → 1.06 (overshoot) → 0.98 (settle) → 1, with expanding/fading box-shadow ring
+5. Class is removed after 800ms for cleanup
+6. Works with all internal anchor links (`a[href^="#"]`)
+
+**Animation keyframes:**
+- 0%: Normal state, no shadow
+- 40%: Scale to 1.06, accent blue glow ring at 6px spread
+- 70%: Scale to 0.98 (overshoot recoil), ring expands to 8px, fading
+- 100%: Return to normal, ring fully faded
+
+**Technical notes:**
+- Delay calculation: `Math.min(400, Math.abs(scrollDistance) / 3)` — longer scroll = longer delay (up to 400ms max)
+- Respects `prefers-reduced-motion` — no pulse for reduced motion users
+- Spring easing: `cubic-bezier(0.34, 1.56, 0.64, 1)` for bouncy overshoot feel
+- Light mode variant: uses deeper blue (`rgba(37, 99, 235, ...)`) for visibility
+- Won't re-trigger if eyebrow already has `.anchor-pulse` class
+
+**Files changed:**
+- `main.js` — Enhanced anchor click handler to add pulse class after scroll delay
+- `style.css` — Added `@keyframes anchorPulse` and `anchorPulseLight`, `.section-eyebrow.anchor-pulse` selector
+
+**Tested:** Anchor pulse triggers on nav click ✓, correct animation name (anchorPulseLight in light mode) ✓, 0.6s duration ✓, class cleaned up after 800ms ✓, zero console errors ✓.
+
+**What's Next:**
+- Whitespace rhythm audit across sections
+- Scroll-speed-aware text reveal (faster scroll = reveal runs ahead)
+- Apply reading lamp to other dense text blocks (workshop card descriptions?)
+- Consider animated focus states for form inputs

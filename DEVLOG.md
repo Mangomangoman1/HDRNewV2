@@ -490,6 +490,64 @@ Enter the classic Konami code on any page and you get:
 - Animated SVG device illustrations (exploded phone view)
 - Interactive before/after slider for repair photos
 - Service page enhancements (not just index.html)
-- Contact form micro-interactions
-- Review cumulative file sizes and performance
 - "The Workshop" section with tools/craft theme
+
+---
+
+## Session 10 — 2026-03-27 (Opus 4.6)
+
+### What I Did: Contact Form Micro-Interactions + Method Card Animations
+
+**Focus:** Polish the contact section — the conversion point where visitors decide to reach out. Every micro-interaction builds trust and signals quality.
+
+**1. Contact Method Card Hover Effects**
+- Icon pulse animation on hover: `contactIconPulse` keyframe (scale 1 → 1.12 → 1 over 0.5s)
+- Icons fill on hover: `font-variation-settings: 'FILL' 1` (Material Symbols filled variant)
+- Combined with existing translateX(4px) shift and accent border
+
+**2. Form Field Valid Indicator**
+- Green checkmark icon (`.form-valid-check`) injected dynamically next to name, contact, and issue fields
+- Transitions from `opacity: 0; scale(0.5)` → `opacity: 1; scale(1)` with spring easing when field becomes `.valid`
+- Green border color on valid fields
+- Accent-colored label on valid fields
+
+**3. Form Field Invalid Shake**
+- `fieldShake` keyframe (translateX oscillation: -4px → 3px → -2px → 1px)
+- Applied when `.invalid` class is added by the validator
+- Red border color from existing `--color-red`
+
+**4. Textarea Character Counter**
+- Dynamically injected `.textarea-counter` element below the issue textarea
+- Updates on input: "0 chars" → "47 chars" etc.
+- Visible at full opacity when textarea is focused, semi-visible when it has text
+- Hidden when empty and not focused
+- Positioned absolute at bottom-right, `font-variant-numeric: tabular-nums`
+
+**5. Submit Button States**
+- **Success:** `btn-success` class with green background + `btnSuccessBounce` keyframe (scale 1→0.95→1.05→1). Text changes to "✓ Sent!". MutationObserver watches formSuccess element.
+- **Error:** `btn-error` class with `btnShake` keyframe (translateX oscillation). MutationObserver watches formError element.
+- Both auto-clean up class after animation duration
+
+**6. Success/Error Message Entrance**
+- `formMsgSlideIn` keyframe: opacity 0 → 1, translateY(-8px) → 0, scale(0.95) → 1 with spring easing
+- Applied to `.form-success.visible` and `.form-error-msg.visible`
+
+**Performance check (Session 1–10 cumulative):**
+- index.html: 80KB (16KB gzipped)
+- style.css: 192KB (32KB gzipped)
+- main.js: 84KB (21KB gzipped)
+- **Total: 356KB raw, 69KB gzipped** — well under any performance budget
+
+**Files changed:**
+- `style.css` — added ~100 lines: contact icon pulse, valid/invalid field styles, textarea counter, submit button states, success/error entrance, reduced motion overrides
+- `main.js` — added ~85 lines: valid check icons injection, textarea counter, submit button MutationObserver states
+
+**Tested:** Dark mode, light mode, desktop (1024px). Valid/invalid transitions work. Counter updates in real-time. Green checks appear with spring animation. Zero console errors.
+
+**What's Next (Ideas for Session 11+):**
+- Animated SVG device illustrations (exploded phone view)
+- Interactive before/after slider for repair photos
+- Service page enhancements (not just index.html)
+- "The Workshop" section with tools/craft theme
+- Performance audit + Lighthouse score
+- Accessibility audit (keyboard nav, screen reader)

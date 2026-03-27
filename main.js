@@ -2122,3 +2122,95 @@
     });
   }
 })();
+
+
+/* ═══════════════════════════════════════════════
+   CONTACT FORM MICRO-INTERACTIONS
+   Valid checkmarks, textarea counter, submit
+   button success/error animations.
+═══════════════════════════════════════════════ */
+(function() {
+  var contactForm = document.getElementById('contactForm');
+  if (!contactForm) return;
+
+  // ── Add valid check icons to form fields ──
+  var fieldIds = ['name', 'contact', 'issue'];
+  fieldIds.forEach(function(id) {
+    var input = contactForm.querySelector('#' + id);
+    if (!input) return;
+    var group = input.closest('.form-group');
+    if (!group || group.querySelector('.form-valid-check')) return;
+
+    var check = document.createElement('span');
+    check.className = 'material-symbols-outlined form-valid-check';
+    check.setAttribute('aria-hidden', 'true');
+    check.textContent = 'check_circle';
+    group.appendChild(check);
+  });
+
+  // ── Textarea character counter ──
+  var textarea = contactForm.querySelector('#issue');
+  if (textarea) {
+    var group = textarea.closest('.form-group');
+    if (group && !group.querySelector('.textarea-counter')) {
+      var counter = document.createElement('span');
+      counter.className = 'textarea-counter';
+      counter.setAttribute('aria-hidden', 'true');
+      counter.textContent = '0 chars';
+      group.appendChild(counter);
+
+      textarea.addEventListener('input', function() {
+        var len = textarea.value.length;
+        counter.textContent = len + (len === 1 ? ' char' : ' chars');
+        counter.classList.toggle('has-text', len > 0);
+      });
+    }
+  }
+
+  // ── Enhanced submit button states ──
+  // Observe the submit button for state changes
+  var submitBtn = contactForm.querySelector('button[type="submit"]');
+  if (!submitBtn) return;
+
+  // Store original classes for restoration
+  var originalBtnClass = submitBtn.className;
+
+  // Watch for the form success/error elements becoming visible
+  var formSuccess = document.getElementById('formSuccess');
+  var formError = document.getElementById('formError');
+
+  // Mutation observer to detect when success/error appear
+  if (formSuccess) {
+    var successObserver = new MutationObserver(function(mutations) {
+      mutations.forEach(function(m) {
+        if (m.attributeName === 'class' && formSuccess.classList.contains('visible')) {
+          // Success! Animate the button
+          submitBtn.classList.add('btn-success');
+          submitBtn.innerHTML = '<span class="material-symbols-outlined" aria-hidden="true">check_circle</span> Sent!';
+          submitBtn.disabled = false;
+
+          // Clean up after animation
+          setTimeout(function() {
+            submitBtn.classList.remove('btn-success');
+          }, 2000);
+        }
+      });
+    });
+    successObserver.observe(formSuccess, { attributes: true });
+  }
+
+  if (formError) {
+    var errorObserver = new MutationObserver(function(mutations) {
+      mutations.forEach(function(m) {
+        if (m.attributeName === 'class' && formError.classList.contains('visible')) {
+          // Error! Shake the button
+          submitBtn.classList.add('btn-error');
+          setTimeout(function() {
+            submitBtn.classList.remove('btn-error');
+          }, 600);
+        }
+      });
+    });
+    errorObserver.observe(formError, { attributes: true });
+  }
+})();

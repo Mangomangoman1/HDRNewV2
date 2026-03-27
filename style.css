@@ -2307,6 +2307,18 @@ a.contact-method:hover {
   background: var(--accent-dim);
   transform: translateX(4px);
 }
+/* Icon pulse on hover */
+a.contact-method:hover .contact-method-icon {
+  animation: contactIconPulse 0.5s ease;
+}
+a.contact-method:hover .contact-method-icon .material-symbols-outlined {
+  font-variation-settings: 'FILL' 1, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+}
+@keyframes contactIconPulse {
+  0%   { transform: scale(1); }
+  40%  { transform: scale(1.12); }
+  100% { transform: scale(1); }
+}
 .contact-method-icon {
   width: 44px;
   height: 44px;
@@ -2540,6 +2552,116 @@ a.contact-method:hover {
 button[type="submit"]:disabled {
   opacity: 0.7;
   cursor: wait;
+}
+
+/* ── Submit button success state ── */
+button[type="submit"].btn-success {
+  background: var(--color-green) !important;
+  border-color: var(--color-green) !important;
+  animation: btnSuccessBounce 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+@keyframes btnSuccessBounce {
+  0%   { transform: scale(1); }
+  30%  { transform: scale(0.95); }
+  60%  { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+/* ── Submit button error state ── */
+button[type="submit"].btn-error {
+  animation: btnShake 0.5s ease;
+}
+@keyframes btnShake {
+  0%, 100% { transform: translateX(0); }
+  15%      { transform: translateX(-6px); }
+  30%      { transform: translateX(5px); }
+  45%      { transform: translateX(-4px); }
+  60%      { transform: translateX(3px); }
+  75%      { transform: translateX(-2px); }
+}
+
+/* ── Form success/error entrance animation ── */
+.form-success.visible,
+.form-error-msg.visible {
+  animation: formMsgSlideIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+@keyframes formMsgSlideIn {
+  0%   { opacity: 0; transform: translateY(-8px) scale(0.95); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* ── Valid field indicator ── */
+.form-group input.valid,
+.form-group textarea.valid {
+  border-color: var(--color-green);
+}
+.form-group input.valid ~ label,
+.form-group textarea.valid ~ label {
+  color: var(--color-green);
+}
+/* Green check icon after valid field */
+.form-group input.valid ~ .form-valid-check,
+.form-group textarea.valid ~ .form-valid-check {
+  opacity: 1;
+  transform: scale(1);
+}
+.form-valid-check {
+  position: absolute;
+  right: 0.75rem;
+  top: 0.72rem;
+  color: var(--color-green);
+  font-size: 1.1rem;
+  opacity: 0;
+  transform: scale(0.5);
+  transition: opacity 0.25s ease, transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+  pointer-events: none;
+  font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 20;
+}
+
+/* ── Invalid field shake ── */
+.form-group input.invalid,
+.form-group textarea.invalid {
+  border-color: var(--color-red);
+  animation: fieldShake 0.4s ease;
+}
+@keyframes fieldShake {
+  0%, 100% { transform: translateX(0); }
+  20%      { transform: translateX(-4px); }
+  40%      { transform: translateX(3px); }
+  60%      { transform: translateX(-2px); }
+  80%      { transform: translateX(1px); }
+}
+
+/* ── Textarea character count ── */
+.textarea-counter {
+  position: absolute;
+  bottom: 0.5rem;
+  right: 0.75rem;
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  pointer-events: none;
+  font-variant-numeric: tabular-nums;
+}
+.form-group:focus-within .textarea-counter {
+  opacity: 1;
+}
+.textarea-counter.has-text {
+  opacity: 0.5;
+}
+
+/* ── Reduced motion ── */
+@media (prefers-reduced-motion: reduce) {
+  button[type="submit"].btn-success,
+  button[type="submit"].btn-error,
+  .form-success.visible,
+  .form-error-msg.visible,
+  .form-group input.invalid,
+  .form-group textarea.invalid,
+  a.contact-method:hover .contact-method-icon {
+    animation: none !important;
+  }
 }
 
 /* ─── CONTACT PAGE ───────────────────────────────────────── */

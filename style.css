@@ -377,6 +377,31 @@ ul { list-style: none; }
   background: var(--accent-dim);
   padding: 0.25rem 0.75rem;
   border-radius: var(--radius-pill);
+  position: relative;
+}
+/* Section entry pulse — ring expands outward and fades once on viewport entry */
+.section-eyebrow::before {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: var(--radius-pill);
+  border: 2px solid var(--accent);
+  opacity: 0;
+  transform: scale(1);
+  pointer-events: none;
+}
+.section-eyebrow.pulsed::before {
+  animation: sectionPulse 0.8s cubic-bezier(0.33, 1, 0.68, 1) forwards;
+}
+@keyframes sectionPulse {
+  0% {
+    opacity: 0.7;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.5);
+  }
 }
 .section-title {
   font-family: var(--font-display);
@@ -9210,6 +9235,10 @@ body.konami-active .hero-headline {
   }
   /* No velocity glow for reduced motion */
   .scroll-progress::after {
+    display: none;
+  }
+  /* No section entry pulse for reduced motion */
+  .section-eyebrow::before {
     display: none;
   }
 }

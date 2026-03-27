@@ -2426,3 +2426,28 @@
     rafId = requestAnimationFrame(tick);
   }
 })();
+
+// ─── SECTION ENTRY PULSE ──────────────────────────────────────────
+// Triggers a single expanding ring pulse on section eyebrows when they enter viewport
+(function sectionPulseInit() {
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  var eyebrows = document.querySelectorAll('.section-eyebrow');
+  if (!eyebrows.length || !('IntersectionObserver' in window)) return;
+
+  var pulseObserver = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting && !entry.target.classList.contains('pulsed')) {
+        entry.target.classList.add('pulsed');
+        pulseObserver.unobserve(entry.target);
+      }
+    });
+  }, {
+    threshold: 0.1,
+    rootMargin: '0px 0px -20% 0px'
+  });
+
+  eyebrows.forEach(function(el) {
+    pulseObserver.observe(el);
+  });
+})();

@@ -1713,3 +1713,43 @@ Added a **velocity-reactive glow** to the scroll progress bar. When scrolling fa
 - Consider applying text reveal to pricing description paragraphs
 - Consider adding subtle tilt to the pricing-statement-inner block
 - Scroll-speed-aware text reveal (faster scroll = reveal runs ahead)
+
+---
+
+## Session 38 — 2026-03-27 (Opus 4.6) — POLISH
+
+### What I Did: Section Entry Pulse — Ring Expands on Viewport Entry
+
+Added a **single-play pulse ring** to section eyebrows. When a section scrolls into view, its eyebrow badge emits an expanding ring that fades outward — like a ripple or sonar ping. Creates a visual "checkpoint" feeling as you scroll through the page.
+
+**How it works:**
+1. `::before` pseudo-element with `inset: -4px` creates ring 4px outside eyebrow
+2. Ring starts hidden (`opacity: 0`, `transform: scale(1)`)
+3. IntersectionObserver adds `.pulsed` class when eyebrow enters viewport
+4. Animation plays once: scale 1 → 1.5, opacity 0.7 → 0, over 0.8s
+5. Observer unobserves after triggering (one pulse per page load)
+
+**Visual effect:**
+- Eyebrow scrolls into view
+- 2px accent-colored ring appears around the badge
+- Ring expands outward (50% larger) while fading to transparent
+- Creates satisfying "ping" sensation marking arrival at new section
+
+**Technical notes:**
+- `cubic-bezier(0.33, 1, 0.68, 1)` for organic easing (fast start, gentle settle)
+- `animation: ... forwards` preserves end state (fully transparent)
+- Threshold 0.1 with rootMargin `-20%` bottom ensures pulse triggers when eyebrow is clearly visible
+- JS checks `prefers-reduced-motion` before setting up observer
+- CSS also hides `::before` for reduced motion users
+
+**Files changed:**
+- `style.css` — Added `.section-eyebrow::before` pseudo-element, `.pulsed::before` animation, `@keyframes sectionPulse`, reduced-motion guard
+- `main.js` — Added IntersectionObserver for section eyebrows with one-shot pulse trigger
+
+**Tested:** 11 section eyebrows detected ✓, pulse triggers on viewport entry ✓, animation runs (scale 1→1.5) ✓, only triggers once per element ✓, zero console errors ✓.
+
+**What's Next:**
+- Whitespace rhythm audit across sections
+- Consider applying text reveal to pricing description paragraphs
+- Consider adding subtle tilt to the pricing-statement-inner block
+- Scroll-speed-aware text reveal (faster scroll = reveal runs ahead)

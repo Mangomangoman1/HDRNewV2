@@ -3482,7 +3482,8 @@ button[type="submit"].btn-error {
   opacity: 1;
 }
 
-/* ─── Workshop card shine sweep — diagonal light on hover ─── */
+/* ─── Card shine sweep — diagonal light on hover ─── */
+.card .shine-sweep,
 .workshop-card .shine-sweep {
   position: absolute;
   top: -50%;
@@ -3502,9 +3503,11 @@ button[type="submit"].btn-error {
   pointer-events: none;
   z-index: 2;
 }
+.card:hover .shine-sweep,
 .workshop-card:hover .shine-sweep {
   left: 150%;
 }
+[data-theme="light"] .card .shine-sweep,
 [data-theme="light"] .workshop-card .shine-sweep {
   background: linear-gradient(
     120deg,
@@ -9650,7 +9653,8 @@ body.konami-active .hero-headline {
   .form-group.focus-pulsing::before {
     display: none;
   }
-  /* No workshop card shine sweep for reduced motion */
+  /* No card shine sweep for reduced motion */
+  .card .shine-sweep,
   .workshop-card .shine-sweep {
     display: none;
   }

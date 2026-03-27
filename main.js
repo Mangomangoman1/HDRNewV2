@@ -2439,14 +2439,15 @@
 
 
 /* ═══════════════════════════════════════════════
-   WORKSHOP CARD SHINE SWEEP
-   Diagonal light sweep across workshop cards on hover.
+   CARD SHINE SWEEP
+   Diagonal light sweep across cards on hover.
 ═══════════════════════════════════════════════ */
 (function() {
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
-  function initShineSwep() {
-    var cards = document.querySelectorAll('.workshop-card');
+  function initShineSweep() {
+    // Apply to both service cards and workshop cards
+    var cards = document.querySelectorAll('.card, .workshop-card');
     cards.forEach(function(card) {
       if (card.querySelector('.shine-sweep')) return;
       var shine = document.createElement('span');
@@ -2456,9 +2457,9 @@
   }
 
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initShineSwep);
+    document.addEventListener('DOMContentLoaded', initShineSweep);
   } else {
-    initShineSwep();
+    initShineSweep();
   }
 })();
 

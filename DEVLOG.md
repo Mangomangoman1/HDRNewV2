@@ -2229,3 +2229,33 @@ Added a **shine sweep effect** to workshop cards. When hovering over a card, a d
 - Scroll-speed-aware text reveal (faster scroll = reveal runs ahead)
 - Apply reading lamp to workshop card descriptions
 - Consider applying shine sweep to other card types (service cards?)
+
+---
+
+## Session 51 — 2026-03-27 (Opus 4.6) — POLISH
+
+### What I Did: Extended Shine Sweep to Service Cards
+
+Applied the **shine sweep effect** from Session 50 to all service cards (`.card` elements), creating a consistent premium hover effect across both card types.
+
+**Changes:**
+- Updated CSS selectors to include `.card` alongside `.workshop-card`
+- Updated JS to query both `.card, .workshop-card`
+- Renamed comment header from "Workshop card shine sweep" to "Card shine sweep"
+
+**Result:**
+- 8 service cards now have shine sweep (iPhone, Android, Tablets, Laptops, Consoles, Smart Home, Audio Gear, Vintage Tech)
+- 4 workshop cards retain their shine sweep
+- Total: 12 cards with unified hover effect
+
+**Files changed:**
+- `style.css` — Updated selectors to include `.card`
+- `main.js` — Updated selector to `.card, .workshop-card`
+
+**Tested:** 8 service shines + 4 workshop shines ✓, correct left position ✓, gradient background ✓, transition working ✓.
+
+**What's Next:**
+- Whitespace rhythm audit across sections
+- Scroll-speed-aware text reveal (faster scroll = reveal runs ahead)
+- Apply reading lamp to workshop card descriptions
+- Add subtle animation to FAQ accordion arrows on toggle

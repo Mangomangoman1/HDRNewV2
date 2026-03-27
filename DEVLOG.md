@@ -3297,3 +3297,57 @@ The section containing the viewport center gets a subtle ambient glow:
 - Whitespace rhythm audit across sections
 - Review overall animation complexity — ensure cognitive load is reasonable
 - Consider adding focus-within glow for form groups
+
+---
+
+## Session 72 — 2026-03-27 (Opus 4.6) — POLISH
+
+### What I Did: Compare Table Interactive Enhancements
+
+Enhanced the comparison table with interactive hover effects that reinforce the "HDR wins" messaging.
+
+**1. Row Hover "Winner" Highlight**
+
+When hovering a comparison row:
+- Left border indicator scales up (green accent)
+- HDR column pulses with soft green glow
+- Check icon bounces and gets drop-shadow
+- X icon dims further (de-emphasis)
+
+```css
+@keyframes compareWinnerPulse {
+  0%, 100% { box-shadow: inset 0 0 0 0 transparent; }
+  50% { box-shadow: inset 0 0 20px 0 rgba(63, 185, 80, 0.15); }
+}
+
+.compare-row:hover .compare-cell--us {
+  animation: compareWinnerPulse 1.5s ease-in-out infinite;
+}
+```
+
+**2. HDR Badge Shimmer**
+
+The "Hailey Device Repair" badge in the header gets a periodic shimmer sweep:
+- 3s animation cycle
+- 2s initial delay
+- Subtle light sweep from left to right
+
+**Why these enhancements matter:**
+- Reinforces the comparison's "we're better" message without being obnoxious
+- Green = positive = HDR column
+- De-emphasizing the X icons draws attention to the checks
+- The shimmer adds premium feel to the badge
+
+**Accessibility:**
+- All effects respect `prefers-reduced-motion`
+- Falls back to static states
+
+**Files changed:**
+- `style.css` — Added compare row hover effects, winner pulse, check bounce, badge shimmer
+
+**Tested:** Row hover triggers winner pulse ✓, left border indicator animates ✓, check icon bounces ✓, X icon dims ✓, badge shimmer animates ✓, reduced motion fallback ✓, zero console errors ✓.
+
+**What's Next:**
+- Whitespace rhythm audit across sections
+- Review overall animation complexity — ensure cognitive load is reasonable
+- Consider process section step-by-step hover enhancement

@@ -2259,3 +2259,42 @@ Applied the **shine sweep effect** from Session 50 to all service cards (`.card`
 - Scroll-speed-aware text reveal (faster scroll = reveal runs ahead)
 - Apply reading lamp to workshop card descriptions
 - Add subtle animation to FAQ accordion arrows on toggle
+
+---
+
+## Session 52 — 2026-03-27 (Opus 4.6) — POLISH
+
+### What I Did: FAQ Arrow Spring Bounce Animation
+
+Added a **spring bounce animation** to FAQ accordion arrows. When toggling an FAQ item, the chevron doesn't just rotate — it overshoots, bounces back, and settles into place with a satisfying spring motion.
+
+**How it works:**
+1. CSS defines two keyframe animations:
+   - `faqArrowBounce` (open): 0° → 200° → 175° → 183° → 180° with scale pulses
+   - `faqArrowBounceClose` (close): 180° → -20° → 5° → -3° → 0° with scale pulses
+2. JS adds `.arrow-bounce-open` or `.arrow-bounce-close` class when toggling
+3. Animation runs with spring easing (`cubic-bezier(0.34, 1.56, 0.64, 1)`)
+
+**Animation details:**
+- Duration: 0.5s
+- Overshoot: ~20° past target, then bounce back
+- Scale: Pulses from 1 → 1.15 → 0.95 → 1.02 → 1
+- Creates playful "boing" feeling without being cartoonish
+
+**Technical notes:**
+- Replaces existing CSS transition with animation on toggle
+- Classes swapped: open removes close class first, vice versa
+- Animation uses `forwards` fill mode to maintain end state
+- Reduced motion users get no bounce animation (CSS guard)
+
+**Files changed:**
+- `style.css` — Added `@keyframes faqArrowBounce`, `@keyframes faqArrowBounceClose`, bounce classes, reduced motion guard
+- `main.js` — Added chevron class toggling in openItem/closeItem functions
+
+**Tested:** 7 FAQ items ✓, arrow-bounce-open class applied on open ✓, faqArrowBounce animation running ✓, arrow-bounce-close on close ✓, zero console errors ✓.
+
+**What's Next:**
+- Whitespace rhythm audit across sections
+- Scroll-speed-aware text reveal (faster scroll = reveal runs ahead)
+- Apply reading lamp to workshop card descriptions
+- Consider subtle hover state for footer links

@@ -2263,6 +2263,13 @@
     function openItem(detailsEl, answerEl) {
       isAnimating = true;
 
+      // Trigger arrow bounce animation
+      var chevron = detailsEl.querySelector('.faq-chevron');
+      if (chevron) {
+        chevron.classList.remove('arrow-bounce-close');
+        chevron.classList.add('arrow-bounce-open');
+      }
+
       // Set open attribute first so content is rendered
       detailsEl.setAttribute('open', '');
 
@@ -2294,6 +2301,13 @@
 
     function closeItem(detailsEl, answerEl) {
       isAnimating = true;
+
+      // Trigger arrow bounce animation
+      var chevron = detailsEl.querySelector('.faq-chevron');
+      if (chevron) {
+        chevron.classList.remove('arrow-bounce-open');
+        chevron.classList.add('arrow-bounce-close');
+      }
 
       // Set current height explicitly for transition start
       var currentHeight = answerEl.scrollHeight;

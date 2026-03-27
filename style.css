@@ -1275,6 +1275,51 @@ ul { list-style: none; }
   transform: translateX(3px);
 }
 
+/* Service card sibling depth focus - when one card is hovered, siblings recede */
+/* Pure CSS approach using :has() */
+.cards-grid:has(.card:hover) .card:not(:hover) {
+  transform: scale(0.97);
+  opacity: 0.7;
+  filter: blur(0.3px);
+  transition:
+    transform 300ms cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 300ms ease-out,
+    filter 300ms ease-out,
+    border-color 200ms cubic-bezier(0.4, 0, 0.2, 1),
+    box-shadow 350ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.cards-grid:has(.card:hover) .card:not(:hover) .card-icon {
+  transform: scale(0.95);
+  transition: transform 300ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+/* Ensure hovered card is fully prominent */
+.cards-grid:has(.card:hover) .card:hover {
+  z-index: 10;
+  transform: translateY(-6px) scale(1.02);
+}
+/* JS-based fallback/alternative for hover state detection */
+.cards-grid.card-focus-active .card:not(.card-focused) {
+  transform: scale(0.97);
+  opacity: 0.7;
+  filter: blur(0.3px);
+}
+.cards-grid.card-focus-active .card.card-focused {
+  z-index: 10;
+  transform: translateY(-6px) scale(1.02);
+}
+@media (prefers-reduced-motion: reduce) {
+  .cards-grid:has(.card:hover) .card:not(:hover),
+  .cards-grid.card-focus-active .card:not(.card-focused) {
+    transform: none;
+    filter: none;
+    /* Keep opacity reduction for visual focus */
+  }
+  .cards-grid:has(.card:hover) .card:hover,
+  .cards-grid.card-focus-active .card.card-focused {
+    transform: none;
+  }
+}
+
 /* ─── PRICING ────────────────────────────────────────────── */
 .pricing-grid {
   display: grid;
@@ -3557,6 +3602,38 @@ button[type="submit"].btn-error {
 }
 .workshop-card:hover::before {
   opacity: 1;
+}
+
+/* Workshop card sibling depth focus */
+.workshop-grid:has(.workshop-card:hover) .workshop-card:not(:hover) {
+  transform: scale(0.97);
+  opacity: 0.7;
+  filter: blur(0.3px);
+}
+.workshop-grid:has(.workshop-card:hover) .workshop-card:hover {
+  z-index: 10;
+  transform: translateY(-6px) scale(1.02);
+}
+/* JS-based fallback */
+.workshop-grid.card-focus-active .workshop-card:not(.card-focused) {
+  transform: scale(0.97);
+  opacity: 0.7;
+  filter: blur(0.3px);
+}
+.workshop-grid.card-focus-active .workshop-card.card-focused {
+  z-index: 10;
+  transform: translateY(-6px) scale(1.02);
+}
+@media (prefers-reduced-motion: reduce) {
+  .workshop-grid:has(.workshop-card:hover) .workshop-card:not(:hover),
+  .workshop-grid.card-focus-active .workshop-card:not(.card-focused) {
+    transform: none;
+    filter: none;
+  }
+  .workshop-grid:has(.workshop-card:hover) .workshop-card:hover,
+  .workshop-grid.card-focus-active .workshop-card.card-focused {
+    transform: none;
+  }
 }
 
 /* ─── Card shine sweep — diagonal light on hover ─── */

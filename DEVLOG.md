@@ -2536,3 +2536,48 @@ Extended the **reading lamp effect** to FAQ answer text. When an FAQ accordion o
 - Service card hover depth shift
 - Consider velocity-awareness for other scroll-linked effects
 - Consider subtle loading state animations for form submission
+
+---
+
+## Session 59 — 2026-03-27 (Opus 4.6) — POLISH
+
+### What I Did: Card Sibling Depth Focus — Receding Neighbors Effect
+
+Added a **sibling depth focus effect** to both service cards and workshop cards. When you hover over one card, its siblings subtly recede — scaling down, dimming, and slightly blurring — creating a focus effect that draws attention to the hovered card while maintaining context of the others.
+
+**How it works:**
+1. CSS `:has()` selector detects when any card is hovered
+2. Siblings (cards that aren't hovered) get `scale(0.97)`, `opacity: 0.7`, `blur(0.3px)`
+3. The hovered card gets elevated `z-index: 10` and enhanced lift (`translateY(-6px) scale(1.02)`)
+4. JS fallback adds `.card-focus-active` class to grid and `.card-focused` to hovered card
+5. Smooth transitions (300ms with expo-out easing) for natural enter/exit
+
+**Visual effect:**
+- User hovers over a card
+- All other cards gently recede into the background
+- Hovered card rises higher and scales up slightly
+- Creates a "spotlighting" effect that helps users focus on one card at a time
+- Effect reverses smoothly when mouse leaves
+
+**Applied to:**
+- Service cards (`.cards-grid .card`) — 8 cards
+- Workshop cards (`.workshop-grid .workshop-card`) — 4 cards
+
+**Technical notes:**
+- Dual implementation: CSS `:has()` for modern browsers + JS class management fallback
+- `:has()` is now supported in Chrome 105+, Firefox 121+, Safari 15.4+
+- JS fallback ensures consistent behavior across all devices
+- Guards: `pointer: fine` / `hover: hover` media queries + `prefers-reduced-motion`
+- Reduced motion: disables transform and filter effects, keeps opacity reduction
+
+**Files changed:**
+- `style.css` — Added sibling depth focus rules for both card grids, reduced-motion guards
+- `main.js` — Added `setupGridFocus()` IIFE with mouseenter/mouseleave handlers for both grids
+
+**Tested:** Service cards scale/opacity/blur ✓, workshop cards scale/opacity/blur ✓, focused card z-index elevation ✓, transitions smooth ✓, cleanup on mouseleave ✓, zero console errors ✓.
+
+**What's Next:**
+- Whitespace rhythm audit across sections
+- Consider velocity-awareness for other scroll-linked effects
+- Consider subtle loading state animations for form submission
+- Review overall animation complexity — ensure cognitive load is reasonable

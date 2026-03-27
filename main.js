@@ -2550,6 +2550,45 @@
 
 
 /* ═══════════════════════════════════════════════
+   CARD SIBLING DEPTH FOCUS
+   When one card is hovered, siblings recede.
+   JS fallback for :has() selector enhancement.
+   Applied to both service cards and workshop cards.
+═══════════════════════════════════════════════ */
+(function() {
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  if (!window.matchMedia('(pointer: fine)').matches && !window.matchMedia('(hover: hover)').matches) return;
+
+  function setupGridFocus(gridSelector, cardSelector) {
+    var grid = document.querySelector(gridSelector);
+    if (!grid) return;
+
+    var cards = grid.querySelectorAll(cardSelector);
+
+    cards.forEach(function(card) {
+      card.addEventListener('mouseenter', function() {
+        grid.classList.add('card-focus-active');
+        card.classList.add('card-focused');
+      });
+
+      card.addEventListener('mouseleave', function() {
+        card.classList.remove('card-focused');
+        // Check if any card is still focused
+        if (!grid.querySelector('.card-focused')) {
+          grid.classList.remove('card-focus-active');
+        }
+      });
+    });
+  }
+
+  // Service cards
+  setupGridFocus('.cards-grid', '.card');
+  // Workshop cards
+  setupGridFocus('.workshop-grid', '.workshop-card');
+})();
+
+
+/* ═══════════════════════════════════════════════
    CARD SHINE SWEEP
    Diagonal light sweep across cards on hover.
 ═══════════════════════════════════════════════ */

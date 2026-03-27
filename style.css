@@ -5506,6 +5506,20 @@ body {
   opacity: 1;
   transform: translateY(0);
 }
+/* ─── STAGGERED CARD CASCADE ─────────────────────────────────
+   Cards in grids enter with sequential delays — dealt like playing cards */
+.cards-grid .card[data-animate]:nth-child(1) { transition-delay: 0ms; }
+.cards-grid .card[data-animate]:nth-child(2) { transition-delay: 60ms; }
+.cards-grid .card[data-animate]:nth-child(3) { transition-delay: 120ms; }
+.cards-grid .card[data-animate]:nth-child(4) { transition-delay: 180ms; }
+.cards-grid .card[data-animate]:nth-child(5) { transition-delay: 240ms; }
+.cards-grid .card[data-animate]:nth-child(6) { transition-delay: 300ms; }
+.cards-grid .card[data-animate]:nth-child(7) { transition-delay: 360ms; }
+.cards-grid .card[data-animate]:nth-child(8) { transition-delay: 420ms; }
+.workshop-grid .workshop-card[data-animate]:nth-child(1) { transition-delay: 0ms; }
+.workshop-grid .workshop-card[data-animate]:nth-child(2) { transition-delay: 80ms; }
+.workshop-grid .workshop-card[data-animate]:nth-child(3) { transition-delay: 160ms; }
+.workshop-grid .workshop-card[data-animate]:nth-child(4) { transition-delay: 240ms; }
 /* Eyebrows: lighter entrance — shorter distance, faster */
 .section-eyebrow[data-animate] {
   transform: translateY(8px);
@@ -9240,5 +9254,10 @@ body.konami-active .hero-headline {
   /* No section entry pulse for reduced motion */
   .section-eyebrow::before {
     display: none;
+  }
+  /* No staggered delays for reduced motion */
+  .cards-grid .card[data-animate],
+  .workshop-grid .workshop-card[data-animate] {
+    transition-delay: 0ms !important;
   }
 }

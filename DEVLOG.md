@@ -1753,3 +1753,41 @@ Added a **single-play pulse ring** to section eyebrows. When a section scrolls i
 - Consider applying text reveal to pricing description paragraphs
 - Consider adding subtle tilt to the pricing-statement-inner block
 - Scroll-speed-aware text reveal (faster scroll = reveal runs ahead)
+
+---
+
+## Session 39 — 2026-03-27 (Opus 4.6) — POLISH
+
+### What I Did: Staggered Card Cascade — Cards Dealt Like Playing Cards
+
+Added **staggered entry timing** to service cards and workshop cards. When scrolling into view, cards no longer appear all at once — they cascade in sequence with 60-80ms delays between each, creating the visual impression of cards being dealt onto a table.
+
+**How it works:**
+1. CSS `transition-delay` applied via `:nth-child()` selectors
+2. Service cards (8 total): 0ms, 60ms, 120ms, 180ms, 240ms, 300ms, 360ms, 420ms
+3. Workshop cards (4 total): 0ms, 80ms, 160ms, 240ms (slightly slower rhythm)
+4. Existing `data-animate` + `.visible` system handles the actual opacity/transform transition
+5. Only the timing is staggered — animation physics unchanged
+
+**Visual effect:**
+- First card appears immediately
+- Each subsequent card follows 60-80ms later
+- Total cascade: ~420ms for services grid, ~240ms for workshop grid
+- Creates satisfying "dealt" sensation without feeling slow
+
+**Technical notes:**
+- Applied to `[data-animate]:nth-child(n)` to ensure delay only affects scroll-triggered entrance
+- Uses direct `transition-delay` values (CSS custom properties don't resolve properly in transition shorthand)
+- Reduced motion: `transition-delay: 0ms !important` — all cards appear simultaneously
+
+**Files changed:**
+- `style.css` — Added nth-child transition-delay rules for `.cards-grid .card` and `.workshop-grid .workshop-card`, reduced-motion override
+
+**Tested:** 8 service cards with correct delays (0s→0.42s) ✓, 4 workshop cards with correct delays (0s→0.24s) ✓, cascade visible on scroll ✓, zero console errors ✓.
+
+**What's Next:**
+- Whitespace rhythm audit across sections
+- Consider applying text reveal to pricing description paragraphs  
+- Consider adding subtle tilt to the pricing-statement-inner block
+- Scroll-speed-aware text reveal (faster scroll = reveal runs ahead)
+- Consider staggering other grid elements (FAQ items, compare rows)

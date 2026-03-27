@@ -1214,6 +1214,94 @@
     updateReveal();
   })();
 
+  /* ── Character-split wave reveal for section titles ─────────────────────── */
+  /* Wraps each character in a span and animates them in with a staggered wave */
+  (function splitTextReveal() {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    
+    var titles = document.querySelectorAll('.section-title');
+    if (!titles.length) return;
+    
+    // Process each title: wrap characters in spans
+    titles.forEach(function(title) {
+      // Skip if already processed
+      if (title.dataset.splitProcessed) return;
+      title.dataset.splitProcessed = 'true';
+      
+      // Store original HTML for screen readers
+      var originalText = title.textContent;
+      title.setAttribute('aria-label', originalText);
+      
+      // Process text nodes and preserve existing HTML elements
+      function processNode(node) {
+        if (node.nodeType === 3) { // Text node
+          var text = node.textContent;
+          var fragment = document.createDocumentFragment();
+          
+          for (var i = 0; i < text.length; i++) {
+            var char = text[i];
+            var span = document.createElement('span');
+            span.className = 'split-char';
+            span.textContent = char === ' ' ? '\u00A0' : char; // Non-breaking space
+            span.setAttribute('aria-hidden', 'true');
+            fragment.appendChild(span);
+          }
+          
+          node.parentNode.replaceChild(fragment, node);
+        } else if (node.nodeType === 1) { // Element node
+          // Process child nodes (e.g., <br>, <span class="text-accent">)
+          var children = Array.prototype.slice.call(node.childNodes);
+          children.forEach(processNode);
+        }
+      }
+      
+      var children = Array.prototype.slice.call(title.childNodes);
+      children.forEach(processNode);
+      
+      // Add class for CSS targeting
+      title.classList.add('split-ready');
+    });
+    
+    // Animate when entering viewport
+    var charDelay = 20; // ms between each character
+    
+    var observer = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting && !entry.target.classList.contains('split-revealed')) {
+          var title = entry.target;
+          title.classList.add('split-revealing');
+          
+          var chars = title.querySelectorAll('.split-char');
+          chars.forEach(function(char, i) {
+            char.style.transitionDelay = (i * charDelay) + 'ms';
+          });
+          
+          // Use requestAnimationFrame to ensure styles are applied before triggering
+          requestAnimationFrame(function() {
+            requestAnimationFrame(function() {
+              title.classList.add('split-revealed');
+              
+              // Clean up transition delays after animation completes
+              var totalDuration = chars.length * charDelay + 600; // 600ms base animation
+              setTimeout(function() {
+                chars.forEach(function(char) {
+                  char.style.transitionDelay = '';
+                });
+                title.classList.remove('split-revealing');
+              }, totalDuration);
+            });
+          });
+          
+          observer.unobserve(title);
+        }
+      });
+    }, { threshold: 0.2, rootMargin: '0px 0px -50px 0px' });
+    
+    titles.forEach(function(title) {
+      observer.observe(title);
+    });
+  })();
+
   /* ── Border beam — animated gradient border on hover ────────────────────── */
   (function() {
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;

@@ -3002,3 +3002,74 @@ heroInner.style.transform = 'rotateX(' + currentTiltX + 'deg) rotateY(' + (-curr
 - Whitespace rhythm audit across sections
 - Consider text reveal animations for section entrances
 - Review overall animation complexity — ensure cognitive load is reasonable
+
+---
+
+## Session 68 — 2026-03-27 (Opus 4.6) — POLISH
+
+### What I Did: Character-Split Wave Reveal for Section Titles
+
+Added a **character-by-character wave reveal animation** to all 11 section titles — each character is wrapped in a span and animates in with staggered timing as the section enters the viewport. The effect creates a satisfying "cascade" or "wave" as text appears.
+
+**How it works:**
+1. On page load, each `.section-title` is processed: text nodes are split into individual `<span class="split-char">` elements
+2. Title gets `aria-label` with original text for screen readers (characters are `aria-hidden`)
+3. IntersectionObserver watches each title with threshold 0.2
+4. When title enters viewport, each character gets a staggered `transition-delay` (20ms apart)
+5. Title receives `split-revealed` class, triggering CSS transitions
+6. Characters rise from below (`translateY(30px)`) with 3D rotation (`rotateX(-40deg)`) and fade in
+7. Spring easing (`cubic-bezier(0.34, 1.56, 0.64, 1)`) creates a bouncy, premium feel
+8. After animation completes, transition-delays are cleaned up
+
+**Animation details:**
+```css
+/* Hidden state */
+.split-ready .split-char {
+  opacity: 0;
+  transform: translateY(30px) rotateX(-40deg);
+  transform-origin: center bottom;
+  transition: 
+    opacity 0.5s cubic-bezier(0.34, 1.56, 0.64, 1),
+    transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Revealed state */
+.split-revealed .split-char {
+  opacity: 1;
+  transform: translateY(0) rotateX(0deg);
+}
+```
+
+**Timing:**
+- 20ms delay between each character
+- "Expert repair for every device" (30 chars) = 600ms total stagger
+- Plus 600ms animation duration = ~1.2s total
+- Creates a satisfying wave effect without feeling slow
+
+**Accessibility:**
+- Original text stored in `aria-label` on the title
+- Individual character spans have `aria-hidden="true"`
+- Screen readers see and announce the original text
+- `prefers-reduced-motion` completely disables the effect
+
+**Light mode:**
+- Slightly less dramatic transform (20px vs 30px, -30° vs -40°)
+- Still premium feeling but more subtle
+
+**Why this matters:**
+Typography animation is one of the hallmarks of premium web design. This effect:
+- Creates a "wow" moment as each section comes into view
+- Makes the page feel alive and responsive to user scrolling
+- Elevates the perception of quality and attention to detail
+- Works seamlessly with existing shimmer effects on titles
+
+**Files changed:**
+- `main.js` — Added `splitTextReveal` IIFE that wraps characters and sets up IntersectionObserver
+- `style.css` — Added `.split-char`, `.split-ready`, `.split-revealed` styles with transitions, light mode variant, reduced motion guard
+
+**Tested:** 11 titles processed ✓, 30 characters in first title ✓, IntersectionObserver triggers reveal ✓, staggered transition-delays applied ✓, characters animate from opacity 0 → 1 ✓, transforms reset to identity after animation ✓, cleanup removes transition-delays ✓, aria-label preserved ✓, reduced motion guard ✓, zero console errors ✓.
+
+**What's Next:**
+- Consider adding subtle color shift during character reveal (gradient wipe)
+- Whitespace rhythm audit across sections
+- Review overall animation complexity — ensure cognitive load is reasonable

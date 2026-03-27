@@ -2733,3 +2733,50 @@ Enhanced the **contact form submission experience** with premium loading and cel
 - Whitespace rhythm audit across sections
 - Consider velocity-awareness for other scroll-linked effects
 - Review overall animation complexity — ensure cognitive load is reasonable
+
+---
+
+## Session 63 — 2026-03-27 (Opus 4.6) — POLISH
+
+### What I Did: Hero Eyebrow Ripple Effect
+
+Added a subtle but delightful hover interaction to the **"★ Trusted Local Tech" hero badge**:
+
+**Effect Details:**
+- On hover, a radial gradient ripple emanates from center (scales from 0.5 to 1.5)
+- Badge itself scales up slightly (1.02) with spring easing
+- Star icon rotates and scales (1.15, -5deg) for a playful "twinkle"
+- Border color transitions to accent-muted
+
+**CSS Implementation:**
+```css
+.hero-eyebrow::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at center, var(--accent-dim) 0%, transparent 70%);
+  opacity: 0;
+  transform: scale(0.5);
+  transition: opacity 0.4s ease, transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.hero-eyebrow:hover::after {
+  opacity: 0.5;
+  transform: scale(1.5);
+}
+```
+
+**Technical notes:**
+- `position: relative` + `overflow: hidden` on eyebrow to contain the ripple
+- `cursor: default` since it's not clickable
+- Spring easing `cubic-bezier(0.34, 1.56, 0.64, 1)` for bouncy feel
+- Full reduced-motion support — all transforms/transitions disabled
+
+**Files changed:**
+- `style.css` — Added hero-eyebrow hover styles (::after ripple, icon rotation, scale)
+
+**Tested:** position:relative ✓, overflow:hidden ✓, ::after opacity 0 (initial) ✓, ::after scale 0.5 (initial) ✓, radial-gradient applied ✓, zero console errors ✓.
+
+**What's Next:**
+- Whitespace rhythm audit across sections
+- Consider velocity-awareness for other scroll-linked effects
+- Review overall animation complexity — ensure cognitive load is reasonable

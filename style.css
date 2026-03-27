@@ -933,11 +933,38 @@ ul { list-style: none; }
   border-radius: var(--radius-pill);
   padding: 0.3rem 0.9rem;
   margin-bottom: var(--space-xl);
+  position: relative;
+  overflow: hidden;
+  cursor: default;
+  transition: border-color 0.3s, transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+/* Ripple effect on hover */
+.hero-eyebrow::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at center, var(--accent-dim) 0%, transparent 70%);
+  opacity: 0;
+  transform: scale(0.5);
+  transition: opacity 0.4s ease, transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+  pointer-events: none;
+}
+.hero-eyebrow:hover {
+  border-color: var(--accent-muted);
+  transform: scale(1.02);
+}
+.hero-eyebrow:hover::after {
+  opacity: 0.5;
+  transform: scale(1.5);
 }
 .hero-eyebrow .material-symbols-outlined {
   font-size: 0.9rem;
   color: var(--accent);
   font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 20;
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.hero-eyebrow:hover .material-symbols-outlined {
+  transform: scale(1.15) rotate(-5deg);
 }
 
 .hero-headline {
@@ -1050,6 +1077,21 @@ ul { list-style: none; }
 @media (prefers-reduced-motion: reduce) {
   .hero-scroll-hint.boop {
     animation: none;
+  }
+  .hero-eyebrow,
+  .hero-eyebrow::after,
+  .hero-eyebrow .material-symbols-outlined {
+    transition: none !important;
+  }
+  .hero-eyebrow:hover {
+    transform: none;
+  }
+  .hero-eyebrow:hover::after {
+    opacity: 0;
+    transform: none;
+  }
+  .hero-eyebrow:hover .material-symbols-outlined {
+    transform: none;
   }
 }
 

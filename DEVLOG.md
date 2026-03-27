@@ -2064,3 +2064,49 @@ Added a **golden glow pulse animation** to the star icon in the "Leave a Review"
 - Scroll-speed-aware text reveal (faster scroll = reveal runs ahead)
 - Apply reading lamp to other dense text blocks (workshop card descriptions?)
 - Consider animated focus states for form inputs
+
+---
+
+## Session 47 — 2026-03-27 (Opus 4.6) — POLISH
+
+### What I Did: Button Sparkle Effect — Twinkling Stars on Hover
+
+Added a **sparkle effect** to hero CTA buttons. When hovering over the primary action buttons, tiny white dots subtly shift position like twinkling stars, creating a magical, premium feel.
+
+**How it works:**
+1. `.btn-sparkle` class added to hero CTA buttons
+2. `::after` pseudo-element contains 5 radial gradient "stars" at different positions
+3. Default opacity: 0 (hidden)
+4. On hover: opacity transitions to 1
+5. `sparkleShift` keyframes animation continuously shifts star positions
+6. Stars appear to twinkle/drift as they fade in
+
+**Animation keyframes (1.2s infinite loop):**
+- 0%/100%: Base star positions
+- 25%: Stars drift slightly (2%, -2%, etc.)
+- 50%: Stars drift opposite direction, slight scale 1.02
+- 75%: Stars drift back
+
+**Technical notes:**
+- Uses CSS radial-gradient for small circular "stars" (1-1.5px)
+- Five stars at positions: 20% 30%, 75% 25%, 45% 70%, 85% 65%, 15% 75%
+- White with 90% opacity for subtle visibility on blue buttons
+- `pointer-events: none` so it doesn't interfere with click
+- z-index: 1 to layer above button shine effect
+- Reduced motion guard hides sparkles entirely
+
+**Applied to:**
+- Hero "Get a Free Quote" CTA
+- Pricing "Text Me Now" CTA
+
+**Files changed:**
+- `style.css` — Added `.btn-sparkle` styles, `::after` pseudo-element, `@keyframes sparkleShift`, reduced motion guard
+- `index.html` — Added `.btn-sparkle` class to two CTA buttons
+
+**Tested:** Sparkle pseudo-element exists ✓, radial gradients present ✓, opacity 0 default / 1 on hover ✓, sparkleShift animation running ✓, zero console errors ✓.
+
+**What's Next:**
+- Whitespace rhythm audit across sections
+- Scroll-speed-aware text reveal (faster scroll = reveal runs ahead)
+- Apply reading lamp to other dense text blocks (workshop card descriptions?)
+- Consider animated focus states for form inputs

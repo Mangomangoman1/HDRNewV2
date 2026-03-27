@@ -754,5 +754,42 @@ Light mode shadows unchanged (they were already appropriate at 0.08/0.06/0.12).
 - 19 remaining `transition: all` rules to refine
 - Whitespace rhythm between sections (padding consistency)
 - Consider reducing total animation count for calmer sections
-- Hero section typography could benefit from similar treatment
 - Mobile typography sizing audit (clamp functions at small viewports)
+
+---
+
+## Session 15 — 2026-03-27 (Opus 4.6) — CRAFT
+
+### What I Refined: Hero Accent — Living Gradient
+
+**The idea:** The brief says "color that shifts — accent colors that respond to context, subtle palette shifts." The hero headline accent text had a static gradient (blue → purple). What if it breathed?
+
+**Before:** `linear-gradient(135deg, var(--accent) 0%, #a371f7 100%)` — static, frozen.
+
+**After:** A 4-stop gradient (accent blue → purple → cyan → accent blue) at `background-size: 300% 100%`, slowly panning via `heroGradientShift` over 10 seconds with `ease-in-out`. The text color shifts from blue through purple to cyan and back, like slow breathing.
+
+**Why 10 seconds, why ease-in-out:** The speed is deliberately slow enough that you don't notice the motion — you just feel the text is somehow more alive than static text. The ease-in-out curve means it dwells at the color extremes (blue and cyan endpoints) and moves faster through the middle, mimicking natural breathing rhythm.
+
+**Measured gradient shift:**
+- 0s: position ~1% (blue)
+- 1s: ~3.5% (still blue, ease-in slow start)
+- 2.5s: ~38.6% (shifting to purple)
+- 5s: ~99% (at cyan peak)
+- 6s: ~96% (beginning return)
+
+**The shimmer effect** (one-shot on page load, added by JS at 800ms) was made redundant. The `.shimmer` class is now a no-op that inherits the base animation — no more competing background-size/animation conflicts.
+
+**Theme-aware:** The gradient uses `var(--accent)` for the first and last stops, so in dark mode it's `#4f8ef7` (soft blue) and in light mode it's `#2563eb` (deeper blue). The purple and cyan middle stops work beautifully with both.
+
+**Reduced motion:** Covered by the existing blanket `animation-duration: 0.01ms !important` in the prefers-reduced-motion media query.
+
+**Files changed:**
+- `style.css` — modified hero-headline-accent gradient (6 lines), added keyframe (4 lines), neutralized shimmer class
+
+**Tested:** Dark mode, light mode, desktop (1280px), mobile (375px). Verified gradient positions shift over time with sampling. Zero console errors.
+
+**What still needs attention:**
+- 19 remaining `transition: all` rules to refine
+- Whitespace rhythm between sections
+- Mobile typography sizing audit
+- Consider whether other gradient elements (trust metrics, CTA buttons) could echo the hero's palette

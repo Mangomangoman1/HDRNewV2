@@ -725,10 +725,23 @@ ul { list-style: none; }
   margin-bottom: var(--space-xl);
 }
 .hero-headline-accent {
-  background: linear-gradient(135deg, var(--accent) 0%, #a371f7 100%);
+  background: linear-gradient(
+    135deg,
+    var(--accent) 0%,
+    #a371f7 40%,
+    #39c5cf 70%,
+    var(--accent) 100%
+  );
+  background-size: 300% 100%;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+  animation: heroGradientShift 10s ease-in-out infinite;
+}
+@keyframes heroGradientShift {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 }
 
 .hero-sub {
@@ -4684,9 +4697,10 @@ body {
   0% { background-position: -200% center; }
   100% { background-position: 200% center; }
 }
+/* Shimmer class no longer needed — heroGradientShift provides continuous living color.
+   Kept as no-op for backward compat with JS that adds the class. */
 .hero-headline-accent.shimmer {
-  background-size: 200% auto;
-  animation: shimmer 2s ease-in-out 1;
+  /* inherits base animation */
 }
 
 /* ─── ANIMATIONS ──────────────────────────────────────────── */

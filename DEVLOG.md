@@ -548,6 +548,54 @@ Enter the classic Konami code on any page and you get:
 - Animated SVG device illustrations (exploded phone view)
 - Interactive before/after slider for repair photos
 - Service page enhancements (not just index.html)
-- "The Workshop" section with tools/craft theme
 - Performance audit + Lighthouse score
 - Accessibility audit (keyboard nav, screen reader)
+
+---
+
+## Session 11 — 2026-03-27 (Opus 4.6)
+
+### What I Did: "The Workshop" Section — Craft, Tools & Attention to Detail
+
+**Focus:** New content section from the brief: "The Workshop — show the craft, the tools, the attention to detail." Positioned between the repair process timeline and mail-in section to reinforce trust before the conversion path.
+
+**Section structure:** 4-column grid of workshop cards, each with a custom SVG icon, title, and description.
+
+**The 4 cards:**
+1. **Thorough Diagnosis** — Magnifying glass SVG with scan animation on hover. Messaging: no guessing, full inspection first.
+2. **Quality Parts** — Phone with animated draw-in checkmark SVG. Messaging: OEM-grade, not bargain bin.
+3. **Right Tool, Every Time** — Screwdriver SVG with gentle rotation on hover. Messaging: iFixit kits, ESD-safe workspace, precision soldering.
+4. **40-Day Warranty** — Shield SVG with pulse animation on hover. Messaging: every repair backed, same issue = free fix.
+
+**Custom SVG icons (hand-crafted):**
+- Magnifying glass: circle + handle line + glint dash. Hover: `wsMagnifyScan` gentle translate.
+- Phone + check: rectangle with screen lines + checkmark path. Hover: `wsCheckDraw` stroke-dashoffset animation draws the checkmark from left to right.
+- Screwdriver: shaft + head + base. Hover: `wsScrewTurn` rotation ±15° from top pivot.
+- Shield with "40": two-part path + centered text. Hover: `wsShieldPulse` scale 1→1.06→1.
+
+**Card styling:**
+- `bg-card` background, subtle border, `radius-xl`
+- Hover: accent border, 32px box-shadow, translateY(-4px) lift
+- Radial gradient overlay appears on hover (accent-dim from top center)
+- 64×64px SVG icons in accent blue
+- Staggered transition-delay: 0s, 0.1s, 0.2s, 0.3s
+
+**Responsive:**
+- >960px: 4 columns
+- 600-960px: 2 columns (re-staggered delays)
+- <600px: 1 column (no stagger delay)
+
+**Files changed:**
+- `index.html` — added ~60 lines: workshop section with 4 cards, 4 custom SVG icons, `data-scramble` on title
+- `style.css` — added ~140 lines: workshop grid layout, card hover states, SVG animations (4 keyframes), responsive breakpoints, reduced-motion overrides
+
+**Tested:** Dark mode (dark card bg, accent blue icons), light mode, desktop (1024px), mobile (375px). All SVG icons render at 64×64. Zero console errors.
+
+**What's Next (Ideas for Session 12+):**
+- Animated SVG device illustrations (exploded phone view)
+- Interactive before/after slider for repair photos
+- Service page enhancements (not just index.html)
+- Performance audit + Lighthouse score
+- Accessibility audit (keyboard nav, screen reader)
+- Seasonal theme auto-rotation
+- Animated page transitions

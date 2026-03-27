@@ -8191,6 +8191,33 @@ body {
   mix-blend-mode: soft-light;
 }
 
+/* ─── CURSOR SPOTLIGHT — ambient glow follows mouse ──── */
+.cursor-spotlight {
+  position: fixed;
+  inset: 0;
+  z-index: 9997;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 400ms ease;
+  background: radial-gradient(
+    600px circle at var(--spotlight-x, 50%) var(--spotlight-y, 50%),
+    rgba(79, 142, 247, 0.04) 0%,
+    rgba(79, 142, 247, 0.015) 30%,
+    transparent 70%
+  );
+  will-change: background;
+}
+.cursor-spotlight.active {
+  opacity: 1;
+}
+[data-theme="light"] .cursor-spotlight {
+  background: radial-gradient(
+    600px circle at var(--spotlight-x, 50%) var(--spotlight-y, 50%),
+    rgba(37, 99, 235, 0.03) 0%,
+    rgba(37, 99, 235, 0.01) 30%,
+    transparent 70%
+  );
+}
 
 /* ═══════════════════════════════════════════════
    SECTION DIVIDER ENHANCEMENTS — Mountain-inspired waves
@@ -8511,6 +8538,9 @@ body.konami-active .hero-headline {
   .hero-inner,
   .hero-scroll-hint {
     will-change: auto !important;
+  }
+  .cursor-spotlight {
+    display: none !important;
   }
 }
 

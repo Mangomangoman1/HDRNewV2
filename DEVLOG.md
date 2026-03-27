@@ -1153,7 +1153,45 @@ Added specific light-mode overrides: gradient at 0.4 opacity, column heading bor
 
 **What's Next:**
 - Whitespace rhythm audit across sections
-- Scroll-linked parallax for hero mountains
 - Animation budget audit (count total keyframes, ensure total animation weight is reasonable)
-- Consider adding scroll-based opacity fade to the noise overlay
 - Footer links could get staggered entrance within each column
+- Consider scroll-based opacity fade to the noise overlay
+
+---
+
+## Session 24 — 2026-03-27 (Opus 4.6) — BOLD
+
+### What I Did: Cursor Spotlight — Ambient Glow That Follows the Mouse
+
+A subtle accent-colored radial glow follows the user's cursor across the entire page. It's like carrying a flashlight — you barely notice it consciously, but the page feels alive and responsive to your presence. This is the kind of effect that makes premium sites feel premium (Linear, Stripe, Vercel all use variants of this).
+
+**Implementation:**
+- Added a `<div class="cursor-spotlight">` element (fixed, full viewport, pointer-events: none)
+- CSS uses `radial-gradient(600px circle at var(--spotlight-x) var(--spotlight-y), ...)` — the gradient position is controlled via CSS custom properties
+- JS tracks `mousemove` and uses `requestAnimationFrame` with linear interpolation (LERP 0.12) for buttery smooth trailing motion
+- Spotlight fades in (opacity 0 → 1 with 400ms transition) when mouse enters, fades out when mouse leaves
+- Z-index 9997 — above page content but below noise overlay (9998) so the grain texture appears on top of the glow
+
+**Colors:**
+- Dark mode: `rgba(79, 142, 247, 0.04)` center → `rgba(79, 142, 247, 0.015)` mid → transparent
+- Light mode: `rgba(37, 99, 235, 0.03)` center → `rgba(37, 99, 235, 0.01)` mid → transparent
+
+**Guards:**
+- Only activates on pointer/hover devices (no mobile touch)
+- Respects `prefers-reduced-motion` (both JS guard and CSS `display: none !important`)
+- Uses `pointer-events: none` — never blocks interaction with anything
+
+**Technical note:** Headless browsers don't report `pointer: fine` or `hover: hover` media queries, so automated testing requires manual DOM manipulation. On real desktop browsers with a mouse, the effect activates automatically.
+
+**Files changed:**
+- `index.html` — 1 line: added `.cursor-spotlight` div after noise overlay
+- `style.css` — ~30 lines: spotlight positioning, gradient, transitions, light mode override, reduced-motion guard
+- `main.js` — ~50 lines: IIFE with mousemove tracking, LERP interpolation, rAF loop, mouseenter/leave lifecycle
+
+**Tested:** Dark mode gradient ✓, light mode gradient ✓, zero console errors, pointer-events: none verified, z-index layering correct, reduced-motion respected.
+
+**What's Next:**
+- Whitespace rhythm audit across sections
+- Animation budget audit (count total keyframes + rAF loops)
+- Footer link stagger within columns
+- Consider making spotlight color context-aware (green near trust metrics, purple near hero accent)

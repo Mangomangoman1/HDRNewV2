@@ -2083,3 +2083,64 @@
     errorObserver.observe(formError, { attributes: true });
   }
 })();
+
+
+/* ═══════════════════════════════════════════════
+   CURSOR SPOTLIGHT — ambient glow follows mouse
+   Creates a subtle accent-colored radial glow
+   that tracks the cursor across the entire page.
+   Only on pointer devices, respects reduced-motion.
+═══════════════════════════════════════════════ */
+(function() {
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  var hasPointer = window.matchMedia('(pointer: fine)').matches || window.matchMedia('(hover: hover)').matches;
+  if (!hasPointer) return;
+
+  var spotlight = document.querySelector('.cursor-spotlight');
+  if (!spotlight) return;
+
+  var rafId = null;
+  var targetX = 0;
+  var targetY = 0;
+  var currentX = 0;
+  var currentY = 0;
+  var isActive = false;
+
+  // Smooth interpolation for buttery movement
+  var LERP = 0.12;
+
+  document.addEventListener('mousemove', function(e) {
+    targetX = e.clientX;
+    targetY = e.clientY;
+
+    if (!isActive) {
+      isActive = true;
+      currentX = targetX;
+      currentY = targetY;
+      spotlight.classList.add('active');
+      tick();
+    }
+  }, { passive: true });
+
+  document.addEventListener('mouseleave', function() {
+    isActive = false;
+    spotlight.classList.remove('active');
+    if (rafId) {
+      cancelAnimationFrame(rafId);
+      rafId = null;
+    }
+  });
+
+  function tick() {
+    if (!isActive) return;
+
+    // Lerp toward target for smooth trailing
+    currentX += (targetX - currentX) * LERP;
+    currentY += (targetY - currentY) * LERP;
+
+    spotlight.style.setProperty('--spotlight-x', currentX.toFixed(1) + 'px');
+    spotlight.style.setProperty('--spotlight-y', currentY.toFixed(1) + 'px');
+
+    rafId = requestAnimationFrame(tick);
+  }
+})();

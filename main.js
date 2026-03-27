@@ -621,10 +621,32 @@
   // Store mouse offsets for composing with scroll parallax
   var heroMouseX = 0, heroMouseY = 0;
   if (!prefersReducedMotion) {
-    const heroGlows = document.querySelectorAll('.hero-glow, .hero-glow-1');
+    const heroGlows = document.querySelectorAll('.hero-glow, .hero-glow-1, .hero-glow-2');
     if (heroGlows.length) {
       let ticking = false;
+      let breathingIdleTimer = null;
+      const IDLE_DELAY = 3000; // Resume breathing after 3s of no mouse
+      
+      // Start breathing on page load
+      setTimeout(() => {
+        heroGlows.forEach(glow => glow.classList.add('breathing'));
+      }, 2000); // Wait for entrance animations
+      
+      function pauseBreathing() {
+        heroGlows.forEach(glow => glow.classList.remove('breathing'));
+        clearTimeout(breathingIdleTimer);
+        breathingIdleTimer = setTimeout(() => {
+          // Only resume if hero is still visible
+          if (window.scrollY < window.innerHeight) {
+            heroGlows.forEach(glow => glow.classList.add('breathing'));
+          }
+        }, IDLE_DELAY);
+      }
+      
       document.addEventListener('mousemove', (e) => {
+        // Pause breathing on any mouse movement
+        pauseBreathing();
+        
         if (ticking) return;
         ticking = true;
         requestAnimationFrame(() => {

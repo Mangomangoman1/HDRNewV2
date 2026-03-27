@@ -1592,4 +1592,45 @@ Added a subtle scale-up effect when form inputs receive focus — creates tactil
 - Consider applying text reveal to pricing description paragraphs
 - Consider adding subtle tilt to the pricing-statement-inner block
 - Scroll-speed-aware reveal (faster scroll = faster reveal)
-- Button ripple effect on click (Material-style)
+
+---
+
+## Session 35 — 2026-03-27 (Opus 4.6) — POLISH
+
+### What I Did: Hero Glow "Breathing" Idle Animation
+
+Added a subtle ambient pulse animation to the hero glow blobs when there's no mouse activity. Makes the page feel alive even when idle.
+
+**How it works:**
+1. Breathing starts 2 seconds after page load (after entrance animations)
+2. Glows gently pulse: scale 1 → 1.08, opacity 0.4 → 0.55, slight drift
+3. Animation is 6 seconds with infinite loop
+4. glow-2 has -3s offset for organic, non-synchronized feel
+5. Any mouse movement pauses breathing immediately
+6. Breathing resumes after 3 seconds of idle (if hero is still visible)
+
+**CSS animation:**
+```css
+@keyframes glowBreathe {
+  0%, 100% { transform: scale(1) translate(0, 0); opacity: 0.4; }
+  50% { transform: scale(1.08) translate(5px, -3px); opacity: 0.55; }
+}
+```
+
+**JS logic:**
+- setTimeout adds `.breathing` class 2s after load
+- mousemove removes `.breathing` and starts 3s idle timer
+- Idle timer re-adds `.breathing` only if scrollY < innerHeight
+
+**Files changed:**
+- `style.css` — Added glowBreathe keyframes, .breathing class, reduced-motion support
+- `main.js` — Added breathing state management with idle detection
+
+**Tested:** Breathing starts after 2s ✓, pauses on mousemove ✓, resumes after 3s idle ✓, reduced-motion respected ✓, zero console errors ✓.
+
+**What's Next:**
+- Whitespace rhythm audit across sections
+- Consider applying text reveal to pricing description paragraphs
+- Consider adding subtle tilt to the pricing-statement-inner block
+- Scroll-speed-aware reveal (faster scroll = faster reveal)
+- Sticky nav shadow intensity based on scroll depth

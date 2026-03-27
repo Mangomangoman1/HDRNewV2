@@ -838,6 +838,58 @@
     });
   }
 
+  /* ── Text luminance reveal — scroll-linked gradient text wipe ────────── */
+  (function() {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    var reveals = document.querySelectorAll('[data-text-reveal]');
+    if (!reveals.length) return;
+
+    function updateReveal() {
+      var vh = window.innerHeight;
+      reveals.forEach(function(el) {
+        if (el.classList.contains('text-revealed')) return;
+        var rect = el.getBoundingClientRect();
+        // Start revealing when element enters viewport, complete when center of element reaches 40% from top
+        var start = vh * 0.85;   // element entering bottom 85% of viewport
+        var end = vh * 0.25;     // element well into view (top 25%)
+        var current = rect.top + rect.height / 2;
+        var progress;
+        if (current >= start) {
+          progress = 0;
+        } else if (current <= end) {
+          progress = 100;
+        } else {
+          progress = ((start - current) / (start - end)) * 100;
+        }
+        // Apply easeOutCubic for a natural deceleration at the end
+        var t = progress / 100;
+        var eased = 1 - Math.pow(1 - t, 3);
+        var easedProgress = eased * 100;
+        el.style.setProperty('--reveal-progress', easedProgress.toFixed(1));
+        // Lock when fully revealed to remove gradient overhead
+        if (progress >= 100) {
+          el.classList.add('text-revealed');
+          el.style.removeProperty('--reveal-progress');
+        }
+      });
+    }
+
+    var ticking = false;
+    function onScroll() {
+      if (!ticking) {
+        requestAnimationFrame(function() {
+          updateReveal();
+          ticking = false;
+        });
+        ticking = true;
+      }
+    }
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    // Initial check (elements might already be in view)
+    updateReveal();
+  })();
+
   /* ── Border beam — animated gradient border on hover ────────────────────── */
   (function() {
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;

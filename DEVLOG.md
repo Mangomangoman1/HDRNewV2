@@ -1354,3 +1354,59 @@ The `@property` registration enables smooth interpolation of the angle value (0�
 - Individual hero button stagger (left arrives before right)
 - Spring tilt for Workshop + pricing cards
 - Consider making beam speed vary with cursor velocity
+
+---
+
+## Session 29 — 2026-03-27 (Opus 4.6) — BOLD
+
+### What I Did: Text Luminance Reveal — Scroll-Linked Gradient Wipe on Section Subtitles
+
+Added a **scroll-driven text color reveal** to all 8 section subtitles. Text starts nearly invisible (25% opacity of muted color) and progressively "lights up" left-to-right as the user scrolls, like reading in the dark with a slowly widening beam of light. Inspired by Apple's product page scroll-driven text effects.
+
+**The Effect:**
+Each `.section-sub[data-text-reveal]` uses `background-clip: text` with a horizontal linear gradient from `var(--text-secondary)` (bright/readable) to `rgba(126, 138, 153, 0.25)` (dim/nearly invisible). A CSS custom property `--reveal-progress` (0–100) controls where the gradient split falls, creating a soft left-to-right wipe.
+
+**Gradient structure:**
+```
+linear-gradient(90deg,
+  bright 0%,
+  bright calc(progress - 8%),   ← fully lit zone
+  dim    calc(progress + 8%),   ← fully dim zone
+  dim    100%
+)
+```
+The 16% transition zone (±8% around the progress point) creates a soft, natural feathered edge — not a hard wipe line but a gentle luminance gradient that mimics light spreading.
+
+**Scroll-to-progress mapping:**
+- Uses `requestAnimationFrame`-throttled scroll listener (passive)
+- Each element's center position mapped to viewport zone: `vh * 0.85` (start) → `vh * 0.25` (end)
+- Applied `easeOutCubic` easing: `1 - (1 - t)³` — fast initial reveal, satisfying deceleration at the end
+- About 60% of viewport height of scroll travel to complete the reveal
+
+**Lifecycle:**
+1. **Initial:** Text at `--reveal-progress: 0` — entire gradient is dim, text is barely visible
+2. **Scrolling:** Progress increases, bright zone expands left-to-right
+3. **Complete:** `text-revealed` class added, gradient removed entirely, text set to normal `color: var(--text-secondary)` — zero ongoing GPU overhead
+
+**Dark vs Light mode:**
+- Dark mode: bright = `#8b949e` (text-secondary), dim = `rgba(126, 138, 153, 0.25)` on dark bg → text dramatically emerges from near-invisibility
+- Light mode: bright = `#4b5563` (text-secondary), dim = `rgba(126, 138, 153, 0.25)` on light bg → text gently solidifies from ghostly gray
+
+**Reduced motion:** Full `prefers-reduced-motion` guard — text shows at full brightness immediately, no gradient, no scroll tracking.
+
+**Design decision:** Chose `rgba(126, 138, 153, 0.25)` for the dim color instead of `var(--text-muted)` because the contrast between `--text-secondary` and `--text-muted` was too subtle (only ~30 RGB units) — the reveal would be barely noticeable. The 25% opacity creates dramatic contrast where text literally appears from near-nothingness.
+
+**Files changed:**
+- `style.css` — `[data-text-reveal]` gradient rules, `.text-revealed` cleanup class, reduced-motion guard (~40 lines)
+- `index.html` — Added `data-text-reveal` to all 8 `.section-sub` elements
+- `main.js` — Scroll-linked reveal IIFE: rAF-throttled scroll listener, viewport zone mapping, easeOutCubic, class lock on completion (~50 lines)
+
+**Tested:** Light mode gradient correct (rgb(75,85,99) → rgba(126,138,153,0.25)) ✓, dark mode gradient correct (rgb(139,148,158) → rgba(126,138,153,0.25)) ✓, progressive scroll reveals (0% → 19% → 72% → 90% → 100%) ✓, text-revealed class locks final state ✓, gradient removed after reveal (zero overhead) ✓, zero console errors ✓.
+
+**What's Next:**
+- Whitespace rhythm audit across sections
+- Animation budget audit (count total keyframes + rAF loops)
+- Individual hero button stagger (left arrives before right)
+- Spring tilt for Workshop + pricing cards
+- Consider applying text reveal to pricing description paragraphs
+- Consider scroll-speed-aware reveal (faster scroll = reveal ahead)

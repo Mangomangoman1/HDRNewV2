@@ -5527,6 +5527,51 @@ body {
   }
 }
 
+/* ── TEXT LUMINANCE REVEAL — scroll-linked gradient text wipe ── */
+/* Text starts dim and "lights up" left→right as user scrolls,
+   like reading in the dark with a widening beam of light.
+   Uses background-clip: text with a gradient controlled by
+   --reveal-progress (0→100, set by JS scroll observer). */
+
+[data-text-reveal] {
+  --reveal-progress: 0;
+  --reveal-bright: var(--text-secondary);
+  /* Dim is much lighter/darker than text-muted for dramatic contrast */
+  --reveal-dim: rgba(126, 138, 153, 0.25);
+  background: linear-gradient(
+    90deg,
+    var(--reveal-bright) 0%,
+    var(--reveal-bright) calc(var(--reveal-progress) * 1% - 8%),
+    var(--reveal-dim) calc(var(--reveal-progress) * 1% + 8%),
+    var(--reveal-dim) 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  transition: none; /* JS drives the progress, no CSS transition needed */
+}
+
+/* Once fully revealed, lock to bright color (no gradient overhead) */
+[data-text-reveal].text-revealed {
+  background: none;
+  -webkit-background-clip: initial;
+  background-clip: initial;
+  -webkit-text-fill-color: initial;
+  color: var(--text-secondary);
+}
+
+/* Reduced motion — show text immediately at full brightness */
+@media (prefers-reduced-motion: reduce) {
+  [data-text-reveal] {
+    background: none !important;
+    -webkit-background-clip: initial !important;
+    background-clip: initial !important;
+    -webkit-text-fill-color: initial !important;
+    color: var(--text-secondary) !important;
+  }
+}
+
 /* ─── ENHANCED BUTTON HOVER ───────────────────────────────── */
 .btn-primary {
   position: relative;

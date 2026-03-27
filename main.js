@@ -625,6 +625,98 @@
     }
     window.addEventListener('scroll', updateProgress, { passive: true });
     updateProgress();
+
+    // ─── Section landmarks on progress bar ──────────────────
+    // Add small dots indicating section positions on the progress bar
+    (function sectionLandmarksInit() {
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+      // Key sections to show as landmarks (not all sections, just main ones)
+      var landmarkSections = [
+        'services', 'pricing', 'process', 'workshop',
+        'mailin', 'area', 'compare', 'faq', 'contact'
+      ];
+
+      var landmarks = [];
+      var container = document.createElement('div');
+      container.className = 'progress-landmarks';
+      container.setAttribute('aria-hidden', 'true');
+      progressBar.appendChild(container);
+
+      // Create landmark dots
+      landmarkSections.forEach(function(id) {
+        var section = document.getElementById(id);
+        if (!section) return;
+
+        var dot = document.createElement('div');
+        dot.className = 'progress-landmark';
+        dot.dataset.section = id;
+        container.appendChild(dot);
+
+        landmarks.push({ id: id, element: section, dot: dot });
+      });
+
+      // Calculate and update landmark positions
+      function updateLandmarkPositions() {
+        var docHeight = document.documentElement.scrollHeight - window.innerHeight;
+        if (docHeight <= 0) return;
+
+        landmarks.forEach(function(landmark) {
+          var rect = landmark.element.getBoundingClientRect();
+          var sectionTop = rect.top + window.scrollY;
+          var position = (sectionTop / docHeight) * 100;
+
+          // Clamp between 1% and 99% to keep dots visible
+          position = Math.max(1, Math.min(position, 99));
+          landmark.dot.style.left = position + '%';
+          landmark.position = position;
+        });
+      }
+
+      // Update which landmark is active based on scroll position
+      function updateActiveLandmark() {
+        var scrollTop = window.scrollY;
+        var viewMid = scrollTop + window.innerHeight / 2;
+
+        landmarks.forEach(function(landmark) {
+          var rect = landmark.element.getBoundingClientRect();
+          var sectionTop = rect.top + scrollTop;
+          var sectionBot = sectionTop + rect.height;
+
+          if (viewMid >= sectionTop && viewMid < sectionBot) {
+            landmark.dot.classList.add('active');
+          } else {
+            landmark.dot.classList.remove('active');
+          }
+        });
+      }
+
+      // Initial positioning
+      updateLandmarkPositions();
+      updateActiveLandmark();
+
+      // Update on scroll (throttled with RAF)
+      var ticking = false;
+      window.addEventListener('scroll', function() {
+        if (!ticking) {
+          requestAnimationFrame(function() {
+            updateActiveLandmark();
+            ticking = false;
+          });
+          ticking = true;
+        }
+      }, { passive: true });
+
+      // Update positions on resize
+      var resizeTimer;
+      window.addEventListener('resize', function() {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(function() {
+          updateLandmarkPositions();
+          updateActiveLandmark();
+        }, 100);
+      });
+    })();
   }
 
   // ─── Hero typing effect (rotating taglines) ─────────────

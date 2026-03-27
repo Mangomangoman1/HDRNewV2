@@ -5869,6 +5869,53 @@ button[type="submit"].btn-error {
   pointer-events: none;
 }
 
+/* ─── SCROLL PROGRESS LANDMARKS ───────────────────────────── */
+/* Small dots indicating section positions along the progress bar */
+.progress-landmarks {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.progress-landmark {
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 4px;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.25);
+  border-radius: 50%;
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
+              background 0.3s ease,
+              box-shadow 0.3s ease;
+}
+
+/* Active landmark — currently viewed section */
+.progress-landmark.active {
+  transform: translate(-50%, -50%) scale(1.8);
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 0 6px 2px var(--accent-glow);
+}
+
+/* Light mode adjustments */
+[data-theme="light"] .progress-landmark {
+  background: rgba(0, 0, 0, 0.15);
+}
+[data-theme="light"] .progress-landmark.active {
+  background: rgba(0, 0, 0, 0.6);
+  box-shadow: 0 0 6px 2px rgba(37, 99, 235, 0.3);
+}
+
+/* Reduced motion — disable transitions */
+@media (prefers-reduced-motion: reduce) {
+  .progress-landmark {
+    transition: none;
+  }
+}
+
 /* ─── PAGE LOAD ANIMATION ─────────────────────────────────── */
 body {
   animation: pageIn 0.4s ease-out both;

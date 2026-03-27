@@ -2885,3 +2885,69 @@ Magnetic effects are a hallmark of premium web design (seen on sites like Linear
 - Whitespace rhythm audit across sections
 - Consider velocity-awareness for other scroll-linked effects
 - Review overall animation complexity — ensure cognitive load is reasonable
+
+---
+
+## Session 66 — 2026-03-27 (Opus 4.6) — POLISH
+
+### What I Did: Scroll Progress Section Landmarks
+
+Added **section landmarks to the scroll progress bar** — small dots indicating the positions of major sections along the page. As users scroll, the current section's landmark scales up and glows, creating a visual "table of contents" in the progress bar.
+
+**How it works:**
+1. JS calculates the scroll position of 9 key sections (services, pricing, process, workshop, mailin, area, compare, faq, contact)
+2. Creates small dots positioned along the progress bar at each section's relative position
+3. As user scrolls, the landmark nearest to viewport center gains `.active` class
+4. Active landmark scales up (1.8x) with spring easing and gains a glowing accent-colored shadow
+
+**Implementation details:**
+```javascript
+// Key sections to show as landmarks
+var landmarkSections = [
+  'services', 'pricing', 'process', 'workshop',
+  'mailin', 'area', 'compare', 'faq', 'contact'
+];
+
+// Calculate position based on section offset
+var position = (sectionTop / docHeight) * 100;
+```
+
+**Visual design:**
+```css
+.progress-landmark {
+  width: 4px;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.25);
+  border-radius: 50%;
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.progress-landmark.active {
+  transform: translate(-50%, -50%) scale(1.8);
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 0 6px 2px var(--accent-glow);
+}
+```
+
+**Why this matters:**
+The scroll progress bar now serves as more than just "how far you've scrolled" — it's a visual map of the page structure. Users can glance at the top and see:
+- How many major sections exist
+- Where they are in the journey
+- Roughly how much content remains
+
+This creates a sense of navigation awareness without adding UI clutter.
+
+**Performance considerations:**
+- Active state updates use RAF throttling to prevent jank
+- Position calculations happen once on load and on resize only
+- Uses transform for the scale animation (GPU-accelerated)
+
+**Files changed:**
+- `style.css` — Added `.progress-landmarks` container and `.progress-landmark` dot styles with active state, light mode variant, reduced motion guard
+- `main.js` — Added `sectionLandmarksInit` IIFE that creates landmarks, calculates positions, and updates active state on scroll
+
+**Tested:** 9 landmarks created ✓, positioned correctly across progress bar (services at 9%, pricing at 27%, faq at 81%, etc.) ✓, active class toggles on scroll ✓, active transform shows scale(1.8) ✓, spring easing applied ✓, resize handling ✓, reduced motion support ✓, zero console errors ✓.
+
+**What's Next:**
+- Whitespace rhythm audit across sections
+- Consider velocity-awareness for other scroll-linked effects
+- Review overall animation complexity — ensure cognitive load is reasonable

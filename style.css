@@ -3,6 +3,13 @@
    Dark theme inspired by codewiki.google design language
    ═══════════════════════════════════════════════════════════ */
 
+/* ── @property for GPU-accelerated gradient angle animation ── */
+@property --border-angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
 /* ── Theme transition — circular reveal from toggle button ── */
 
 /* Fallback crossfade when clip-path reveal not supported */
@@ -5400,6 +5407,124 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .card-glare { display: none; }
   .card-tilt { will-change: auto; }
+}
+
+/* ── BORDER BEAM — Animated gradient border on key elements ── */
+/* Uses conic-gradient with rotating --border-angle for a light
+   beam that traces around the card perimeter. The technique uses
+   double-layer background: card bg on padding-box covers center,
+   conic gradient on border-box shows through at edges. */
+
+@keyframes borderBeamSpin {
+  to { --border-angle: 360deg; }
+}
+
+/* Always-on border beam (pricing highlight) */
+.card.card--highlight.border-beam {
+  border: 2px solid transparent !important;
+  background:
+    linear-gradient(var(--bg-card), var(--bg-card)) padding-box,
+    conic-gradient(
+      from var(--border-angle),
+      transparent 25%,
+      rgba(79, 142, 247, 0.9) 30%,
+      rgba(163, 113, 247, 0.7) 38%,
+      rgba(57, 197, 207, 0.6) 45%,
+      transparent 50%
+    ) border-box !important;
+  animation: borderBeamSpin 3.5s linear infinite;
+}
+
+/* Hover-activated border beam — service cards */
+.card.card-tilt.border-beam-hover.border-beam-active {
+  border: 2px solid transparent !important;
+  background:
+    linear-gradient(var(--bg-card), var(--bg-card)) padding-box,
+    conic-gradient(
+      from var(--border-angle),
+      transparent 30%,
+      rgba(79, 142, 247, 0.7) 35%,
+      rgba(163, 113, 247, 0.5) 42%,
+      transparent 48%
+    ) border-box !important;
+  animation: borderBeamSpin 3s linear infinite;
+}
+
+/* Workshop cards */
+.workshop-card.border-beam-hover.border-beam-active {
+  border: 2px solid transparent !important;
+  background:
+    linear-gradient(var(--bg-card), var(--bg-card)) padding-box,
+    conic-gradient(
+      from var(--border-angle),
+      transparent 30%,
+      rgba(79, 142, 247, 0.7) 35%,
+      rgba(163, 113, 247, 0.5) 42%,
+      transparent 48%
+    ) border-box !important;
+  animation: borderBeamSpin 3s linear infinite;
+}
+
+/* GBP cards — uses Google brand colors */
+.gbp-card.border-beam-hover.border-beam-active {
+  border: 2px solid transparent !important;
+  background:
+    linear-gradient(var(--bg-card), var(--bg-card)) padding-box,
+    conic-gradient(
+      from var(--border-angle),
+      transparent 30%,
+      rgba(66, 133, 244, 0.7) 35%,
+      rgba(52, 168, 83, 0.5) 40%,
+      rgba(251, 188, 4, 0.5) 45%,
+      transparent 50%
+    ) border-box !important;
+  animation: borderBeamSpin 3s linear infinite;
+}
+
+/* Light mode beam colors — slightly different tones */
+[data-theme="light"] .card.card--highlight.border-beam {
+  background:
+    linear-gradient(var(--bg-card), var(--bg-card)) padding-box,
+    conic-gradient(
+      from var(--border-angle),
+      transparent 25%,
+      rgba(37, 99, 235, 0.8) 30%,
+      rgba(139, 92, 246, 0.6) 38%,
+      rgba(6, 182, 212, 0.5) 45%,
+      transparent 50%
+    ) border-box !important;
+}
+[data-theme="light"] .card.card-tilt.border-beam-hover.border-beam-active {
+  background:
+    linear-gradient(var(--bg-card), var(--bg-card)) padding-box,
+    conic-gradient(
+      from var(--border-angle),
+      transparent 30%,
+      rgba(37, 99, 235, 0.6) 35%,
+      rgba(139, 92, 246, 0.5) 42%,
+      transparent 48%
+    ) border-box !important;
+}
+[data-theme="light"] .workshop-card.border-beam-hover.border-beam-active {
+  background:
+    linear-gradient(var(--bg-card), var(--bg-card)) padding-box,
+    conic-gradient(
+      from var(--border-angle),
+      transparent 30%,
+      rgba(37, 99, 235, 0.6) 35%,
+      rgba(139, 92, 246, 0.5) 42%,
+      transparent 48%
+    ) border-box !important;
+}
+
+/* Reduced motion — static accent border, no animation */
+@media (prefers-reduced-motion: reduce) {
+  .card.card--highlight.border-beam,
+  .border-beam-active {
+    animation: none !important;
+    border: 2px solid var(--accent) !important;
+    background: var(--bg-card) !important;
+  }
 }
 
 /* ─── ENHANCED BUTTON HOVER ───────────────────────────────── */

@@ -838,6 +838,19 @@
     });
   }
 
+  /* ── Border beam — animated gradient border on hover ────────────────────── */
+  (function() {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    document.querySelectorAll('.border-beam-hover').forEach(function(el) {
+      el.addEventListener('mouseenter', function() {
+        el.classList.add('border-beam-active');
+      });
+      el.addEventListener('mouseleave', function() {
+        el.classList.remove('border-beam-active');
+      });
+    });
+  })();
+
   /* ── 3D card tilt with specular glare + dynamic shadow ────────────────────── */
   (function() {
     var prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;

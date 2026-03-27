@@ -1311,3 +1311,46 @@ Shadow position shifts opposite to tilt direction — when the card tilts right,
 - Animation budget audit (count total keyframes + rAF loops)
 - Individual hero button stagger (left arrives before right)
 - Consider applying same spring tilt to Workshop cards and pricing cards
+
+---
+
+## Session 28 — 2026-03-27 (Opus 4.6) — BOLD
+
+### What I Did: Border Beam — Animated Gradient Border That Traces Card Perimeters
+
+Added a **rotating conic-gradient border beam** effect to cards across the site — a light trail that continuously traces around the card perimeter, creating a mesmerizing "living border" effect.
+
+**Technical Implementation:**
+Uses CSS `@property --border-angle` (registered as `<angle>`) for GPU-accelerated animation of the conic gradient rotation angle. The double-layer background technique:
+- Layer 1: `linear-gradient(var(--bg-card), var(--bg-card)) padding-box` — solid fill covers the card interior
+- Layer 2: `conic-gradient(from var(--border-angle), ...) border-box` — rotating gradient visible only at the border
+
+The `@property` registration enables smooth interpolation of the angle value (0° → 360°), which isn't possible with regular CSS custom properties.
+
+**Three application modes:**
+
+1. **Pricing highlight card** (`border-beam` class) — always-on, 3.5s rotation, brighter beam colors (0.9 blue, 0.7 purple, 0.6 cyan). This is the premium "recommended" card — the border beam draws the eye immediately.
+
+2. **Service cards + Workshop cards** (`border-beam-hover` class) — activates on hover via JS class toggle (`border-beam-active`). 3s rotation, standard beam colors. The beam appears instantly on mouseenter and disappears on mouseleave.
+
+3. **GBP cards** (`border-beam-hover` + custom gradient) — uses Google brand colors (blue #4285f4, green #34a853, yellow #fbbc04) in the conic gradient instead of the accent palette.
+
+**Debugging note:** Initial implementation used `--beam-bg: var(--bg-card)` intermediate variable, but `var()` resolution inside `background` shorthand failed silently in Chrome — the entire declaration was dropped. Fixed by using `var(--bg-card)` directly in each background rule. This is a known CSS variable resolution edge case with multi-layer backgrounds.
+
+**Dark/Light mode:** Both themes have explicit conic-gradient rules. Dark mode uses the default accent colors (blue 0.7, purple 0.5), light mode uses adjusted tones (blue 0.6, purple 0.5). The `var(--bg-card)` in the padding-box layer ensures the center fill always matches the card background.
+
+**Reduced motion:** Static accent-colored border, no animation. Clean fallback.
+
+**Files changed:**
+- `style.css` — `@property --border-angle`, `@keyframes borderBeamSpin`, `.border-beam` (always-on), `.border-beam-hover.border-beam-active` (hover), dark/light variants, GBP Google-colored variant, reduced-motion fallback
+- `index.html` — Added `border-beam` to pricing highlight card, `border-beam-hover` to 7 service cards + 4 workshop cards + 3 GBP cards
+- `main.js` — Border beam hover IIFE: mouseenter adds `border-beam-active`, mouseleave removes it
+
+**Tested:** Pricing highlight always spinning ✓, angle progression verified (287°→318° in 300ms) ✓, service card hover activates/deactivates beam ✓, workshop card hover ✓, GBP card hover ✓, dark mode (bg-card: rgb(26,32,51)) ✓, light mode (bg-card: rgb(255,255,255)) ✓, zero console errors ✓.
+
+**What's Next:**
+- Whitespace rhythm audit across sections
+- Animation budget audit (count total keyframes + rAF loops — now at 28+ sessions of effects)
+- Individual hero button stagger (left arrives before right)
+- Spring tilt for Workshop + pricing cards
+- Consider making beam speed vary with cursor velocity

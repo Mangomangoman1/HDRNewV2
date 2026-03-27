@@ -793,3 +793,46 @@ Light mode shadows unchanged (they were already appropriate at 0.08/0.06/0.12).
 - Whitespace rhythm between sections
 - Mobile typography sizing audit
 - Consider whether other gradient elements (trust metrics, CTA buttons) could echo the hero's palette
+
+---
+
+## Session 16 — 2026-03-27 (Opus 4.6) — BOLD
+
+### What I Did: Fixed Timeline SVG Animations + Active Step Accent Border
+
+**The discovery:** The custom SVG icon draw-in animations from Session 1 (chat bubble drawing itself, magnifying glass appearing, checkmark completing, wrench turning, shield filling) have been **completely broken since they were created**. The CSS targeted `.timeline-step.animated` but the JS only ever added `.visible` via the data-animate IntersectionObserver. The `.animated` class was never applied to timeline steps. This means:
+- SVG stroke-dashoffset animations never fired
+- Dot ripple effect never played
+- Dot scale-up never happened
+- Dot accent border never appeared
+- Typing dots bounce never started
+- Wrench sparks never appeared
+- Shield checkmark never drew in
+
+31 CSS rules were entirely dead.
+
+**The fix:** Replaced all 31 instances of `.timeline-step.animated` with `.timeline-step.visible` in style.css. Zero HTML or major JS changes needed. Now when you scroll through the "How It Works" timeline:
+
+1. **Step 1 (Text me)**: Chat bubble draws in stroke-by-stroke, tail appears, three dots bounce like typing
+2. **Step 2 (Diagnosis)**: Magnifying glass circle draws, handle extends, pulse appears
+3. **Step 3 (Approve)**: Circle draws, checkmark completes with a draw-in animation
+4. **Step 4 (Repair)**: Wrench path draws in, sparks appear
+5. **Step 5 (Done)**: Shield outlines, then checkmark draws inside it
+
+Each dot scales to 1.08x, gets an accent blue border, glowing box-shadow, and a ripple effect. The final done step gets green treatment.
+
+**Active step accent border:** Added a 3px left border on `.timeline-content` that appears in accent blue when the step becomes visible. Done step gets green. This creates a visual progress indicator alongside the timeline track.
+
+**Attempted spotlight effect** (dimming past steps): Tried using MutationObserver, then scroll-based approach, but class toggling on scroll caused browser tab hangs. Removed this feature — the SVG animations already create enough visual hierarchy.
+
+**Files changed:**
+- `style.css` — replaced 31 `.animated` → `.visible` selectors, added content border styles, added done step green border
+- `main.js` — removed attempted spotlight code
+
+**Tested:** Dark mode, SVG icons draw in correctly, dot scaling works, ripple fires, done step green. Zero console errors.
+
+**What's Next:**
+- 19 remaining `transition: all` rules to refine
+- Whitespace rhythm between sections
+- Mobile typography sizing audit
+- The timeline could benefit from a hover state on individual steps (expand/highlight detail)

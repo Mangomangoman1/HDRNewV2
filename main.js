@@ -3503,3 +3503,51 @@
     section.insertBefore(divider, section.firstChild);
   });
 })();
+
+// ── Scroll-Linked Accent Hue Shift ──
+// Gradually shifts accent color from blue (215°) to magenta (290°) as user scrolls
+// Creates a subtle, evolving color experience
+(function accentHueShift() {
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  
+  var BASE_HUE = 215;   // Starting hue (blue)
+  var END_HUE = 290;    // Ending hue (magenta)
+  var HUE_RANGE = END_HUE - BASE_HUE;
+  
+  var ticking = false;
+  var currentHue = BASE_HUE;
+  
+  function updateHue() {
+    var scrollY = window.scrollY || window.pageYOffset;
+    var maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+    
+    // Calculate scroll progress (0 to 1)
+    var progress = Math.min(scrollY / maxScroll, 1);
+    
+    // Apply easeInOutSine for smooth transitions at extremes
+    var easedProgress = -(Math.cos(Math.PI * progress) - 1) / 2;
+    
+    // Calculate new hue
+    var newHue = Math.round(BASE_HUE + (HUE_RANGE * easedProgress));
+    
+    // Only update if hue changed (avoid unnecessary DOM writes)
+    if (newHue !== currentHue) {
+      currentHue = newHue;
+      document.documentElement.style.setProperty('--accent-hue', newHue);
+    }
+    
+    ticking = false;
+  }
+  
+  function onScroll() {
+    if (!ticking) {
+      requestAnimationFrame(updateHue);
+      ticking = true;
+    }
+  }
+  
+  window.addEventListener('scroll', onScroll, { passive: true });
+  
+  // Initial call
+  updateHue();
+})();

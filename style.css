@@ -69,10 +69,12 @@ html.theme-transition *::after {
   --border-strong:  rgba(255,255,255,0.2);
 
   /* Accent — electric indigo/blue (CodeWiki inspired) */
-  --accent:        #4f8ef7;
-  --accent-hover:  #6ba3fa;
-  --accent-dim:    rgba(79,142,247,0.12);
-  --accent-glow:   rgba(79,142,247,0.25);
+  /* Base hue: 215° (blue). Scroll-linked shift: 215° → 290° (magenta) */
+  --accent-hue: 215;
+  --accent:        hsl(var(--accent-hue), 92%, 64%);
+  --accent-hover:  hsl(var(--accent-hue), 92%, 70%);
+  --accent-dim:    hsla(var(--accent-hue), 92%, 64%, 0.12);
+  --accent-glow:   hsla(var(--accent-hue), 92%, 64%, 0.25);
 
   /* Card accent colors */
   --color-blue:    #4f8ef7;
@@ -155,10 +157,11 @@ html.theme-transition *::after {
   --border-default: rgba(0,0,0,0.09);
   --border-strong:  rgba(0,0,0,0.15);
 
-  --accent:        #2563eb;
-  --accent-hover:  #1e40af;
-  --accent-dim:    rgba(37,99,235,0.06);
-  --accent-glow:   rgba(37,99,235,0.15);
+  /* Light mode: same hue shift system, slightly different saturation/lightness */
+  --accent:        hsl(var(--accent-hue), 85%, 48%);
+  --accent-hover:  hsl(var(--accent-hue), 85%, 40%);
+  --accent-dim:    hsla(var(--accent-hue), 85%, 48%, 0.06);
+  --accent-glow:   hsla(var(--accent-hue), 85%, 48%, 0.15);
   --accent-green:  #059669;
   --green-dim:     rgba(5,150,105,0.08);
 

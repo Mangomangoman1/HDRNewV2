@@ -3494,3 +3494,49 @@ Added subtle gradient divider lines between sections that animate into view usin
 - Whitespace rhythm audit across sections
 - Review overall animation complexity — site has many effects now
 - Consider CTA button micro-interactions
+
+---
+
+## Session 76 — 2026-03-27 (Opus 4.6) — BOLD
+
+### What I Did: Scroll-Linked Accent Hue Shift
+
+Added a **dynamic accent color system** that gradually shifts the accent hue from blue (215°) to magenta (290°) as the user scrolls through the page. This creates a subtle, evolving color experience that makes the page feel alive and responsive to engagement.
+
+**How it works:**
+1. Converted all `--accent` color definitions from hex to `hsl(var(--accent-hue), ...)`
+2. JS tracks scroll position and calculates progress (0 at top, 1 at bottom)
+3. Hue interpolates from 215° → 290° using `easeInOutSine` for smooth transitions
+4. CSS custom property `--accent-hue` is updated in real-time on scroll
+5. All elements using `--accent` automatically shift color
+
+**Color progression:**
+- Top of page (0%): Hue 215° (blue)
+- Mid-page (50%): Hue ~252° (purple-blue)
+- Bottom (100%): Hue 290° (magenta)
+
+**Easing function:**
+```javascript
+// easeInOutSine — smooth at extremes, faster in middle
+var easedProgress = -(Math.cos(Math.PI * progress) - 1) / 2;
+```
+
+**Why it matters:**
+This is a "feel it, don't see it" effect. Users won't consciously notice the color shifting, but they'll perceive the page as more dynamic and engaging. The transition from cool blue (trust, tech) to warm magenta (energy, action) subtly matches the user journey from learning → deciding → contacting.
+
+**Technical notes:**
+- Both dark and light mode accent colors use the same hue shift system
+- rAF throttling prevents excessive DOM writes
+- Only updates CSS property when hue actually changes
+- Full `prefers-reduced-motion` support — no hue shift for users who request it
+
+**Files changed:**
+- `style.css` — Converted accent colors from hex to hsl with `--accent-hue` variable
+- `main.js` — Added scroll-linked hue shift IIFE (~45 lines)
+
+**Tested:** Hue 215 at top ✓, hue 252 at 50% ✓, hue 290 at bottom ✓, buttons/links/borders all shift ✓, zero console errors ✓.
+
+**What's Next:**
+- Whitespace rhythm audit across sections
+- Review overall animation complexity
+- Consider native CSS scroll-driven parallax for hero elements

@@ -1063,6 +1063,52 @@ Each step icon starts at `scale(0)` and pops to `scale(1)` via the stagger syste
 **What's Next:**
 - Whitespace rhythm audit across sections
 - Consider scroll-linked parallax for hero/mountain elements
-- Nav could get enhanced hover states (underline animation, active indicator)
 - Footer hasn't been touched — could get polish
 - Overall animation budget audit (ensure total animation weight stays reasonable)
+
+---
+
+## Session 22 — 2026-03-27 (Opus 4.6) — BOLD
+
+### What I Did: Navigation — Premium Polish + Active Section Tracking Fix
+
+The navigation is visible 100% of the time — making it premium has outsized impact.
+
+**1. Animated Hover Underline**
+Replaced the background-color hover effect with a sliding accent underline that expands from center. Uses `::after` pseudo-element with `width: 0 → 60%` and `left: 50% → 20%` on hover. Smooth `cubic-bezier(0.16, 1, 0.3, 1)` easing.
+
+Had to add `display: inline-block` to `.nav-link` — the original `display: inline` caused `::after` `width: 100%` to resolve to content-width only (9.59px instead of 74px).
+
+**2. Active Link — Full-Width Gradient Underline**
+Active nav link gets `width: 100%; left: 0` with a gradient background (`transparent → accent → transparent`) that fades at the edges. The active link text turns accent blue.
+
+**3. Logo Hover Enhancement**
+Logo icon gets `drop-shadow(0 0 6px accent)` glow + `scale(1.1) rotate(-8deg)` tilt on hover. Bouncy `cubic-bezier(0.34, 1.56, 0.64, 1)` easing.
+
+**4. Scrolled State — Gradient Accent Line**
+When nav has `.scrolled` class, a gradient accent line appears at the bottom via `::before` pseudo-element (0 → 0.6 opacity). Replaces the boring solid border with a `linear-gradient(90deg, transparent 5%, accent 30%, purple 70%, transparent 95%)`.
+
+**5. Mobile Nav — Staggered Link Entrance**
+Mobile menu items slide in from the left with staggered delays (40ms apart) using `@keyframes navSlideIn`. The CTA button enters last (200ms delay).
+
+**6. Nav CTA — Accent Glow**
+The "Get a Quote" button gets a permanent `box-shadow: 0 0 12px rgba(accent, 0.2)` glow that intensifies on hover (0.4), plus a subtle 1px lift.
+
+**7. Active Section Tracking — Bug Fix**
+Fixed the existing `updateActiveNav()` JS function that was broken since original implementation:
+- **Bug 1:** Links use `/#services` and `/pricing` formats. The old code used `.replace('#', '')` which turned `/#services` into `//services`.
+- **Bug 2:** Links like `/pricing` had no hash, so they were skipped entirely.
+- **Fix:** Extract ID from hash or from path segments (e.g., `/pricing` → look for `#pricing` section). Match by section ID instead of href string comparison.
+- **Result:** Services, Pricing, and Contact now highlight correctly as you scroll through those sections.
+
+**Files changed:**
+- `style.css` — ~35 lines: underline ::after, logo hover, scrolled gradient, mobile stagger, CTA glow
+- `main.js` — Fixed active nav section tracking (href parsing + matching)
+
+**Tested:** Dark/light mode. Active tracking: Services → Pricing → Contact highlights correctly on scroll. Logo hover glow works. Scrolled gradient line at 0.6 opacity. Mobile stagger animation. Zero console errors.
+
+**What's Next:**
+- Footer polish (hasn't been touched)
+- Whitespace rhythm audit
+- Consider scroll-linked parallax for hero mountains
+- Animation budget audit

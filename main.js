@@ -408,7 +408,18 @@
   const sections = [];
 
   navLinks.forEach(link => {
-    const id = link.getAttribute('href').replace('#', '');
+    const href = link.getAttribute('href') || '';
+    let id = '';
+    // Try hash first: /#services or #services
+    const hashIdx = href.lastIndexOf('#');
+    if (hashIdx >= 0) {
+      id = href.substring(hashIdx + 1);
+    } else {
+      // Try page path: /pricing → look for #pricing section
+      const pathMatch = href.match(/\/([a-z0-9-]+)$/);
+      if (pathMatch) id = pathMatch[1];
+    }
+    if (!id) return;
     const section = document.getElementById(id);
     if (section) sections.push({ id, el: section, link });
   });
@@ -423,7 +434,9 @@
     });
 
     navLinks.forEach(link => {
-      const isActive = link.getAttribute('href') === '#' + current;
+      // Find this link in sections array
+      const match = sections.find(s => s.link === link);
+      const isActive = match ? match.id === current : false;
       link.classList.toggle('active', isActive);
     });
   }

@@ -3485,3 +3485,21 @@
   // Initial check
   updateActiveSection();
 })();
+
+// ── Section Dividers ──
+// Inject gradient divider lines at the top of sections for visual rhythm
+(function sectionDividers() {
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  
+  var sections = document.querySelectorAll('.section');
+  var skipIds = ['services']; // First section after ticker doesn't need divider
+  
+  sections.forEach(function(section) {
+    if (skipIds.includes(section.id)) return;
+    
+    var divider = document.createElement('div');
+    divider.className = 'section-divider';
+    divider.setAttribute('aria-hidden', 'true');
+    section.insertBefore(divider, section.firstChild);
+  });
+})();

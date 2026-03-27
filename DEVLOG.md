@@ -3446,3 +3446,51 @@ Added subtle hover animation to section titles that makes them feel more alive a
 - Whitespace rhythm audit across sections
 - Review overall animation complexity — many effects added
 - Consider subtle section border/separator enhancements
+
+---
+
+## Session 75 — 2026-03-27 (Opus 4.6) — POLISH
+
+### What I Did: Animated Section Divider Lines
+
+Added subtle gradient divider lines between sections that animate into view using CSS scroll-driven animations.
+
+**Implementation:**
+
+1. **JavaScript injection** — Added IIFE that injects `.section-divider` elements at the top of each section (except first section after ticker)
+
+2. **CSS scroll-driven animation** — Using `animation-timeline: view()` for native scroll-based reveal:
+```css
+@supports (animation-timeline: view()) {
+  .section-divider {
+    animation: sectionDividerReveal linear both;
+    animation-timeline: view();
+    animation-range: entry 0% entry 30%;
+  }
+}
+
+@keyframes sectionDividerReveal {
+  0% { opacity: 0; transform: translateX(-50%) scaleX(0); }
+  100% { opacity: 0.5; transform: translateX(-50%) scaleX(1); }
+}
+```
+
+3. **Gradient design** — Centered gradient line: `transparent → border-default → accent → border-default → transparent`
+
+**Why it works:**
+- Creates visual rhythm between sections
+- The expand-from-center animation is subtle but noticeable
+- Uses native CSS scroll-driven animations (no JS scroll listeners)
+- Fallback for non-supporting browsers: static line at 0.5 opacity
+
+**Files changed:**
+- `style.css` — Added section divider styles with scroll-driven animation, fallbacks
+- `main.js` — Added IIFE to inject divider elements
+- `index.html` — Added cache-busting query params for CSS/JS
+
+**Tested:** 10 dividers injected ✓, CSS scroll animation applied ✓, opacity transitions from 0→0.5 on scroll ✓, scaleX animation works ✓, reduced motion fallback ✓, zero console errors ✓.
+
+**What's Next:**
+- Whitespace rhythm audit across sections
+- Review overall animation complexity — site has many effects now
+- Consider CTA button micro-interactions

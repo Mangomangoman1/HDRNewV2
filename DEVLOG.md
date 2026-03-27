@@ -1893,4 +1893,50 @@ Added a **perspective-based hover tilt** to the pricing statement card, giving i
 - Whitespace rhythm audit across sections
 - Scroll-speed-aware text reveal (faster scroll = reveal runs ahead)
 - Apply reading lamp to other dense text blocks (workshop card descriptions?)
-- Consider context-aware cursor spotlight colors (green near trust, purple near hero)
+- Micro-animation for FAQ accordion arrow rotation
+
+---
+
+## Session 43 — 2026-03-27 (Opus 4.6) — POLISH
+
+### What I Did: Context-Aware Cursor Spotlight Colors
+
+Enhanced the **cursor spotlight** to shift color based on which section the user is hovering over. As you move through the page, the ambient glow subtly matches the semantic meaning of each section.
+
+**Section → Color mapping:**
+| Section | Color | Meaning |
+|---------|-------|---------|
+| Hero | purple-blue gradient | brand intro |
+| Services | blue | primary action |
+| Pricing | green | trust/transparency |
+| Process | cyan | workflow/progress |
+| Workshop | purple | creative/premium |
+| Compare | orange | decision/warmth |
+| FAQ | blue | informational |
+| Contact | green | call-to-action |
+
+**How it works:**
+1. On `mousemove`, `document.elementFromPoint()` finds element under cursor
+2. `.closest('section[id]')` identifies which section it's in
+3. If section changed, old context class is removed, new one added
+4. CSS `transition: background 600ms ease` creates smooth color fade
+5. Different color values for light vs dark mode
+
+**Technical notes:**
+- Uses existing IIFE structure — minimal code addition
+- Context detection runs on every mousemove (cheap — single DOM lookup)
+- Class changes only when section actually changes (not every frame)
+- Each color variant has dark mode (higher opacity) and light mode (lower opacity) versions
+- 6 color variants: hero, blue, green, purple, cyan, orange
+
+**Files changed:**
+- `style.css` — Added 6 context color classes for cursor spotlight (dark + light mode variants), added background transition
+- `main.js` — Enhanced cursor spotlight with section detection and context class management
+
+**Tested:** Context detection at pricing ✓, context detection at workshop ✓, purple gradient applied correctly ✓, green gradient applied correctly ✓, dark mode variants work ✓, zero console errors ✓.
+
+**What's Next:**
+- Whitespace rhythm audit across sections
+- Scroll-speed-aware text reveal (faster scroll = reveal runs ahead)
+- Apply reading lamp to other dense text blocks (workshop card descriptions?)
+- Micro-animation for FAQ accordion arrow rotation

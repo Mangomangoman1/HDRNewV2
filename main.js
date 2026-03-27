@@ -2371,6 +2371,8 @@
    CURSOR SPOTLIGHT — ambient glow follows mouse
    Creates a subtle accent-colored radial glow
    that tracks the cursor across the entire page.
+   Context-aware: shifts color based on which section
+   the cursor is hovering over.
    Only on pointer devices, respects reduced-motion.
 ═══════════════════════════════════════════════ */
 (function() {
@@ -2387,13 +2389,53 @@
   var currentX = 0;
   var currentY = 0;
   var isActive = false;
+  var currentContext = '';
+
+  // Section context → spotlight color class mapping
+  var sectionContexts = {
+    'hero': 'spotlight-hero',      // purple-blue gradient
+    'services': 'spotlight-blue',  // primary blue
+    'pricing': 'spotlight-green',  // trust green
+    'process': 'spotlight-cyan',   // workflow cyan
+    'workshop': 'spotlight-purple', // creative purple
+    'compare': 'spotlight-orange', // decision orange
+    'faq': 'spotlight-blue',       // informational blue
+    'contact': 'spotlight-green'   // action green
+  };
 
   // Smooth interpolation for buttery movement
   var LERP = 0.12;
 
+  // Get section from element at cursor position
+  function getContextAtPoint(x, y) {
+    var el = document.elementFromPoint(x, y);
+    if (!el) return '';
+    var section = el.closest('section[id]');
+    if (!section) return '';
+    return section.id;
+  }
+
+  // Update context class on spotlight
+  function updateContext(sectionId) {
+    if (sectionId === currentContext) return;
+    // Remove old context class
+    if (currentContext && sectionContexts[currentContext]) {
+      spotlight.classList.remove(sectionContexts[currentContext]);
+    }
+    // Add new context class
+    currentContext = sectionId;
+    if (sectionId && sectionContexts[sectionId]) {
+      spotlight.classList.add(sectionContexts[sectionId]);
+    }
+  }
+
   document.addEventListener('mousemove', function(e) {
     targetX = e.clientX;
     targetY = e.clientY;
+
+    // Update section context
+    var newSection = getContextAtPoint(targetX, targetY);
+    updateContext(newSection);
 
     if (!isActive) {
       isActive = true;

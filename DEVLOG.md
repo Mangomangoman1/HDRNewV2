@@ -2622,3 +2622,50 @@ Added a **scroll progress ring** around the back-to-top button. As the user scro
 - Consider velocity-awareness for other scroll-linked effects
 - Consider subtle loading state animations for form submission
 - Review overall animation complexity — ensure cognitive load is reasonable
+
+---
+
+## Session 61 — 2026-03-27 (Opus 4.6) — POLISH
+
+### What I Did: Ticker Item Polish — Hover Glow + New Repair Pulse
+
+Enhanced the **Recently Fixed ticker** with micro-interactions that make each repair item feel more premium and engaging:
+
+**1. Item Hover Effects:**
+- Hover spotlight: radial gradient glow appears from center on hover
+- Lift effect: item translates up 2px and scales to 1.02
+- Enhanced shadow: blue glow shadow on hover
+- Border accent: border color shifts to accent blue
+- Scroll pause: entire ticker pauses on hover (existing, now enhanced)
+
+**2. "New" Repair Pulse:**
+- First ticker item (most recent repair) has a green border
+- Pulsing green glow animation (2s cycle) draws attention
+- Time text colored green for the newest item
+- Creates visual hierarchy in the scrolling list
+
+**CSS animations:**
+```css
+@keyframes tickerNewPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(52, 211, 153, 0); }
+  50% { box-shadow: 0 0 0 4px rgba(52, 211, 153, 0.2); }
+}
+```
+
+**Technical notes:**
+- Hover spotlight uses `::before` pseudo-element with `opacity: 0` → `1` transition
+- `position: relative` + `overflow: hidden` on item to contain spotlight
+- Light mode has softer blue tones for hover glow
+- Dark/light mode pulse keyframes have adjusted alpha values
+- Full `prefers-reduced-motion` support
+
+**Files changed:**
+- `style.css` — Added ticker item hover styles, spotlight pseudo-element, new repair pulse animation, light mode variants, reduced-motion guards
+
+**Tested:** 24 ticker items rendered ✓, first item green border + pulse animation (tickerNewPulse/tickerNewPulseLight) ✓, hover spotlight gradient present ✓, dark mode hover uses accent blue rgba(79, 142, 247) ✓, light mode uses rgba(37, 99, 235) ✓, zero console errors ✓.
+
+**What's Next:**
+- Whitespace rhythm audit across sections
+- Consider velocity-awareness for other scroll-linked effects
+- Consider subtle loading state animations for form submission
+- Review overall animation complexity — ensure cognitive load is reasonable

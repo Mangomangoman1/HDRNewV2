@@ -1121,11 +1121,40 @@ ul { list-style: none; }
   border-radius: var(--radius);
   white-space: nowrap;
   flex-shrink: 0;
-  transition: border-color 0.2s;
+  transition: border-color 0.2s ease, transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease, background 0.3s ease;
+  position: relative;
+  overflow: hidden;
 }
-
+/* Ticker item hover glow spotlight */
+.ticker-item::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at center, rgba(79, 142, 247, 0.15) 0%, transparent 70%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+.ticker-item:hover::before {
+  opacity: 1;
+}
 .ticker-item:hover {
   border-color: var(--accent);
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 6px 20px rgba(79, 142, 247, 0.2);
+  z-index: 5;
+}
+/* First ticker item "new" pulse for most recent repair */
+.ticker-item:first-child {
+  border-color: var(--color-green);
+  animation: tickerNewPulse 2s ease-in-out infinite;
+}
+.ticker-item:first-child .ticker-time {
+  color: var(--color-green);
+}
+@keyframes tickerNewPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(52, 211, 153, 0); }
+  50% { box-shadow: 0 0 0 4px rgba(52, 211, 153, 0.2); }
 }
 
 .ticker-device {
@@ -1154,6 +1183,15 @@ ul { list-style: none; }
   }
   .ticker-icon {
     animation: none;
+  }
+  .ticker-item {
+    transition: none;
+  }
+  .ticker-item:first-child {
+    animation: none;
+  }
+  .ticker-item:hover {
+    transform: none;
   }
 }
 
@@ -6550,6 +6588,24 @@ body {
 }
 
 /* ─── PRINT ────────────────────────────────────────────────── */
+/* ─── TICKER LIGHT MODE ────────────────────────────────────── */
+[data-theme="light"] .ticker-item::before {
+  background: radial-gradient(circle at center, rgba(37, 99, 235, 0.1) 0%, transparent 70%);
+}
+[data-theme="light"] .ticker-item:hover {
+  box-shadow: 0 6px 20px rgba(37, 99, 235, 0.12);
+}
+[data-theme="light"] .ticker-item:first-child {
+  border-color: var(--color-green);
+}
+@keyframes tickerNewPulseLight {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(22, 163, 74, 0); }
+  50% { box-shadow: 0 0 0 4px rgba(22, 163, 74, 0.15); }
+}
+[data-theme="light"] .ticker-item:first-child {
+  animation-name: tickerNewPulseLight;
+}
+
 /* ─── LIGHT THEME POLISH ─────────────────────────────────── */
 /* Refined shadows and surfaces for light mode */
 [data-theme="light"] .nav {

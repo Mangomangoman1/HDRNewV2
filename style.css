@@ -2646,6 +2646,15 @@ ul { list-style: none; }
     opacity 400ms cubic-bezier(0.16, 1, 0.3, 1),
     transform 500ms cubic-bezier(0.16, 1, 0.3, 1);
 }
+/* ── Compare row stagger — rows slide in sequentially ── */
+/* nth-child starts at 2 because .compare-header is child 1 */
+.compare-row[data-animate]:nth-child(2) { transition-delay: 0ms; }
+.compare-row[data-animate]:nth-child(3) { transition-delay: 70ms; }
+.compare-row[data-animate]:nth-child(4) { transition-delay: 140ms; }
+.compare-row[data-animate]:nth-child(5) { transition-delay: 210ms; }
+.compare-row[data-animate]:nth-child(6) { transition-delay: 280ms; }
+.compare-row[data-animate]:nth-child(7) { transition-delay: 350ms; }
+.compare-row[data-animate]:nth-child(8) { transition-delay: 420ms; }
 .compare-row[data-animate].visible {
   opacity: 1;
   transform: translateY(0);
@@ -9257,7 +9266,8 @@ body.konami-active .hero-headline {
   }
   /* No staggered delays for reduced motion */
   .cards-grid .card[data-animate],
-  .workshop-grid .workshop-card[data-animate] {
+  .workshop-grid .workshop-card[data-animate],
+  .compare-row[data-animate] {
     transition-delay: 0ms !important;
   }
 }

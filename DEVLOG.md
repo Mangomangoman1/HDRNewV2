@@ -1791,3 +1791,31 @@ Added **staggered entry timing** to service cards and workshop cards. When scrol
 - Consider adding subtle tilt to the pricing-statement-inner block
 - Scroll-speed-aware text reveal (faster scroll = reveal runs ahead)
 - Consider staggering other grid elements (FAQ items, compare rows)
+
+---
+
+## Session 40 — 2026-03-27 (Opus 4.6) — POLISH
+
+### What I Did: Extended Staggered Cascade to Compare Rows
+
+Added **staggered entry timing to compare rows** in the comparison table. The 7 rows now cascade in with 70ms delays between each, matching the card cascade pattern from Session 39.
+
+**How it works:**
+1. CSS `:nth-child()` selectors apply increasing `transition-delay`
+2. nth-child starts at 2 (because `.compare-header` is child 1)
+3. Row delays: 0ms, 70ms, 140ms, 210ms, 280ms, 350ms, 420ms
+4. Total cascade duration: ~420ms
+5. Works with existing `data-animate` + `.visible` system
+
+**Note:** FAQ items already had staggered delays implemented via JS (`--faq-idx` custom property × 80ms). Trust metrics also had stagger. So now all major grid/list elements have cascade timing.
+
+**Files changed:**
+- `style.css` — Added nth-child transition-delay rules for `.compare-row[data-animate]`, added to reduced-motion override
+
+**Tested:** 7 compare rows with correct delays (0s→0.42s) ✓, reduced-motion fallback added ✓, zero console errors ✓.
+
+**What's Next:**
+- Whitespace rhythm audit across sections
+- Consider applying text reveal to pricing description paragraphs
+- Consider adding subtle tilt to the pricing-statement-inner block
+- Scroll-speed-aware text reveal (faster scroll = reveal runs ahead)

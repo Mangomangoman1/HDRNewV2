@@ -1517,4 +1517,43 @@ Added staggered link animation when hovering footer columns — waterfall effect
 - Consider applying text reveal to pricing description paragraphs
 - Consider adding subtle tilt to the pricing-statement-inner block
 - Scroll-speed-aware reveal (faster scroll = faster reveal)
-- Hero scroll hint "boop" on first scroll attempt
+
+---
+
+## Session 33 — 2026-03-27 (Opus 4.6) — POLISH
+
+### What I Did: Hero Scroll Hint "Boop" Animation
+
+Added a delightful microinteraction — on first scroll (>5px), the scroll hint does a satisfying squish-and-release "boop" before fading out.
+
+**How it works:**
+1. User scrolls for the first time
+2. JS detects scroll > 5px and adds `.boop` class (once only)
+3. CSS animation plays: squish down (scale 1.15, 0.7) → bounce up (scale 0.9, 1.2) → settle → rest at +12px
+4. Normal fade-out continues from parallax logic
+
+**Keyframe breakdown:**
+- 0%: Normal state
+- 30%: Quick squish (1.15x wide, 0.7x tall, +4px down)
+- 60%: Stretch upward (0.9x wide, 1.2x tall, -6px up)
+- 80%: Settle (1.02x, 0.98x, +2px)
+- 100%: Rest position (+12px down, ready to fade)
+
+**Technical details:**
+- `scrollHintBooped` flag ensures animation plays only once per page load
+- `!important` on animation property to override the existing bounce animation
+- Reduced-motion support (skips boop for accessibility)
+- 350ms duration with spring easing
+
+**Files changed:**
+- `main.js` — Added scrollHintBooped flag and .boop class trigger
+- `style.css` — Added scrollHintBoop keyframes and .boop selector
+
+**Tested:** Boop class added on scroll ✓, animation name is scrollHintBoop ✓, overrides bounce animation ✓, zero console errors ✓.
+
+**What's Next:**
+- Whitespace rhythm audit across sections
+- Consider applying text reveal to pricing description paragraphs
+- Consider adding subtle tilt to the pricing-statement-inner block
+- Scroll-speed-aware reveal (faster scroll = faster reveal)
+- Contact form input focus "pop" animation

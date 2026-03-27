@@ -876,6 +876,40 @@ ul { list-style: none; }
   50% { transform: translateX(-50%) translateY(8px); }
 }
 
+/* Boop animation — squish-and-release on first scroll */
+.hero-scroll-hint.boop {
+  animation: scrollHintBoop 350ms cubic-bezier(0.34, 1.56, 0.64, 1) forwards !important;
+}
+
+@keyframes scrollHintBoop {
+  0% {
+    transform: translateX(-50%) translateY(0) scale(1, 1);
+  }
+  30% {
+    /* Quick squish down */
+    transform: translateX(-50%) translateY(4px) scale(1.15, 0.7);
+  }
+  60% {
+    /* Bounce up and stretch */
+    transform: translateX(-50%) translateY(-6px) scale(0.9, 1.2);
+  }
+  80% {
+    /* Settle back */
+    transform: translateX(-50%) translateY(2px) scale(1.02, 0.98);
+  }
+  100% {
+    /* Final rest — slight downward position (it's fading anyway) */
+    transform: translateX(-50%) translateY(12px) scale(1, 1);
+  }
+}
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .hero-scroll-hint.boop {
+    animation: none;
+  }
+}
+
 /* ─── RECENTLY FIXED TICKER ─────────────────────────────── */
 .ticker-section {
   padding: var(--space-md) 0;

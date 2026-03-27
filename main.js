@@ -1859,6 +1859,7 @@
   var heroGlow2 = hero.querySelector('.hero-glow-2');
   var heroMountains = hero.querySelector('.hero-mountains');
   var heroScrollHint = hero.querySelector('.hero-scroll-hint');
+  var scrollHintBooped = false; // Track if we've played the boop
 
   // Parallax rates: higher = moves faster relative to scroll
   var RATES = {
@@ -1941,8 +1942,13 @@
       heroInner.style.opacity = contentOpacity.toFixed(3);
     }
 
-    // ── Scroll hint: fade out quickly ──
+    // ── Scroll hint: boop on first scroll, then fade out ──
     if (heroScrollHint) {
+      // Trigger "boop" squish animation on first meaningful scroll
+      if (!scrollHintBooped && scrollY > 5) {
+        scrollHintBooped = true;
+        heroScrollHint.classList.add('boop');
+      }
       heroScrollHint.style.opacity = Math.max(0, 1 - ratio * 4).toFixed(3);
     }
   }

@@ -2336,3 +2336,33 @@ Added **subtle undulating animation** to the wave dividers between sections. Whe
 - Scroll-speed-aware text reveal (faster scroll = reveal runs ahead)
 - Apply reading lamp to workshop card descriptions
 - Consider subtle hover state for footer links
+
+---
+
+## Session 54 — 2026-03-27 (Opus 4.6) — POLISH
+
+### What I Did: Reading Lamp Effect for Workshop Card Descriptions
+
+Extended the **reading lamp effect** (previously applied to pricing paragraphs) to the **workshop card descriptions**. Text starts dimmed (50% opacity, 85% brightness) and "lights up" as you scroll to each card, creating a focus-drawing effect that makes content feel more intentional and premium.
+
+**How it works:**
+1. Workshop card descriptions start with `opacity: 0.5` and `filter: brightness(0.85)`
+2. IntersectionObserver (30% threshold) detects when each card enters viewport
+3. `.reading-lit` class is added, transitioning to full opacity and brightness
+4. 0.5s smooth transition creates gentle "awakening" effect
+
+**Changes made:**
+- Updated `.workshop-card-desc` CSS with initial dimmed state and `.reading-lit` variant
+- Extended JS `readingLampInit()` to include `.workshop-card-desc` alongside `.pricing-body`
+
+**Files changed:**
+- `style.css` — Added reading lamp styles to `.workshop-card-desc`
+- `main.js` — Extended selector to include `.workshop-card-desc`
+
+**Tested:** 4 workshop card descriptions ✓, initial state dimmed (opacity 0.5, brightness 0.85) ✓, `.reading-lit` added on scroll ✓, smooth transition to full brightness ✓, zero console errors ✓.
+
+**What's Next:**
+- Whitespace rhythm audit across sections
+- Scroll-speed-aware text reveal (faster scroll = reveal runs ahead)
+- Consider subtle hover state for footer links
+- Subtle parallax on process/timeline section

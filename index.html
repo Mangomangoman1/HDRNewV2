@@ -691,27 +691,34 @@ a{color:inherit;text-decoration:none}
   <div class="wave-divider" aria-hidden="true"><svg viewBox="0 0 1440 48" preserveAspectRatio="none"><path class="wave-fill" d="M0,24 C360,48 720,0 1080,24 C1260,36 1380,48 1440,48 L1440,48 L0,48 Z"/></svg></div>
 
   <section class="section section--alt" id="pricing">
-    <div class="container" style="max-width: 720px;">
+    <div class="container pricing-container">
       <div class="section-header">
         <div class="section-eyebrow">Transparent Pricing</div>
-        <h2 class="section-title">Fair prices, no surprises</h2>
+        <h2 class="section-title" data-scramble>Fair prices, no surprises</h2>
       </div>
 
-      <p style="font-size: 1.1rem; line-height: 1.8; color: var(--text-primary); margin-bottom: var(--space-lg);">Pricing is specific to your device. After I get a description of the problem, I search through multiple parts vendors to find a solution that balances cost with quality. If you have a preference — genuine OEM, premium aftermarket, or the most cost-effective option — just let me know and I'll find the right part.</p>
+      <div class="pricing-statement" data-animate>
+        <div class="pricing-statement-inner">
+          <p class="pricing-body">Pricing is specific to your device. After I get a description of the problem, I search through multiple parts vendors to find a solution that balances cost with quality. If you have a preference — genuine OEM, premium aftermarket, or the most cost-effective option — just let me know and I'll find the right part.</p>
 
-      <p style="font-size: 1.1rem; line-height: 1.8; color: var(--text-primary); margin-bottom: var(--space-lg);">Software tune-ups start at $100. Whatever problem you're having, we'll discuss the right solution and find a price that works.</p>
+          <p class="pricing-body">Software tune-ups start at <span class="pricing-highlight">$100</span>. Whatever problem you're having, we'll discuss the right solution and find a price that works.</p>
 
-      <p style="font-size: 1.1rem; line-height: 1.8; color: var(--text-primary); margin-bottom: var(--space-2xl);"><strong>Every job gets a firm quote before any work begins. No surprises.</strong></p>
+          <div class="pricing-promise" data-animate>
+            <svg class="pricing-promise-icon" viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+              <polyline points="9 12 11 14 15 10"/>
+            </svg>
+            <p class="pricing-promise-text">Every job gets a <strong>firm quote</strong> before any work begins. No surprises.</p>
+          </div>
 
-      <div style="text-align: center;">
-        <a href="sms:+12083666111" class="btn btn-primary btn-lg">
-          <span class="material-symbols-outlined" aria-hidden="true">sms</span>
-          Text me your issue — (208) 366-6111
-        </a>
-      </div>
-
-      <div style="text-align: center; margin-top: var(--space-lg);">
-        <a href="/pricing" style="color: var(--accent); font-weight: 600;">Learn more about pricing →</a>
+          <div class="pricing-cta">
+            <a href="sms:+12083666111" class="btn btn-primary btn-lg btn-magnetic" data-magnetic>
+              <span class="material-symbols-outlined" aria-hidden="true">sms</span>
+              Text me your issue — (208) 366-6111
+            </a>
+            <a href="/pricing" class="pricing-detail-link">Learn more about pricing →</a>
+          </div>
+        </div>
       </div>
     </div>
   </section>

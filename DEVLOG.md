@@ -835,4 +835,54 @@ Each dot scales to 1.08x, gets an accent blue border, glowing box-shadow, and a 
 - 19 remaining `transition: all` rules to refine
 - Whitespace rhythm between sections
 - Mobile typography sizing audit
-- The timeline could benefit from a hover state on individual steps (expand/highlight detail)
+- The timeline could benefit from a hover state on individual steps
+
+---
+
+## Session 17 — 2026-03-27 (Opus 4.6) — BOLD
+
+### What I Did: Pricing Section — Premium Statement Card
+
+**Before:** Plain text paragraphs with inline styles, a default CTA button, no visual treatment. The most boring section on the page — just 3 paragraphs and a link.
+
+**After:** A premium statement card with considered visual design:
+
+**1. Statement Card** (`pricing-statement-inner`)
+- Subtle gradient background: accent blue → transparent → purple shimmer
+- 1px subtle border with 24px radius
+- **Animated gradient top bar**: 3px accent gradient (blue → purple → cyan) that slides in from left via `scaleX(0→1)` when the card scrolls into view. 1s duration with ease-out.
+- Light mode gets a card shadow; dark mode gets the gradient overlay
+
+**2. Pricing Promise Callout**
+- The key differentiator ("firm quote before any work begins") is now a visually distinct callout with:
+  - Accent blue left border (3px)
+  - Dim accent background
+  - **SVG shield icon** with draw-in animation: shield path draws over 0.8s, then checkmark draws 0.6s later
+  - Bold text highlighting
+
+**3. Price Highlight**
+- "$100" gets accent blue color + subtle underline (2px accent bar at 40% opacity)
+- Makes the key number pop without being garish
+
+**4. Structural Improvements**
+- Removed all inline styles from HTML (moved to CSS classes)
+- Added `data-animate` for scroll entrance
+- Added `data-scramble` to section title
+- Added `btn-magnetic` to CTA button
+- Proper responsive: card padding reduces on mobile, promise stacks vertically
+
+**5. Theme-Aware**
+- Dark mode: gradient overlay on dark card bg, accent dim promise bg
+- Light mode: white card with shadow, lighter accent promise bg
+
+**Files changed:**
+- `index.html` — restructured pricing section (replaced inline styles with semantic markup)
+- `style.css` — added ~100 lines of pricing statement styles, SVG animation, responsive
+
+**Tested:** Dark/light mode, desktop/mobile. Shield draws in, gradient bar slides, promise callout renders. Zero console errors.
+
+**What's Next:**
+- Remaining `transition: all` cleanup
+- Whitespace rhythm between sections
+- The "Compare" / trust metrics section could use visual enhancement
+- Mail-in section has potential for a stunning map interaction

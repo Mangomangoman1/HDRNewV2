@@ -1406,7 +1406,38 @@ The 16% transition zone (±8% around the progress point) creates a soft, natural
 **What's Next:**
 - Whitespace rhythm audit across sections
 - Animation budget audit (count total keyframes + rAF loops)
-- Individual hero button stagger (left arrives before right)
 - Spring tilt for Workshop + pricing cards
 - Consider applying text reveal to pricing description paragraphs
 - Consider scroll-speed-aware reveal (faster scroll = reveal ahead)
+
+---
+
+## Session 30 — 2026-03-27 (Opus 4.6) — POLISH
+
+### What I Did: Hero Button Stagger — Left Before Right
+
+Refactored the hero action buttons to animate individually with a staggered entrance: the primary "Get a Free Quote" button arrives first, followed by the outline "See Services" button 120ms later.
+
+**Before:** Both buttons animated together as part of `.hero-actions` container (single animation at 0.7s delay).
+
+**After:** Container has no animation. Each `.btn` child has its own `heroButtonEntrance` animation with individual delays:
+- `.btn-primary`: 0.7s delay (arrives first)
+- `.btn-outline`: 0.82s delay (arrives 120ms later)
+
+**Technical Details:**
+- New `@keyframes heroButtonEntrance` with spring-like scale overshoot (0.92 → 1.03 → 0.995 → 1.0)
+- Slightly increased overshoot from 1.02 to 1.03 for more visible bounce on individual buttons
+- Added reduced-motion guard for `.hero-entrance > .btn` elements
+
+**Why 120ms?** Fast enough to feel like a single choreographed unit, slow enough to perceive as intentional stagger. The eye catches the left button appearing first, creating a subtle left-to-right reading flow that mirrors the natural reading direction.
+
+**Files changed:**
+- `style.css` — Replaced `.hero-actions.hero-entrance` animation with per-button animations, new `heroButtonEntrance` keyframes, updated reduced-motion guard
+
+**Tested:** Primary delay 0.7s ✓, outline delay 0.82s ✓, final opacity 1 ✓, final transform identity ✓, zero console errors ✓.
+
+**What's Next:**
+- Whitespace rhythm audit across sections
+- Animation budget audit (count total keyframes + rAF loops)
+- Spring tilt for Workshop + pricing cards
+- Consider applying text reveal to pricing description paragraphs

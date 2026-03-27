@@ -9030,8 +9030,57 @@ body {
   display: flex;
   gap: 1.25rem;
   padding-bottom: 2.5rem;
+  transition: opacity 0.3s ease, transform 0.3s ease;
 }
 .timeline-step:last-child { padding-bottom: 0; }
+
+/* ── Timeline step hover effects — focus on hovered step ── */
+/* When any step is hovered, other siblings recede */
+.timeline:has(.timeline-step:hover) .timeline-step:not(:hover) {
+  opacity: 0.5;
+  transform: scale(0.98);
+}
+
+/* Hovered step elevates */
+.timeline-step:hover {
+  z-index: 2;
+}
+
+/* Hovered step dot gets enhanced glow */
+.timeline-step:hover .timeline-dot {
+  box-shadow: 0 0 24px var(--accent-glow), 0 4px 20px rgba(0, 0, 0, 0.15);
+  transform: translateY(var(--parallax-y, 0px)) scale(1.15);
+}
+
+/* Hovered step content gets subtle background */
+.timeline-step:hover .timeline-content {
+  background: var(--bg-elevated);
+  border-radius: 12px;
+}
+
+/* SVG icon gentle pulse on hover */
+@keyframes timelineIconPulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+}
+
+.timeline-step:hover .timeline-svg-icon {
+  animation: timelineIconPulse 1s ease-in-out infinite;
+}
+
+/* Reduced motion: no animations or transitions */
+@media (prefers-reduced-motion: reduce) {
+  .timeline:has(.timeline-step:hover) .timeline-step:not(:hover) {
+    opacity: 0.7;
+    transform: none;
+  }
+  .timeline-step:hover .timeline-dot {
+    transform: none;
+  }
+  .timeline-step:hover .timeline-svg-icon {
+    animation: none;
+  }
+}
 .timeline-dot {
   flex-shrink: 0;
   width: 46px;

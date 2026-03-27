@@ -3351,3 +3351,54 @@ The "Hailey Device Repair" badge in the header gets a periodic shimmer sweep:
 - Whitespace rhythm audit across sections
 - Review overall animation complexity — ensure cognitive load is reasonable
 - Consider process section step-by-step hover enhancement
+
+---
+
+## Session 73 — 2026-03-27 (Opus 4.6) — POLISH
+
+### What I Did: Timeline Step Hover Interaction
+
+Enhanced the process timeline with interactive hover effects that help users focus on individual steps.
+
+**Effects Added:**
+
+1. **Sibling Recede** — Using `:has()` selector, when any step is hovered, other steps fade (opacity 0.5) and shrink slightly (scale 0.98)
+
+2. **Hovered Step Elevation** — The hovered step:
+   - Gets z-index: 2 to appear above siblings
+   - Timeline dot scales up 1.15x with enhanced glow
+   - Content gets subtle background (bg-elevated)
+
+3. **SVG Icon Pulse** — The SVG icon in the hovered step plays a gentle breathing animation (1s cycle)
+
+```css
+.timeline:has(.timeline-step:hover) .timeline-step:not(:hover) {
+  opacity: 0.5;
+  transform: scale(0.98);
+}
+
+@keyframes timelineIconPulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+}
+```
+
+**Why it works:**
+- Creates visual focus on the step being read
+- The receding siblings don't disappear — they're still scannable
+- The icon pulse adds life without being distracting
+- Uses CSS :has() for pure-CSS sibling manipulation
+
+**Accessibility:**
+- Reduced motion: siblings only fade to 0.7 (no scale), no icon animation
+- All hover effects are supplementary — content remains readable
+
+**Files changed:**
+- `style.css` — Added timeline step hover effects, icon pulse animation, reduced motion fallback
+
+**Tested:** Hover triggers step elevation ✓, siblings recede ✓, dot glows stronger ✓, icon pulses ✓, content gets background ✓, reduced motion fallback ✓, zero console errors ✓.
+
+**What's Next:**
+- Whitespace rhythm audit across sections
+- Consider hover enhancement for pricing cards (similar recede/focus pattern)
+- Review overall animation complexity

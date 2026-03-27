@@ -1854,6 +1854,43 @@ Added a **reading lamp effect** to pricing paragraphs. The text starts dimmed (5
 
 **What's Next:**
 - Whitespace rhythm audit across sections
-- Consider adding subtle tilt to the pricing-statement-inner block
 - Scroll-speed-aware text reveal (faster scroll = reveal runs ahead)
 - Apply reading lamp to other dense text blocks (workshop card descriptions?)
+- Consider context-aware cursor spotlight colors (green near trust, purple near hero)
+
+---
+
+## Session 42 — 2026-03-27 (Opus 4.6) — POLISH
+
+### What I Did: Pricing Statement Card — Subtle 3D Tilt on Hover
+
+Added a **perspective-based hover tilt** to the pricing statement card, giving it the same premium interactive feel as the service and workshop cards but using pure CSS (no JS needed for this single element).
+
+**Effect:**
+- On hover: card tilts 2° on both axes with `perspective(1000px)`, lifts 4px
+- Specular glare overlay fades in (linear gradient from top-left)
+- Enhanced shadow with luminance ring and accent glow
+- Spring easing (`cubic-bezier(0.34, 1.56, 0.64, 1)`) for bouncy feel
+
+**Implementation:**
+- Added transition on `.pricing-statement-inner` for transform and box-shadow
+- Hover state on parent `.pricing-statement` triggers child transform
+- `::after` pseudo-element creates specular glare overlay (0 → 1 opacity)
+- Light mode variant with brighter glare and adjusted shadow
+
+**Technical notes:**
+- Uses `perspective(1000px) rotateX(-2deg) rotateY(2deg)` — subtle tilt toward viewer
+- Glare is linear-gradient from `rgba(255,255,255,0.12)` (dark) / `0.3` (light)
+- Shadow includes luminance ring `0 0 0 1px rgba(255,255,255,0.04)` for depth
+- Reduced-motion: transform disabled
+
+**Files changed:**
+- `style.css` — Added hover tilt + glare to pricing-statement-inner, light mode adjustments, reduced-motion guard
+
+**Tested:** 3D transform matrix verified with perspective ✓, glare opacity transitions ✓, zero console errors ✓.
+
+**What's Next:**
+- Whitespace rhythm audit across sections
+- Scroll-speed-aware text reveal (faster scroll = reveal runs ahead)
+- Apply reading lamp to other dense text blocks (workshop card descriptions?)
+- Consider context-aware cursor spotlight colors (green near trust, purple near hero)

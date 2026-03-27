@@ -4,7 +4,9 @@
 This is the development/staging version of haileyrepair.com — a device repair business in Hailey, Idaho run by Samuel Torres. The production site is in a separate repo (NEWHDR). This repo is your playground.
 
 ## Your Mission
-Make this site **exceptional**. Not just functional — genuinely impressive. The kind of site that makes someone stop and say "wait, this is a local repair shop?"
+Make this site feel **incredibly thoughtful**. The goal isn't more features — it's making every existing element feel pristine, considered, and intentional. The kind of site where someone pauses and thinks *"woah, holy crap — this is special."*
+
+That feeling comes from **craft**, not quantity.
 
 ## Business Context
 - **Business:** Hailey Device Repair — phones, laptops, tablets, consoles
@@ -15,47 +17,33 @@ Make this site **exceptional**. Not just functional — genuinely impressive. Th
 - **Website:** haileyrepair.com
 - **Email:** samuel@haileyrepair.com
 
-## What "Go All Out" Means
+## Philosophy: Thoughtful > Flashy
 
-### Interactions & Micro-animations
-- Smooth, purposeful animations (not gratuitous)
-- Parallax that enhances, doesn't distract
-- Hover states that feel alive
-- Scroll-triggered reveals that tell a story
-- Creative cursor effects where appropriate
-- Page transitions that feel premium
+### What "Special" Means
+- **Refinement over addition.** Before adding anything new, look at what's already there. Can it be more polished? Better timed? More harmonious?
+- **Details people feel but can't name.** The 200ms ease curve that feels *just right*. The shadow that gives depth without weight. The spacing that breathes. The color that shifts so subtly it feels alive.
+- **Surprise through restraint.** One perfect micro-interaction beats ten mediocre ones. If a user notices *one* moment that delights them, you've won.
+- **Coherence.** Every element should feel like it belongs to the same universe. Typography, spacing, color, motion — they should all speak the same language.
 
-### Visual Design
-- Typography that has personality (variable fonts, creative hierarchy)
-- Color transitions and gradients that feel modern
-- Creative use of whitespace
-- Dark/light mode that both feel intentional, not afterthought
-- SVG animations (tool icons that animate, device illustrations)
-- Texture, grain, or noise overlays for depth
+### The Craft Hierarchy (follow this order)
+1. **Refine what exists** — typography, spacing, color harmony, animation timing, transitions. Make current elements feel pristine.
+2. **Elevate interactions** — hover states, focus states, scroll behavior, page transitions. Make them feel considered, not default.
+3. **Add thoughtful details** — only after 1 and 2 are solid. A single breathtaking detail > many okay ones.
 
-### Unique Features to Consider
-- Interactive device repair timeline/process visualization
-- 3D CSS transforms for device mockups or card flips
-- Particle effects or floating elements (subtle, mountain/tech themed)
-- Animated SVG icons (wrench turning, screen fixing, etc.)
-- Scroll-driven storytelling sections
-- Creative loading states
-- Easter eggs (Konami code? click the mountain?)
-- Sound design (optional, tasteful — toggle)
-- Magnetic buttons or fluid hover effects
-- Text scramble/typewriter effects for headlines
-- Morphing shapes or blob animations
-- Custom scrollbar styling
-- Intersection Observer-driven animations
-- CSS container queries for truly responsive components
+### What Makes Users Think "Holy Crap"
+- **Perfect typography** — kerning, line-height, font-weight transitions, responsive sizing that feels natural at every breakpoint
+- **Considered motion** — easing curves that feel physical, durations that feel unhurried but not slow, enter/exit choreography
+- **Depth and texture** — layered shadows, subtle gradients, grain/noise that adds warmth, glass effects done right
+- **Color that shifts** — dark/light mode transitions that feel alive, accent colors that respond to context, subtle palette shifts on scroll
+- **Spatial awareness** — whitespace that breathes, elements that feel placed not stacked, rhythm in layout
+- **Invisible polish** — smooth scroll behavior, no layout shift, instant perceived responsiveness, graceful degradation
+- **One magical moment** — a single interaction or visual that makes someone pull out their phone to show a friend
 
-### Content Ideas
-- "The Workshop" section — show the craft, the tools, the attention to detail
-- Device anatomy illustrations (exploded view of a phone)
-- Repair difficulty meter (visual gauge for different repair types)
-- Live-ish status updates section (placeholder for future)
-- Mountain/valley themed design elements (Hailey is in the mountains)
-- Seasonal themes that auto-rotate
+### Before Each Session, Ask:
+1. What currently feels unfinished or default?
+2. What animation/transition timing could be tighter?
+3. What spacing or typography feels off?
+4. Is there ONE thing I could add that would create a "wow" moment?
 
 ### Technical Excellence
 - Performance-first: no heavy frameworks, vanilla JS + CSS
@@ -67,6 +55,7 @@ Make this site **exceptional**. Not just functional — genuinely impressive. Th
 - Intersection Observer over scroll listeners
 - will-change hints for animated elements
 - Prefers-reduced-motion respected ALWAYS
+- **Test your changes** — verify HTML renders, check both light and dark mode
 
 ## What NOT to Do
 - Don't break existing functionality (contact forms, navigation, device check wizard)
@@ -80,9 +69,11 @@ Make this site **exceptional**. Not just functional — genuinely impressive. Th
 - Don't add "drive to you" service (no car currently)
 - Don't sacrifice mobile performance for desktop wow-factor
 - Don't add "no fix no charge" or "free if can't fix" language
+- **Don't add features just to add features** — every addition must earn its place
+- **Don't use generic/default animation curves** — craft each one
 
 ## File Structure
-- `index.html` — landing page (main focus for enhancements)
+- `index.html` — landing page (main focus for refinement)
 - `style.css` — main stylesheet
 - `main.js` — main JavaScript
 - `*.html` — service pages, about, contact, etc.
@@ -95,4 +86,4 @@ Keep commits descriptive — these will be reviewed before merging to production
 ## Remember
 This is a real business. A real person's livelihood. Make it beautiful AND functional. Every creative choice should serve the user — either by building trust, conveying competence, or making it dead simple to text Samuel for a repair.
 
-Go make something special. 🥭
+**Less is more. Craft is everything. Make people feel something.** 🥭

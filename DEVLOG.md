@@ -3540,3 +3540,58 @@ This is a "feel it, don't see it" effect. Users won't consciously notice the col
 - Whitespace rhythm audit across sections
 - Review overall animation complexity
 - Consider native CSS scroll-driven parallax for hero elements
+
+---
+
+## Session 77 — 2026-03-27 (Opus 4.6) — BOLD
+
+### What I Did: Hero Headline Proximity Glow
+
+Added an **interactive cursor proximity spotlight** to the hero headline text. When the cursor moves near the "Don't replace it." text, nearby characters glow brighter — like a reading light following your gaze across the words.
+
+**How it works:**
+1. JS wraps each character of "Don't replace it." in a `<span class="proximity-char">`
+2. On `mousemove`, calculates distance from cursor to each character's center
+3. Characters within 120px radius get `--glow-intensity` CSS variable set (0-1)
+4. Intensity uses quadratic easing: closer = exponentially brighter
+5. CSS applies text-shadow and brightness filter based on intensity
+
+**Visual effect:**
+- Characters near cursor glow with accent-colored halo
+- Glow uses the scroll-linked `--accent-hue` (integrates with Session 76)
+- Brightness filter makes glowing chars appear "lit up"
+- 150ms transition creates smooth, organic feel
+- Effect fades naturally as cursor moves away
+
+**CSS implementation:**
+```css
+.proximity-char {
+  text-shadow: 
+    0 0 calc(var(--glow-intensity) * 30px) hsl(var(--accent-hue), 90%, 70%),
+    0 0 calc(var(--glow-intensity) * 15px) hsl(var(--accent-hue), 90%, 80%);
+  filter: brightness(calc(1 + var(--glow-intensity) * 0.3));
+}
+```
+
+**Why it matters:**
+This creates a "magic spotlight" effect where the typography responds to the user's attention. It's the kind of micro-interaction that makes premium sites feel alive — you don't consciously notice it, but you feel the page is responsive to your presence.
+
+**Technical notes:**
+- Character positions cached and updated on resize for performance
+- Effect only calculates when cursor is near hero (optimization)
+- Uses existing `--accent-hue` variable for color consistency
+- Light mode has softer glow (lower intensity multipliers)
+- Guards: pointer: fine, hover: hover, prefers-reduced-motion
+- Original text preserved in aria-label for accessibility
+
+**Files changed:**
+- `main.js` — Added proximity glow IIFE (~90 lines)
+- `style.css` — Added .proximity-char styles with calc-based glow (~25 lines)
+- `index.html` — Updated cache-busting query params
+
+**Tested:** 17 characters wrapped ✓, intensity variable sets correctly ✓, text-shadow applies with hsl color ✓, brightness filter works ✓, zero console errors ✓.
+
+**What's Next:**
+- Whitespace rhythm audit across sections
+- Review overall animation complexity
+- Consider similar effect on section titles

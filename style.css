@@ -10772,3 +10772,35 @@ body.konami-active .hero-headline {
     opacity: 0.1;
   }
 }
+
+/* ── Hero Headline Proximity Glow ──
+   Characters near cursor glow brighter, creating interactive spotlight
+*/
+.headline-proximity-glow {
+  display: inline;
+}
+
+.proximity-char {
+  display: inline;
+  --glow-intensity: 0;
+  position: relative;
+  transition: text-shadow 0.15s ease-out, filter 0.15s ease-out;
+  text-shadow: 
+    0 0 calc(var(--glow-intensity) * 30px) hsl(var(--accent-hue, 215), 90%, 70%),
+    0 0 calc(var(--glow-intensity) * 15px) hsl(var(--accent-hue, 215), 90%, 80%);
+  filter: brightness(calc(1 + var(--glow-intensity) * 0.3));
+}
+
+[data-theme="light"] .proximity-char {
+  text-shadow: 
+    0 0 calc(var(--glow-intensity) * 25px) hsl(var(--accent-hue, 215), 85%, 50%),
+    0 0 calc(var(--glow-intensity) * 10px) hsl(var(--accent-hue, 215), 85%, 60%);
+  filter: brightness(calc(1 + var(--glow-intensity) * 0.15));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .proximity-char {
+    text-shadow: none !important;
+    filter: none !important;
+  }
+}

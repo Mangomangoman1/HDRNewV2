@@ -3551,3 +3551,121 @@
   // Initial call
   updateHue();
 })();
+
+// ── Hero Headline Proximity Glow ──
+// Characters near the cursor glow brighter, creating an interactive spotlight
+(function heroHeadlineProximityGlow() {
+  // Guards
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  if (!window.matchMedia('(pointer: fine)').matches) return;
+  if (!window.matchMedia('(hover: hover)').matches) return;
+  
+  var headline = document.querySelector('.hero-headline');
+  if (!headline) return;
+  
+  // Find the static text node "Don't replace it." - we need to wrap its characters
+  var staticText = headline.childNodes[0]; // "Don't replace it.\n        "
+  if (!staticText || staticText.nodeType !== 3) return;
+  
+  var textContent = staticText.textContent.trim();
+  if (!textContent) return;
+  
+  // Create a span to hold the proximity-glow characters
+  var glowContainer = document.createElement('span');
+  glowContainer.className = 'headline-proximity-glow';
+  
+  // Wrap each character in a span
+  textContent.split('').forEach(function(char) {
+    var span = document.createElement('span');
+    span.className = 'proximity-char';
+    span.textContent = char === ' ' ? '\u00A0' : char; // Use nbsp for spaces
+    span.setAttribute('aria-hidden', 'true');
+    glowContainer.appendChild(span);
+  });
+  
+  // Replace the text node with the container
+  headline.replaceChild(glowContainer, staticText);
+  
+  // Keep the original text accessible
+  glowContainer.setAttribute('aria-label', textContent);
+  
+  var chars = glowContainer.querySelectorAll('.proximity-char');
+  var charRects = []; // Cache bounding rects for performance
+  var ticking = false;
+  var heroRect = null;
+  
+  // Calculate effect radius and intensity
+  var EFFECT_RADIUS = 120; // px — characters within this distance get glow
+  var MAX_GLOW = 1; // Maximum glow intensity (0-1)
+  
+  function updateCharRects() {
+    charRects = Array.from(chars).map(function(char) {
+      var rect = char.getBoundingClientRect();
+      return {
+        el: char,
+        centerX: rect.left + rect.width / 2,
+        centerY: rect.top + rect.height / 2
+      };
+    });
+    heroRect = headline.closest('.hero').getBoundingClientRect();
+  }
+  
+  function updateGlow(e) {
+    var mouseX = e.clientX;
+    var mouseY = e.clientY;
+    
+    // Only process if mouse is near the hero
+    if (heroRect && (mouseY > heroRect.bottom + 50 || mouseY < heroRect.top - 50)) {
+      // Reset all chars when mouse is far away
+      chars.forEach(function(char) {
+        char.style.removeProperty('--glow-intensity');
+      });
+      ticking = false;
+      return;
+    }
+    
+    charRects.forEach(function(item) {
+      var dx = mouseX - item.centerX;
+      var dy = mouseY - item.centerY;
+      var distance = Math.sqrt(dx * dx + dy * dy);
+      
+      if (distance < EFFECT_RADIUS) {
+        // Calculate intensity: closer = brighter
+        var intensity = 1 - (distance / EFFECT_RADIUS);
+        // Apply easing for smoother falloff
+        intensity = intensity * intensity; // quadratic easing
+        item.el.style.setProperty('--glow-intensity', intensity.toFixed(3));
+      } else {
+        item.el.style.removeProperty('--glow-intensity');
+      }
+    });
+    
+    ticking = false;
+  }
+  
+  function onMouseMove(e) {
+    if (!ticking) {
+      requestAnimationFrame(function() {
+        updateGlow(e);
+      });
+      ticking = true;
+    }
+  }
+  
+  // Update rects on load and resize
+  window.addEventListener('load', updateCharRects);
+  window.addEventListener('resize', updateCharRects);
+  
+  // Listen for mouse movement
+  document.addEventListener('mousemove', onMouseMove, { passive: true });
+  
+  // Reset on mouse leave
+  document.addEventListener('mouseleave', function() {
+    chars.forEach(function(char) {
+      char.style.removeProperty('--glow-intensity');
+    });
+  });
+  
+  // Initial rect calculation
+  setTimeout(updateCharRects, 500);
+})();

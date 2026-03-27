@@ -4,9 +4,9 @@
 This is the development/staging version of haileyrepair.com — a device repair business in Hailey, Idaho run by Samuel Torres. The production site is in a separate repo (NEWHDR). This repo is your playground.
 
 ## Your Mission
-Make this site feel **incredibly thoughtful**. The goal isn't more features — it's making every existing element feel pristine, considered, and intentional. The kind of site where someone pauses and thinks *"woah, holy crap — this is special."*
+Make this site make people say **"woah, holy crap — that is SPECIAL."** Be ambitious. Be bold. Push the boundaries of what vanilla CSS + JS can do. Make design decisions that feel incredibly thoughtful and premium.
 
-That feeling comes from **craft**, not quantity.
+The constraint is simple: **enhance what exists — don't add new sections or new pages.** Everything else is fair game. Go hard.
 
 ## Business Context
 - **Business:** Hailey Device Repair — phones, laptops, tablets, consoles
@@ -17,33 +17,29 @@ That feeling comes from **craft**, not quantity.
 - **Website:** haileyrepair.com
 - **Email:** samuel@haileyrepair.com
 
-## Philosophy: Thoughtful > Flashy
+## Philosophy: Bold Craft
 
-### What "Special" Means
-- **Refinement over addition.** Before adding anything new, look at what's already there. Can it be more polished? Better timed? More harmonious?
-- **Details people feel but can't name.** The 200ms ease curve that feels *just right*. The shadow that gives depth without weight. The spacing that breathes. The color that shifts so subtly it feels alive.
-- **Surprise through restraint.** One perfect micro-interaction beats ten mediocre ones. If a user notices *one* moment that delights them, you've won.
-- **Coherence.** Every element should feel like it belongs to the same universe. Typography, spacing, color, motion — they should all speak the same language.
+### What To Do
+- **Redesign, restyle, re-animate** existing sections to feel world-class
+- **Stunning visual effects** — interactions, motion design, scroll animations on what's already there
+- **Rethink everything** — typography, color, gradients, shadows, hover states, transitions
+- **Create moments of genuine delight** — magnetic buttons, fluid transitions, parallax, creative cursor effects, morphing elements, particle effects
+- **Make both modes shine** — dark mode and light mode should both feel intentional and beautiful
+- **Push boundaries** — explore what vanilla CSS + JS can really do
 
-### The Craft Hierarchy (follow this order)
-1. **Refine what exists** — typography, spacing, color harmony, animation timing, transitions. Make current elements feel pristine.
-2. **Elevate interactions** — hover states, focus states, scroll behavior, page transitions. Make them feel considered, not default.
-3. **Add thoughtful details** — only after 1 and 2 are solid. A single breathtaking detail > many okay ones.
+### What NOT To Do
+- **Do NOT add new sections** or new content blocks to any page
+- **Do NOT add new pages**
+- Everything else is fair game
 
 ### What Makes Users Think "Holy Crap"
-- **Perfect typography** — kerning, line-height, font-weight transitions, responsive sizing that feels natural at every breakpoint
-- **Considered motion** — easing curves that feel physical, durations that feel unhurried but not slow, enter/exit choreography
-- **Depth and texture** — layered shadows, subtle gradients, grain/noise that adds warmth, glass effects done right
-- **Color that shifts** — dark/light mode transitions that feel alive, accent colors that respond to context, subtle palette shifts on scroll
-- **Spatial awareness** — whitespace that breathes, elements that feel placed not stacked, rhythm in layout
-- **Invisible polish** — smooth scroll behavior, no layout shift, instant perceived responsiveness, graceful degradation
-- **One magical moment** — a single interaction or visual that makes someone pull out their phone to show a friend
-
-### Before Each Session, Ask:
-1. What currently feels unfinished or default?
-2. What animation/transition timing could be tighter?
-3. What spacing or typography feels off?
-4. Is there ONE thing I could add that would create a "wow" moment?
+- Typography that has personality — variable fonts, creative weight transitions, responsive sizing
+- Motion that feels physical — spring easing, momentum, choreographed enter/exit
+- Depth and texture — layered shadows, gradients, grain/noise, glassmorphism done right
+- Color that shifts — palette changes on scroll, context-aware accents, smooth theme transitions
+- Magnetic/fluid interactions — buttons that attract the cursor, cards that tilt, elements that respond to mouse position
+- Parallax and scroll-driven effects — elements that move at different speeds, progress-based animations
+- One magical moment per section — the thing that makes someone screenshot it and send to a friend
 
 ### Technical Excellence
 - Performance-first: no heavy frameworks, vanilla JS + CSS
@@ -69,8 +65,7 @@ That feeling comes from **craft**, not quantity.
 - Don't add "drive to you" service (no car currently)
 - Don't sacrifice mobile performance for desktop wow-factor
 - Don't add "no fix no charge" or "free if can't fix" language
-- **Don't add features just to add features** — every addition must earn its place
-- **Don't use generic/default animation curves** — craft each one
+- **Don't add new sections or pages** — enhance what's already there
 
 ## File Structure
 - `index.html` — landing page (main focus for refinement)
@@ -86,4 +81,4 @@ Keep commits descriptive — these will be reviewed before merging to production
 ## Remember
 This is a real business. A real person's livelihood. Make it beautiful AND functional. Every creative choice should serve the user — either by building trust, conveying competence, or making it dead simple to text Samuel for a repair.
 
-**Less is more. Craft is everything. Make people feel something.** 🥭
+**Be bold. Be ambitious. Make people feel something. The only rule: enhance what exists, don't add new sections.** 🥭

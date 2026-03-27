@@ -1472,7 +1472,49 @@ Extended the premium 3D card tilt effect (specular glare + spring physics + dyna
 
 **What's Next:**
 - Whitespace rhythm audit across sections
-- Animation budget audit (count total keyframes + rAF loops)
 - Consider applying text reveal to pricing description paragraphs
-- Footer link hover stagger within columns
 - Consider adding subtle tilt to the pricing-statement-inner block
+- Scroll-speed-aware reveal (faster scroll = faster reveal)
+
+---
+
+## Session 32 — 2026-03-27 (Opus 4.6) — POLISH + AUDIT
+
+### What I Did: Animation Budget Audit + Footer Column Cascade
+
+**Part 1: Animation Budget Audit**
+
+Counted all animation primitives to understand performance footprint:
+
+- **51 @keyframes** in style.css (hero entrance, border beams, SVG icon animations, particles, theme reveal, etc.)
+- **17 requestAnimationFrame calls** in main.js
+
+**rAF breakdown:**
+- Persistent loops: Card tilt spring (hover-active only), mountain parallax (scroll-throttled), text luminance reveal (scroll-throttled)
+- One-shot: Theme reveal cleanup, counter animations, magnetic button displacement, progress bar fill
+
+**Assessment:** Healthy budget. Persistent loops are properly throttled with ticking flags. No runaway animations. One setInterval for testimonial carousel (paused when not visible).
+
+**Part 2: Footer Column Cascade Hover**
+
+Added staggered link animation when hovering footer columns — waterfall effect with 25ms delay between each link.
+
+**How it works:**
+- Hovering a footer column triggers all links to shift 4px right
+- Each link has nth-child-based transition-delay (0ms, 25ms, 50ms... up to 250ms for link 12)
+- Individual link hover overrides to 6px right with instant response (no delay)
+- Reduced-motion users get instant transitions (no stagger)
+
+**CSS technique:** Explicit `.footer-col:hover a:nth-child(n)` selectors with hardcoded delays — more reliable than CSS custom property approach.
+
+**Files changed:**
+- `style.css` — Added 15 new rules for footer cascade hover
+
+**Tested:** CSS balanced (1751 braces) ✓, zero console errors ✓.
+
+**What's Next:**
+- Whitespace rhythm audit across sections
+- Consider applying text reveal to pricing description paragraphs
+- Consider adding subtle tilt to the pricing-statement-inner block
+- Scroll-speed-aware reveal (faster scroll = faster reveal)
+- Hero scroll hint "boop" on first scroll attempt

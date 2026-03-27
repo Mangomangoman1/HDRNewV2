@@ -4553,6 +4553,44 @@ button[type="submit"].btn-error {
 .footer-col a:hover::after {
   width: 100%;
 }
+
+/* ══════════════════════════════════════════════════
+   FOOTER COLUMN CASCADE HOVER
+   Staggered link shift when hovering a column
+══════════════════════════════════════════════════ */
+
+/* When column is hovered, all links shift right with stagger */
+.footer-col:hover a:nth-child(2)  { transform: translateX(4px); transition-delay: 0ms; }
+.footer-col:hover a:nth-child(3)  { transform: translateX(4px); transition-delay: 25ms; }
+.footer-col:hover a:nth-child(4)  { transform: translateX(4px); transition-delay: 50ms; }
+.footer-col:hover a:nth-child(5)  { transform: translateX(4px); transition-delay: 75ms; }
+.footer-col:hover a:nth-child(6)  { transform: translateX(4px); transition-delay: 100ms; }
+.footer-col:hover a:nth-child(7)  { transform: translateX(4px); transition-delay: 125ms; }
+.footer-col:hover a:nth-child(8)  { transform: translateX(4px); transition-delay: 150ms; }
+.footer-col:hover a:nth-child(9)  { transform: translateX(4px); transition-delay: 175ms; }
+.footer-col:hover a:nth-child(10) { transform: translateX(4px); transition-delay: 200ms; }
+.footer-col:hover a:nth-child(11) { transform: translateX(4px); transition-delay: 225ms; }
+.footer-col:hover a:nth-child(12) { transform: translateX(4px); transition-delay: 250ms; }
+
+/* Also shift color slightly brighter on column hover */
+.footer-col:hover a {
+  color: var(--text-primary);
+}
+
+/* Individual link hover overrides cascade — instant response */
+.footer-col a:hover {
+  color: var(--accent) !important;
+  transform: translateX(6px) !important;
+  transition-delay: 0ms !important;
+}
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .footer-col:hover a:nth-child(n) {
+    transition-delay: 0ms;
+  }
+}
+
 .footer-bottom {
   border-top: none;
   padding: var(--space-lg) var(--space-xl);

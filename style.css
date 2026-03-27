@@ -3015,6 +3015,17 @@ ul { list-style: none; }
   font-weight: 600;
 }
 
+/* FAQ Answer Reading Lamp - text illuminates on open */
+.faq-answer-inner {
+  opacity: 0.5;
+  filter: brightness(0.85);
+  transition: opacity 0.5s ease, filter 0.5s ease;
+}
+.faq-item[open] .faq-answer-inner.reading-lit {
+  opacity: 1;
+  filter: brightness(1);
+}
+
 /* ── Staggered scroll-in for FAQ items ── */
 .faq-item[data-animate] {
   transition-delay: calc(var(--faq-idx, 0) * 80ms);
@@ -9755,7 +9766,9 @@ body.konami-active .hero-headline {
     transition-delay: 0ms !important;
   }
   /* No reading lamp dimming for reduced motion */
-  .pricing-body {
+  .pricing-body,
+  .workshop-card-desc,
+  .faq-answer-inner {
     opacity: 1 !important;
     filter: none !important;
   }

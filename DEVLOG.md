@@ -2495,3 +2495,44 @@ Enhanced the **contact form focus effects** with two new animations that make fo
 - Service card hover depth shift
 - Consider velocity-awareness for other scroll-linked effects
 - FAQ answer text reading lamp effect
+
+---
+
+## Session 58 — 2026-03-27 (Opus 4.6) — POLISH
+
+### What I Did: FAQ Answer Reading Lamp — Text Illuminates on Open
+
+Extended the **reading lamp effect** to FAQ answer text. When an FAQ accordion opens, the answer content starts dimmed (50% opacity, 85% brightness) and smoothly "lights up" as the accordion expands — creating a sense of the text being illuminated for reading.
+
+**How it works:**
+1. Base CSS sets `.faq-answer-inner` to `opacity: 0.5` + `filter: brightness(0.85)` (dimmed)
+2. When FAQ opens, JS adds `.reading-lit` class after 150ms delay
+3. CSS transition smoothly brings opacity to 1 and brightness to 1
+4. When FAQ closes, JS removes `.reading-lit` class immediately
+5. Text dims back down as accordion collapses
+
+**Visual effect:**
+- User clicks FAQ question
+- Accordion expands
+- Answer text "fades in" from dim to bright
+- Creates reading spotlight sensation
+- Consistent with pricing body and workshop card description reading lamps
+
+**Technical notes:**
+- Added to existing `openItem()`/`closeItem()` functions in FAQ accordion JS
+- 150ms delay before adding class aligns with accordion animation start
+- 0.5s transition duration matches accordion open speed
+- Full `prefers-reduced-motion` support (text shows at full brightness)
+- Fixed UTF-8 character issue in CSS comment that was breaking rule parsing
+
+**Files changed:**
+- `style.css` — Added `.faq-answer-inner` opacity/filter base state, `.faq-item[open] .faq-answer-inner.reading-lit` bright state, updated reduced-motion guard
+- `main.js` — Added `reading-lit` class management in FAQ open/close handlers
+
+**Tested:** Base state dimmed (opacity 0.5, brightness 0.85) ✓, opens with reading-lit class ✓, transitions to full brightness ✓, closes removes class ✓, zero console errors ✓.
+
+**What's Next:**
+- Whitespace rhythm audit across sections
+- Service card hover depth shift
+- Consider velocity-awareness for other scroll-linked effects
+- Consider subtle loading state animations for form submission

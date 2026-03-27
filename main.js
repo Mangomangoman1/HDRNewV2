@@ -2372,6 +2372,14 @@
       answerEl.style.height = targetHeight + 'px';
       answerEl.style.opacity = '1';
 
+      // Add reading lamp effect after a slight delay
+      var inner = answerEl.querySelector('.faq-answer-inner');
+      if (inner) {
+        setTimeout(function() {
+          inner.classList.add('reading-lit');
+        }, 150);
+      }
+
       // Clean up after animation
       setTimeout(function() {
         answerEl.style.height = '';
@@ -2404,6 +2412,12 @@
       // Animate to 0
       answerEl.style.height = '0px';
       answerEl.style.opacity = '0';
+
+      // Remove reading lamp effect
+      var inner = answerEl.querySelector('.faq-answer-inner');
+      if (inner) {
+        inner.classList.remove('reading-lit');
+      }
 
       // Remove open after animation
       setTimeout(function() {

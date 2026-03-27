@@ -2439,6 +2439,34 @@
 
 
 /* ═══════════════════════════════════════════════
+   FORM FOCUS RING PULSE
+   Expanding ring animation on focus entry.
+═══════════════════════════════════════════════ */
+(function() {
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  var groups = document.querySelectorAll('.form-group');
+  if (!groups.length) return;
+
+  groups.forEach(function(group) {
+    var input = group.querySelector('input, textarea, select');
+    if (!input) return;
+
+    input.addEventListener('focus', function() {
+      group.classList.add('focus-pulsing');
+    });
+
+    // Remove after animation completes
+    group.addEventListener('animationend', function(e) {
+      if (e.animationName === 'focusRingPulse') {
+        group.classList.remove('focus-pulsing');
+      }
+    });
+  });
+})();
+
+
+/* ═══════════════════════════════════════════════
    CURSOR SPOTLIGHT — ambient glow follows mouse
    Creates a subtle accent-colored radial glow
    that tracks the cursor across the entire page.

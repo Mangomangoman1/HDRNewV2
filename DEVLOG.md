@@ -2152,3 +2152,40 @@ Added a **magnetic pull effect** to the desktop navigation links. When the curso
 - Scroll-speed-aware text reveal (faster scroll = reveal runs ahead)
 - Apply reading lamp to other dense text blocks
 - Consider animated focus states for form inputs
+
+---
+
+## Session 49 — 2026-03-27 (Opus 4.6) — POLISH
+
+### What I Did: Form Focus Ring Pulse — Expanding Ring on Focus Entry
+
+Added a **focus ring pulse** animation to form inputs. When a user focuses on any form field (name, contact method, device, issue), an accent-colored ring expands outward and fades, creating a satisfying "here you are" feedback.
+
+**How it works:**
+1. JS adds `.focus-pulsing` class to parent `.form-group` on `focus` event
+2. CSS `::before` pseudo-element draws a 2px accent ring positioned 4px outside the input
+3. `focusRingPulse` keyframes animate: scale 0.95→1.08, opacity 0.8→0
+4. On `animationend`, JS removes the class (ready for next focus)
+
+**Animation timing:**
+- Duration: 0.6s
+- Easing: cubic-bezier(0.16, 1, 0.3, 1) — expo-out for smooth expansion
+- One-shot: plays once per focus event
+
+**Technical notes:**
+- Uses parent `.form-group` for ::before (inputs can't have pseudo-elements)
+- Border radius: `calc(var(--radius-md) + 4px)` to match input shape with offset
+- z-index: 5 to appear above input border but below floating labels
+- pointer-events: none so it doesn't interfere with interaction
+
+**Files changed:**
+- `style.css` — Added `.form-group.focus-pulsing::before`, `@keyframes focusRingPulse`, reduced motion guard
+- `main.js` — Added form focus ring pulse IIFE (~25 lines)
+
+**Tested:** 5 form groups detected ✓, CSS rule present ✓, animation `focusRingPulse` applied ✓, accent border color ✓, zero console errors ✓.
+
+**What's Next:**
+- Whitespace rhythm audit across sections
+- Scroll-speed-aware text reveal (faster scroll = reveal runs ahead)
+- Apply reading lamp to other dense text blocks (workshop card descriptions?)
+- Consider hover micro-animation for workshop cards

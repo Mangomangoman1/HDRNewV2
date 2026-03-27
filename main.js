@@ -512,7 +512,9 @@
     }
   }
 
-  // ─── Hero parallax glow ──────────────────────────────────
+  // ─── Hero parallax glow (mouse) ──────────────────────────
+  // Store mouse offsets for composing with scroll parallax
+  var heroMouseX = 0, heroMouseY = 0;
   if (!prefersReducedMotion) {
     const heroGlows = document.querySelectorAll('.hero-glow, .hero-glow-1');
     if (heroGlows.length) {
@@ -521,11 +523,15 @@
         if (ticking) return;
         ticking = true;
         requestAnimationFrame(() => {
-          const cx = (e.clientX / window.innerWidth - 0.5) * 2;  // -1 to 1
+          const cx = (e.clientX / window.innerWidth - 0.5) * 2;
           const cy = (e.clientY / window.innerHeight - 0.5) * 2;
+          heroMouseX = cx;
+          heroMouseY = cy;
+          // Compose with scroll offset (applied by scroll parallax below)
           heroGlows.forEach((glow, i) => {
-            const factor = (i + 1) * 15;
-            glow.style.transform = `translate(${cx * factor}px, ${cy * factor}px)`;
+            const mFactor = (i + 1) * 15;
+            var scrollOff = parseFloat(glow.dataset.scrollY || 0);
+            glow.style.transform = 'translate(' + (cx * mFactor) + 'px, ' + (cy * mFactor + scrollOff) + 'px)';
           });
           ticking = false;
         });
@@ -1760,4 +1766,126 @@
       }, 1000);
     }, 4500);
   }
+})();
+
+
+/* ═══════════════════════════════════════════════
+   HERO SCROLL PARALLAX — Layered depth on scroll
+   Background elements move at different rates as
+   you scroll, creating a 3D depth illusion.
+   Content fades and lifts as it scrolls away.
+═══════════════════════════════════════════════ */
+(function() {
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  var hero = document.getElementById('hero');
+  if (!hero) return;
+
+  var heroInner = hero.querySelector('.hero-inner');
+  var heroGrid = hero.querySelector('.hero-bg-grid');
+  var heroGlow1 = hero.querySelector('.hero-glow-1');
+  var heroGlow2 = hero.querySelector('.hero-glow-2');
+  var heroMountains = hero.querySelector('.hero-mountains');
+  var heroScrollHint = hero.querySelector('.hero-scroll-hint');
+
+  // Parallax rates: higher = moves faster relative to scroll
+  var RATES = {
+    grid: 0.08,
+    glow1: 0.25,
+    glow2: 0.18,
+    mountains: 0.04,
+    content: 0.35,
+    contentOpacity: 1.5,  // Fade speed (multiplier on scroll ratio)
+    contentScale: 0.06    // How much to scale down
+  };
+
+  var heroHeight = 0;
+  var ticking = false;
+  var lastScroll = -1;
+
+  function updateHeroHeight() {
+    heroHeight = hero.offsetHeight || window.innerHeight;
+  }
+  updateHeroHeight();
+  window.addEventListener('resize', updateHeroHeight, { passive: true });
+
+  function onScroll() {
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(applyParallax);
+  }
+
+  function applyParallax() {
+    ticking = false;
+    var scrollY = window.scrollY || window.pageYOffset;
+
+    // Only apply when hero is in view (plus a small buffer)
+    if (scrollY > heroHeight + 100) {
+      if (lastScroll <= heroHeight + 100) {
+        // Just left viewport — set final state
+        resetHeroElements();
+        lastScroll = scrollY;
+      }
+      return;
+    }
+    lastScroll = scrollY;
+
+    // Scroll ratio: 0 at top, 1 at hero bottom
+    var ratio = Math.min(scrollY / heroHeight, 1);
+
+    // ── Grid: subtle upward shift ──
+    if (heroGrid) {
+      heroGrid.style.transform = 'translateY(' + (-scrollY * RATES.grid).toFixed(1) + 'px)';
+    }
+
+    // ── Glow blobs: drift upward faster, composing with mouse offset ──
+    if (heroGlow1) {
+      var scrollOff1 = -scrollY * RATES.glow1;
+      heroGlow1.dataset.scrollY = scrollOff1;
+      // Re-compose with mouse position stored in outer scope
+      var mx1 = (typeof heroMouseX !== 'undefined' ? heroMouseX : 0) * 30;
+      var my1 = (typeof heroMouseY !== 'undefined' ? heroMouseY : 0) * 30;
+      heroGlow1.style.transform = 'translate(' + mx1.toFixed(1) + 'px, ' + (my1 + scrollOff1).toFixed(1) + 'px)';
+    }
+    if (heroGlow2) {
+      var scrollOff2 = -scrollY * RATES.glow2;
+      heroGlow2.dataset.scrollY = scrollOff2;
+      var mx2 = (typeof heroMouseX !== 'undefined' ? heroMouseX : 0) * 15;
+      var my2 = (typeof heroMouseY !== 'undefined' ? heroMouseY : 0) * 15;
+      heroGlow2.style.transform = 'translate(' + mx2.toFixed(1) + 'px, ' + (my2 + scrollOff2).toFixed(1) + 'px)';
+    }
+
+    // ── Mountains: very slight upward creep (back range barely moves) ──
+    if (heroMountains) {
+      heroMountains.style.transform = 'translateY(' + (-scrollY * RATES.mountains).toFixed(1) + 'px)';
+    }
+
+    // ── Content: fade out + lift + slight scale down ──
+    if (heroInner) {
+      var contentY = -scrollY * RATES.content;
+      var contentOpacity = Math.max(0, 1 - ratio * RATES.contentOpacity);
+      var contentScale = 1 - ratio * RATES.contentScale;
+      heroInner.style.transform = 'translateY(' + contentY.toFixed(1) + 'px) scale(' + contentScale.toFixed(3) + ')';
+      heroInner.style.opacity = contentOpacity.toFixed(3);
+    }
+
+    // ── Scroll hint: fade out quickly ──
+    if (heroScrollHint) {
+      heroScrollHint.style.opacity = Math.max(0, 1 - ratio * 4).toFixed(3);
+    }
+  }
+
+  function resetHeroElements() {
+    // When scrolled past hero, set everything to "gone" state
+    if (heroInner) {
+      heroInner.style.opacity = '0';
+    }
+    if (heroScrollHint) {
+      heroScrollHint.style.opacity = '0';
+    }
+  }
+
+  window.addEventListener('scroll', onScroll, { passive: true });
+  // Initial call in case page loads scrolled
+  applyParallax();
 })();

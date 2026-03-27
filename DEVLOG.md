@@ -314,9 +314,65 @@ Enter the classic Konami code on any page and you get:
 **Tested:** Dark mode, light mode, desktop (1024px). Icon animations stagger correctly. Konami code triggers/dismisses properly. Toast centers on viewport. Zero console errors.
 
 **What's Next (Ideas for Session 7+):**
-- Parallax scrolling on the hero background glow blobs
 - Animated SVG device illustrations (exploded phone view)
 - Scroll-triggered counter animation for stats
 - Interactive before/after slider for repair photos
-- Hero scroll-to reveal: content unfolds as you scroll down
 - Service page enhancements (not just index.html)
+
+---
+
+## Session 7 — 2026-03-27 (Opus 4.6)
+
+### What I Did: Hero Scroll Parallax — Layered Depth on Scroll
+
+**Focus:** Multi-layer scroll-driven parallax on the hero section. As you scroll down, background elements move at different rates creating a 3D depth illusion, while the content gracefully fades and lifts away.
+
+**Parallax layers and rates:**
+
+| Element | Rate | Effect |
+|---------|------|--------|
+| `.hero-bg-grid` | 0.08 | Dot grid drifts up very slowly — anchored feel |
+| `.hero-glow-1` | 0.25 | Primary blue glow blob drifts up faster — mid-depth |
+| `.hero-glow-2` | 0.18 | Secondary purple glow drifts at medium rate |
+| `.hero-mountains` | 0.04 | Mountain silhouette barely moves — grounded |
+| `.hero-inner` (content) | 0.35 | Headline, CTA, trust badges lift and fade |
+| `.hero-scroll-hint` | 4× fade | Bouncing arrow disappears first (fully gone at 25% scroll) |
+
+**Content fade-out behavior:**
+- Opacity: `1 - (ratio × 1.5)` — reaches ~0 at 66% through the hero height
+- Scale: `1 - (ratio × 0.06)` — shrinks to ~0.94 at full scroll (subtle, not jarring)
+- Transform origin: `center top` — content scales from the top down
+- All transform values clamped: opacity floors at 0, scale never goes negative
+
+**Mouse + scroll composition:**
+- Glow blobs already had mouse parallax (from Session 2). Updated the mouse handler to compose its offset with the scroll offset via `data-scrollY` attribute on each glow element.
+- Both offsets combine: `translate(mouseX + 0, mouseY + scrollOffset)` — the blob follows the cursor AND drifts upward on scroll simultaneously.
+
+**Performance:**
+- Single `scroll` event listener with `requestAnimationFrame` throttling
+- `will-change: transform, opacity` on all animated elements
+- `backface-visibility: hidden` on hero for compositor optimization
+- Parallax calculations skip entirely when scrolled past hero + 100px buffer
+- Reset function sets final state when hero exits viewport (no wasted frames)
+- `passive: true` on scroll listener
+- `resize` listener updates hero height for accurate ratio calculation
+
+**Technical details:**
+- Hero height measured via `offsetHeight` (recalculated on resize)
+- Scroll ratio: `scrollY / heroHeight`, clamped to 0-1
+- `lastScroll` tracking to avoid redundant DOM writes
+- Global `heroMouseX` / `heroMouseY` variables shared between mouse parallax and scroll parallax IIFEs
+
+**Files changed:**
+- `style.css` — added ~25 lines: will-change hints for parallax elements, transform-origin on hero-inner, backface-visibility on hero, reduced-motion overrides
+- `main.js` — modified mouse parallax to compose with scroll offset (~10 lines changed), added ~95-line scroll parallax IIFE
+
+**Tested:** Dark mode, light mode, desktop (1024px), mobile (375px). Content fades smoothly, resets clean at scroll=0. Zero console errors. Reduced motion: no scroll transforms applied.
+
+**What's Next (Ideas for Session 8+):**
+- Animated SVG device illustrations (exploded phone view)
+- Scroll-triggered counter animation for stats
+- Interactive before/after slider for repair photos
+- Service page enhancements (not just index.html)
+- FAQ accordion animation refinements
+- Contact form micro-interactions

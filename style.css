@@ -7629,3 +7629,40 @@ body.konami-active .hero-headline {
   50%  { text-shadow: 2px 0 #f00, -2px 0 #0ff; }
   100% { text-shadow: none; }
 }
+
+
+/* ═══════════════════════════════════════════════
+   HERO SCROLL PARALLAX — Performance hints
+   will-change for compositor-promoted layers.
+   transform-origin for scale-down anchoring.
+   ═══════════════════════════════════════════════ */
+
+.hero-bg-grid,
+.hero-mountains {
+  will-change: transform;
+}
+
+.hero-inner {
+  transform-origin: center top;
+  will-change: transform, opacity;
+}
+
+.hero-scroll-hint {
+  will-change: opacity;
+}
+
+/* Ensure parallax-transformed elements don't overflow hero */
+.hero {
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
+
+/* Reduced motion: no scroll transforms */
+@media (prefers-reduced-motion: reduce) {
+  .hero-bg-grid,
+  .hero-mountains,
+  .hero-inner,
+  .hero-scroll-hint {
+    will-change: auto !important;
+  }
+}

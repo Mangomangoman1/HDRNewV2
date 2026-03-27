@@ -371,8 +371,61 @@ Enter the classic Konami code on any page and you get:
 
 **What's Next (Ideas for Session 8+):**
 - Animated SVG device illustrations (exploded phone view)
-- Scroll-triggered counter animation for stats
 - Interactive before/after slider for repair photos
 - Service page enhancements (not just index.html)
 - FAQ accordion animation refinements
 - Contact form micro-interactions
+
+---
+
+## Session 8 — 2026-03-27 (Opus 4.6)
+
+### What I Did: Trust Metrics Strip — Animated Counter Numbers
+
+**Focus:** A new trust-building metrics section between the ticker and services grid. Four key stats that count up with animation when scrolled into view, reinforcing credibility immediately.
+
+**The 4 metrics:**
+1. **< 2 hr** — "Average response" (counter: 0→2, 1200ms)
+2. **40 day** — "Warranty on every repair" (counter: 0→40, 1800ms)
+3. **5.0 ★** — "Google rating" (counter: 0.0→5.0, 1500ms, 1 decimal)
+4. **Same day** — "Most phone repairs" (text, no counter)
+
+**Visual design:**
+- `.trust-metrics` strip with `bg-surface` background and subtle border-top/bottom
+- Radial accent glow behind the strip (via `::before` pseudo-element)
+- 4-column grid with vertical dividers (1px border-subtle) between metrics
+- Numbers in accent blue, large display font (clamp 2rem → 3rem)
+- Gold ★ for the Google rating (via `.trust-metric-suffix--star`)
+- Font-variant-numeric: tabular-nums for stable width during counting
+- Responsive: 2×2 grid on mobile (768px breakpoint)
+
+**Counter animation:**
+- `easeOutExpo` easing — fast start, satisfying deceleration at the end
+- Each counter triggered by IntersectionObserver (threshold 0.5)
+- Staggered: 200ms base delay + 150ms per metric position
+- 200ms delay after slide-up animation starts, so counter begins after the card appears
+- Final "glow pulse" keyframe on completion (scale 1→1.08→1 with text-shadow glow)
+- Exact target value set at end to avoid floating-point rounding
+
+**Slide-up entrance:**
+- Each `.trust-metric[data-animate]` starts at opacity 0, translateY(24px)
+- Transitions to visible with spring-curve easing
+- Staggered by nth-child: 0s, 0.1s, 0.2s, 0.3s
+- Mobile: adjusted stagger (0, 0.1, 0.1, 0.2)
+
+**Bug fix:** Star color was applying to all suffixes via `:last-child` selector — fixed by adding specific `.trust-metric-suffix--star` class.
+
+**Files changed:**
+- `index.html` — added `.trust-metrics` section with 4 metrics, 3 counters with `data-target`/`data-duration`/`data-decimals`
+- `style.css` — added ~160 lines: trust-metrics layout, metric-value typography, counter pulse keyframe, responsive grid, reduced-motion fallback
+- `main.js` — added ~85 lines: easeOutExpo counter animation IIFE with IntersectionObserver and staggered triggers
+
+**Tested:** Dark mode, light mode, desktop (1024px), mobile (375px). Counters animate to target values. Star is gold. Responsive 2×2 on mobile. Zero console errors.
+
+**What's Next (Ideas for Session 9+):**
+- Animated SVG device illustrations (exploded phone view)
+- Interactive before/after slider for repair photos
+- Service page enhancements (not just index.html)
+- FAQ accordion animation refinements
+- Contact form micro-interactions
+- Review the cumulative file sizes and performance

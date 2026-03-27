@@ -1889,3 +1889,93 @@
   // Initial call in case page loads scrolled
   applyParallax();
 })();
+
+
+/* ═══════════════════════════════════════════════
+   TRUST METRICS — Animated counter on scroll
+   Numbers count up from 0 to target when the
+   trust metrics strip scrolls into view.
+   Uses easeOutExpo for a satisfying deceleration.
+═══════════════════════════════════════════════ */
+(function() {
+  var counters = document.querySelectorAll('.trust-counter');
+  if (!counters.length) return;
+
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // Easing function: easeOutExpo — fast start, slow finish
+  function easeOutExpo(t) {
+    return t === 1 ? 1 : 1 - Math.pow(2, -10 * t);
+  }
+
+  function animateCounter(el) {
+    if (el.dataset.counted) return;
+    el.dataset.counted = '1';
+
+    var target = parseFloat(el.dataset.target);
+    var duration = parseInt(el.dataset.duration, 10) || 1500;
+    var decimals = parseInt(el.dataset.decimals, 10) || 0;
+
+    if (reduceMotion) {
+      el.textContent = decimals > 0 ? target.toFixed(decimals) : target.toString();
+      el.classList.add('counted');
+      return;
+    }
+
+    var start = performance.now();
+
+    function tick(now) {
+      var elapsed = now - start;
+      var progress = Math.min(elapsed / duration, 1);
+      var easedProgress = easeOutExpo(progress);
+      var current = easedProgress * target;
+
+      if (decimals > 0) {
+        el.textContent = current.toFixed(decimals);
+      } else {
+        el.textContent = Math.round(current).toString();
+      }
+
+      if (progress < 1) {
+        requestAnimationFrame(tick);
+      } else {
+        // Final value — ensure exact target
+        el.textContent = decimals > 0 ? target.toFixed(decimals) : target.toString();
+        el.classList.add('counted');
+      }
+    }
+
+    requestAnimationFrame(tick);
+  }
+
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting) {
+          // Small delay to let the slide-up animation start first
+          var metric = entry.target.closest('.trust-metric');
+          var delay = 0;
+          if (metric) {
+            // Get sibling index for stagger
+            var siblings = Array.from(metric.parentElement.children);
+            var idx = siblings.indexOf(metric);
+            delay = idx * 150 + 200; // 200ms base + 150ms per metric
+          }
+          setTimeout(function() {
+            animateCounter(entry.target);
+          }, delay);
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.5 });
+
+    counters.forEach(function(el) { observer.observe(el); });
+  } else {
+    // Fallback: show final values immediately
+    counters.forEach(function(el) {
+      var target = parseFloat(el.dataset.target);
+      var decimals = parseInt(el.dataset.decimals, 10) || 0;
+      el.textContent = decimals > 0 ? target.toFixed(decimals) : target.toString();
+    });
+  }
+})();

@@ -1647,3 +1647,117 @@
     elements.forEach(function(el) { el.classList.add('scramble-done'); });
   }
 })();
+
+
+/* ═══════════════════════════════════════════════
+   SERVICE CARD ICON ENTRANCE ANIMATIONS
+   Each icon gets a unique animation when its parent
+   card scrolls into view. Staggered by card position.
+═══════════════════════════════════════════════ */
+(function() {
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var iconEls = document.querySelectorAll('[data-icon-anim]');
+  if (!iconEls.length) return;
+
+  if (reduceMotion) {
+    iconEls.forEach(function(el) { el.classList.add('icon-animated'); });
+    return;
+  }
+
+  if ('IntersectionObserver' in window) {
+    // Track stagger per parent container
+    var parentStagger = new WeakMap();
+
+    var iconObserver = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (!entry.isIntersecting) return;
+        var el = entry.target;
+        if (el.classList.contains('icon-animated')) return;
+
+        // Get stagger index from parent
+        var parent = el.closest('.services-grid') || el.parentElement;
+        var count = parentStagger.get(parent) || 0;
+        parentStagger.set(parent, count + 1);
+
+        // Stagger the animation trigger by 120ms per card
+        var delay = Math.min(count, 7) * 120;
+        setTimeout(function() {
+          el.classList.add('icon-animated');
+        }, delay);
+
+        iconObserver.unobserve(el);
+      });
+    }, { threshold: 0.2, rootMargin: '0px 0px -20px 0px' });
+
+    iconEls.forEach(function(el) { iconObserver.observe(el); });
+  } else {
+    iconEls.forEach(function(el) { el.classList.add('icon-animated'); });
+  }
+})();
+
+
+/* ═══════════════════════════════════════════════
+   KONAMI CODE EASTER EGG
+   ↑↑↓↓←→←→BA triggers a brief "arcade mode"
+   with CRT scanlines, green tint, and a fun toast.
+═══════════════════════════════════════════════ */
+(function() {
+  var KONAMI = [38, 38, 40, 40, 37, 39, 37, 39, 66, 65];
+  // ArrowUp=38, ArrowDown=40, ArrowLeft=37, ArrowRight=39, B=66, A=65
+  var pos = 0;
+  var triggered = false;
+
+  // Create arcade overlay elements (once)
+  var arcadeOverlay = document.createElement('div');
+  arcadeOverlay.className = 'arcade-mode';
+  arcadeOverlay.setAttribute('aria-hidden', 'true');
+  document.documentElement.appendChild(arcadeOverlay);
+
+  var arcadeToast = document.createElement('div');
+  arcadeToast.className = 'arcade-toast';
+  arcadeToast.setAttribute('role', 'alert');
+  arcadeToast.innerHTML = '<div class="arcade-toast-title">🕹️ KONAMI CODE!</div><div class="arcade-toast-sub">You found the secret. Samuel fixes devices like a boss.</div>';
+  document.documentElement.appendChild(arcadeToast);
+
+  document.addEventListener('keydown', function(e) {
+    if (triggered) return;
+
+    if (e.keyCode === KONAMI[pos]) {
+      pos++;
+      if (pos === KONAMI.length) {
+        triggered = true;
+        activateArcadeMode();
+      }
+    } else {
+      pos = 0;
+      // Check if this key matches the start of the sequence
+      if (e.keyCode === KONAMI[0]) pos = 1;
+    }
+  });
+
+  function activateArcadeMode() {
+    document.body.classList.add('konami-active');
+    arcadeOverlay.classList.add('active');
+
+    // Show toast after a brief delay
+    setTimeout(function() {
+      arcadeToast.classList.add('show');
+    }, 300);
+
+    // Play a subtle "achievement unlocked" effect
+    // Auto-dismiss after 4 seconds
+    setTimeout(function() {
+      arcadeToast.classList.remove('show');
+    }, 4000);
+
+    setTimeout(function() {
+      arcadeOverlay.classList.remove('active');
+      document.body.classList.remove('konami-active');
+      // Allow re-trigger after full reset
+      setTimeout(function() {
+        triggered = false;
+        pos = 0;
+      }, 1000);
+    }, 4500);
+  }
+})();

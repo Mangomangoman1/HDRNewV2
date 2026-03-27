@@ -7429,3 +7429,203 @@ body {
 @media (prefers-reduced-motion: reduce) {
   /* Noise is static — no animations to disable, keep as-is */
 }
+
+
+/* ═══════════════════════════════════════════════
+   SERVICE CARD ICON ENTRANCE ANIMATIONS
+   Each icon type has a unique entrance that matches
+   its meaning — triggered when the card scrolls in.
+   ═══════════════════════════════════════════════ */
+
+/* Base state: hidden before animation triggers */
+[data-icon-anim] .material-symbols-outlined {
+  transition: none;
+}
+[data-icon-anim]:not(.icon-animated) .material-symbols-outlined {
+  opacity: 0;
+  transform: translateY(12px);
+}
+
+/* Post-animation: icon visible */
+[data-icon-anim].icon-animated .material-symbols-outlined {
+  opacity: 1;
+  transform: none;
+}
+
+/* ── Slide Up (phone from pocket) ── */
+[data-icon-anim="slide-up"].icon-animated .material-symbols-outlined {
+  animation: iconSlideUp 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+@keyframes iconSlideUp {
+  0%   { opacity: 0; transform: translateY(20px); }
+  40%  { opacity: 1; }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Spin In (android head / speedometer) ── */
+[data-icon-anim="spin-in"].icon-animated .material-symbols-outlined {
+  animation: iconSpinIn 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+@keyframes iconSpinIn {
+  0%   { opacity: 0; transform: rotate(-180deg) scale(0.5); }
+  50%  { opacity: 1; }
+  100% { opacity: 1; transform: rotate(0deg) scale(1); }
+}
+
+/* ── Flip Open (laptop lid opening) ── */
+[data-icon-anim="flip-open"].icon-animated .material-symbols-outlined {
+  animation: iconFlipOpen 0.65s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  transform-origin: bottom center;
+}
+@keyframes iconFlipOpen {
+  0%   { opacity: 0; transform: rotateX(-90deg); }
+  50%  { opacity: 1; }
+  100% { opacity: 1; transform: rotateX(0deg); }
+}
+
+/* ── Scale Up (tablet zoom-in) ── */
+[data-icon-anim="scale-up"].icon-animated .material-symbols-outlined {
+  animation: iconScaleUp 0.55s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+@keyframes iconScaleUp {
+  0%   { opacity: 0; transform: scale(0.3); }
+  60%  { opacity: 1; transform: scale(1.1); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+/* ── Bounce In (gaming bounce) ── */
+[data-icon-anim="bounce-in"].icon-animated .material-symbols-outlined {
+  animation: iconBounceIn 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+@keyframes iconBounceIn {
+  0%   { opacity: 0; transform: translateY(-24px) scale(0.8); }
+  40%  { opacity: 1; transform: translateY(4px) scale(1.05); }
+  60%  { transform: translateY(-2px) scale(0.98); }
+  80%  { transform: translateY(1px) scale(1.01); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* ── Pulse (magnifying glass scanning) ── */
+[data-icon-anim="pulse"].icon-animated .material-symbols-outlined {
+  animation: iconPulse 0.7s ease-out forwards;
+}
+@keyframes iconPulse {
+  0%   { opacity: 0; transform: scale(0.8); }
+  30%  { opacity: 1; transform: scale(1.15); }
+  50%  { transform: scale(0.95); }
+  70%  { transform: scale(1.08); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+/* ── Slide Right (delivery truck arriving) ── */
+[data-icon-anim="slide-right"].icon-animated .material-symbols-outlined {
+  animation: iconSlideRight 0.65s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+@keyframes iconSlideRight {
+  0%   { opacity: 0; transform: translateX(-24px); }
+  50%  { opacity: 1; }
+  100% { opacity: 1; transform: translateX(0); }
+}
+
+/* ── Reduced motion: just fade in ── */
+@media (prefers-reduced-motion: reduce) {
+  [data-icon-anim] .material-symbols-outlined {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
+
+/* ═══════════════════════════════════════════════
+   KONAMI CODE EASTER EGG — Arcade Mode
+   ═══════════════════════════════════════════════ */
+
+/* Arcade mode overlay */
+.arcade-mode {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+.arcade-mode.active {
+  opacity: 1;
+}
+
+/* CRT scanlines + slight green tint */
+.arcade-mode::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0, 0, 0, 0.05) 2px,
+      rgba(0, 0, 0, 0.05) 4px
+    ),
+    rgba(0, 255, 0, 0.03);
+  pointer-events: none;
+}
+
+/* CRT vignette */
+.arcade-mode::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at center, transparent 50%, rgba(0,0,0,0.35) 100%);
+  pointer-events: none;
+}
+
+/* Arcade toast notification */
+.arcade-toast {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.8);
+  z-index: 10001;
+  background: #000;
+  border: 3px solid #0f0;
+  border-radius: 8px;
+  padding: 24px 40px;
+  text-align: center;
+  font-family: 'Courier New', monospace;
+  color: #0f0;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease, transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: 0 0 30px rgba(0, 255, 0, 0.3), inset 0 0 15px rgba(0, 255, 0, 0.05);
+  text-shadow: 0 0 8px rgba(0, 255, 0, 0.6);
+}
+.arcade-toast.show {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+.arcade-toast-title {
+  font-size: 1.4rem;
+  font-weight: bold;
+  margin-bottom: 8px;
+  letter-spacing: 0.1em;
+}
+.arcade-toast-sub {
+  font-size: 0.85rem;
+  color: #0a0;
+}
+
+/* Arcade mode cursor */
+body.konami-active {
+  cursor: crosshair;
+}
+
+/* Chromatic aberration flicker on arcade mode */
+body.konami-active .hero-headline {
+  animation: chromaticFlicker 0.15s steps(2) 3;
+}
+@keyframes chromaticFlicker {
+  0%   { text-shadow: -2px 0 #f00, 2px 0 #0ff; }
+  50%  { text-shadow: 2px 0 #f00, -2px 0 #0ff; }
+  100% { text-shadow: none; }
+}

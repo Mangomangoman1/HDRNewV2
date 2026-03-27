@@ -252,6 +252,71 @@
 - Animated SVG device illustrations (exploded phone view)
 - Scroll-triggered counter animation for stats
 - Interactive before/after slider for repair photos
-- Easter egg: Konami code or click-the-mountain interaction
-- Animated service card icons (wrench spinning, screen pulsing)
 - Hero scroll-to reveal: content unfolds as you scroll down
+
+---
+
+## Session 6 — 2026-03-27 (Opus 4.6)
+
+### What I Did: Service Card Icon Animations + Konami Code Easter Egg
+
+**Focus:** Two features — (1) unique entrance animations for each service card icon that match their meaning, and (2) a fun Konami code Easter egg.
+
+**1. Service Card Icon Entrance Animations**
+
+Each of the 8 service card icons now has a unique entrance animation triggered by IntersectionObserver as the card scrolls into view:
+
+| Card | Animation | Why |
+|------|-----------|-----|
+| iPhone & iPad | `slide-up` | Phone rising from pocket |
+| Android Phones | `spin-in` | Android robot head spinning |
+| Laptop & PC | `flip-open` | Laptop lid opening (rotateX) |
+| iPad & Tablet | `scale-up` | Zooming in on screen |
+| Game Consoles | `bounce-in` | Playful gaming bounce (multi-step) |
+| Diagnostics | `pulse` | Magnifying glass pulsing/scanning |
+| Tune-ups | `spin-in` | Speedometer needle spinning |
+| Mail-In Repair | `slide-right` | Delivery truck sliding in |
+
+**Technical implementation:**
+- `data-icon-anim="type"` attribute on each `.card-icon`
+- Icons start at `opacity: 0; transform: translateY(12px)` (hidden)
+- IntersectionObserver with `threshold: 0.2` triggers animation
+- Stagger: 120ms between each card for a satisfying wave effect
+- Uses `WeakMap` to track stagger count per parent container
+- 6 unique `@keyframes` animations with spring-curve easings (`cubic-bezier(0.34, 1.56, 0.64, 1)`)
+- After animation: `.icon-animated` class locks the icon at full opacity
+- Reduced motion: icons show immediately, no animation
+
+**2. Konami Code Easter Egg (↑↑↓↓←→←→BA)**
+
+Enter the classic Konami code on any page and you get:
+- **CRT scanlines overlay** — horizontal lines across the viewport (repeating-linear-gradient)
+- **Vignette effect** — edges darken via radial-gradient
+- **Subtle green tint** — CRT monitor phosphor color via rgba overlay
+- **Toast notification** — centered popup with retro green-on-black styling, glowing border and text-shadow: "🕹️ KONAMI CODE! You found the secret. Samuel fixes devices like a boss."
+- **Chromatic aberration** — hero headline briefly flickers with red/cyan offset
+- **Crosshair cursor** — entire page uses crosshair during arcade mode
+
+**Auto-dismiss:** Effect lasts 4.5 seconds, then gracefully fades out. Can be re-triggered after full reset.
+
+**Technical notes:**
+- Overlay and toast appended to `document.documentElement` (not body) to avoid fixed-positioning containment issues from body's `overflow-x: hidden`
+- Toast uses `position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%)`
+- Overlay has `pointer-events: none` so the page remains interactive
+- Toast has `role="alert"` for accessibility
+- Elements created dynamically (no HTML changes needed for Easter egg)
+
+**Files changed:**
+- `index.html` — added `data-icon-anim` to all 8 service card icon divs
+- `style.css` — added ~160 lines: 6 icon keyframe animations, arcade mode overlay + toast styles, CRT effects, reduced motion overrides
+- `main.js` — added ~90 lines: icon animation IntersectionObserver with stagger, Konami code listener with key sequence tracking and arcade mode activation
+
+**Tested:** Dark mode, light mode, desktop (1024px). Icon animations stagger correctly. Konami code triggers/dismisses properly. Toast centers on viewport. Zero console errors.
+
+**What's Next (Ideas for Session 7+):**
+- Parallax scrolling on the hero background glow blobs
+- Animated SVG device illustrations (exploded phone view)
+- Scroll-triggered counter animation for stats
+- Interactive before/after slider for repair photos
+- Hero scroll-to reveal: content unfolds as you scroll down
+- Service page enhancements (not just index.html)

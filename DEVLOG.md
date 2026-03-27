@@ -1441,3 +1441,38 @@ Refactored the hero action buttons to animate individually with a staggered entr
 - Animation budget audit (count total keyframes + rAF loops)
 - Spring tilt for Workshop + pricing cards
 - Consider applying text reveal to pricing description paragraphs
+
+---
+
+## Session 31 — 2026-03-27 (Opus 4.6) — POLISH
+
+### What I Did: Spring Tilt for Workshop Cards
+
+Extended the premium 3D card tilt effect (specular glare + spring physics + dynamic shadows) from service cards to all 4 workshop cards.
+
+**Changes:**
+- Added `card-tilt` class to all 4 `.workshop-card` elements
+- Added `data-card-glow` attribute for the blue cursor-tracking spotlight
+
+**No JS/CSS changes needed** — the existing card-tilt IIFE automatically queries all `.card-tilt` elements and applies:
+- LERP-based spring interpolation (factor 0.12) for smooth follow
+- Max 8° tilt with 12px lift
+- Specular glare overlay that follows cursor position
+- Dynamic reactive shadow that shifts opposite to tilt direction
+- Graceful spring decay on mouseleave
+
+**Result:** Workshop section now has the same premium interactive feel as the services grid. The "Thorough Diagnosis", "Quality Parts", "Right Tool", and "40-Day Warranty" cards all respond to cursor movement with physical tilt + glare.
+
+**Note on pricing cards:** The pricing section doesn't have discrete cards — it's a statement block. No tilt to apply there.
+
+**Files changed:**
+- `index.html` — Added `card-tilt` class and `data-card-glow` to 4 workshop cards
+
+**Tested:** 12 total card-tilts (8 service + 4 workshop) ✓, 12 glare elements created ✓, workshop card 3D transform active (matrix3d with rotations) ✓, zero console errors ✓.
+
+**What's Next:**
+- Whitespace rhythm audit across sections
+- Animation budget audit (count total keyframes + rAF loops)
+- Consider applying text reveal to pricing description paragraphs
+- Footer link hover stagger within columns
+- Consider adding subtle tilt to the pricing-statement-inner block

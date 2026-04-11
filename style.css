@@ -3609,8 +3609,77 @@ a.contact-method:hover .contact-method-icon .material-symbols-outlined {
   font-size: 1.1rem;
   font-weight: 600;
   color: var(--text-primary);
-  margin-bottom: var(--space-xl);
+  margin-bottom: var(--space-lg);
 }
+.form-progress {
+  margin-bottom: var(--space-xl);
+  padding: 0.9rem 1rem 1rem;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  background: linear-gradient(180deg, rgba(79,142,247,0.08), transparent 70%);
+}
+.form-progress-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.7rem;
+}
+.form-progress-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+.form-progress-count {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  font-variant-numeric: tabular-nums;
+}
+.form-progress-bar {
+  height: 6px;
+  background: var(--border-subtle);
+  border-radius: 999px;
+  overflow: hidden;
+  box-shadow: inset 0 1px 1px rgba(0,0,0,0.08);
+}
+.form-progress-fill {
+  height: 100%;
+  width: 0%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--accent), var(--color-cyan, #22d3ee));
+  box-shadow: 0 0 10px var(--accent-glow);
+  transition: width 280ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.form-progress-steps {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.5rem;
+  margin-top: 0.8rem;
+}
+.form-progress-step {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  padding: 0.45rem 0.55rem;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  text-align: center;
+  transition: background 200ms ease, color 200ms ease, border-color 200ms ease, transform 250ms cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 200ms ease;
+}
+.form-progress-step.is-active {
+  color: var(--text-primary);
+  border-color: var(--accent);
+  background: var(--accent-dim);
+  box-shadow: 0 0 0 1px rgba(79,142,247,0.08), 0 4px 12px rgba(79,142,247,0.12);
+  transform: translateY(-1px);
+}
+.form-progress-step.is-done {
+  color: var(--color-green);
+  border-color: rgba(63,185,80,0.18);
+  background: rgba(63,185,80,0.08);
+}
+
 .form-group {
   position: relative;
   margin-bottom: var(--space-lg);

@@ -318,6 +318,9 @@
   // ─── Contact form (validation + mailto fallback) ─────────
   const contactForm = document.getElementById('contactForm');
   const formSuccess = document.getElementById('formSuccess');
+  const formProgressFill = document.getElementById('formProgressFill');
+  const formProgressCount = document.getElementById('formProgressCount');
+  const formProgressSteps = document.getElementById('formProgressSteps');
 
   // Inline validation helpers (defined early so submit can use them)
   const validators = {
@@ -365,17 +368,50 @@
     }
   }
 
+  function updateFormProgress() {
+    if (!contactForm) return;
+    const steps = [
+      contactForm.querySelector('#name'),
+      contactForm.querySelector('#contact'),
+      contactForm.querySelector('#device'),
+      contactForm.querySelector('#issue')
+    ];
+    const stepEls = formProgressSteps ? formProgressSteps.querySelectorAll('.form-progress-step') : [];
+    let complete = 0;
+    let activeIndex = 0;
+
+    steps.forEach((field, idx) => {
+      const isFilled = !!field && field.value.trim().length > 0;
+      const isValid = field && (field.tagName === 'SELECT' ? isFilled && field.value !== '' : validators[field.id] ? validators[field.id].test(field.value) : isFilled);
+      if (isValid) complete++;
+      if (activeIndex === 0 && !isValid) activeIndex = idx;
+    });
+    if (complete === steps.length) activeIndex = steps.length - 1;
+
+    if (formProgressFill) formProgressFill.style.width = ((complete / steps.length) * 100) + '%';
+    if (formProgressCount) formProgressCount.textContent = complete + '/' + steps.length + ' complete';
+    stepEls.forEach((el, idx) => {
+      el.classList.toggle('is-active', idx === activeIndex);
+      el.classList.toggle('is-done', idx < complete);
+    });
+  }
+
   if (contactForm) {
     // Bind blur/input validation
-    ['name', 'contact', 'issue'].forEach(id => {
+    ['name', 'contact', 'issue', 'device'].forEach(id => {
       const input = contactForm.querySelector('#' + id);
       if (input) {
         input.addEventListener('blur', () => validateField(input));
         input.addEventListener('input', () => {
           if (input.classList.contains('invalid')) validateField(input);
+          updateFormProgress();
         });
+        if (input.tagName === 'SELECT') {
+          input.addEventListener('change', updateFormProgress);
+        }
       }
     });
+    updateFormProgress();
     contactForm.addEventListener('submit', (e) => {
       e.preventDefault();
 
@@ -461,6 +497,7 @@
           formSuccess.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         }
         contactForm.reset();
+        updateFormProgress();
         // Hide success after 8 seconds
         setTimeout(() => {
           if (formSuccess) formSuccess.classList.remove('visible');

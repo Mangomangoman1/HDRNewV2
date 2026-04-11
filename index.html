@@ -1405,6 +1405,22 @@ a{color:inherit;text-decoration:none}
             <!-- Set data-formspree="YOUR_FORMSPREE_ID" to enable real submissions -->
             <h3 class="contact-form-title">Quick Quote Request</h3>
 
+            <div class="form-progress" aria-hidden="true">
+              <div class="form-progress-head">
+                <span class="form-progress-label">Intake flow</span>
+                <span class="form-progress-count" id="formProgressCount">0/4 complete</span>
+              </div>
+              <div class="form-progress-bar">
+                <div class="form-progress-fill" id="formProgressFill"></div>
+              </div>
+              <div class="form-progress-steps" id="formProgressSteps">
+                <span class="form-progress-step is-active" data-step-target="name">1. Name</span>
+                <span class="form-progress-step" data-step-target="contact">2. Contact</span>
+                <span class="form-progress-step" data-step-target="device">3. Device</span>
+                <span class="form-progress-step" data-step-target="issue">4. Issue</span>
+              </div>
+            </div>
+
             <div class="form-group">
               <input type="text" id="name" name="name" placeholder="Jane Smith" autocomplete="name" required aria-describedby="nameError" />
               <label for="name">Your name</label>

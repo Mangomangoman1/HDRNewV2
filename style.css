@@ -486,6 +486,37 @@ ul { list-style: none; }
   margin-left: auto;
   margin-right: auto;
 }
+
+/* Section header dramatic entrance — hero-style float-up with blur snap */
+.section-header[data-animate] {
+  opacity: 0;
+  transform: translateY(40px) scale(0.96);
+}
+.section-header[data-animate].visible {
+  animation: sectionHeaderEntrance 1s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+@keyframes sectionHeaderEntrance {
+  0% {
+    opacity: 0;
+    transform: translateY(40px) scale(0.96);
+    filter: blur(6px);
+  }
+  60% {
+    opacity: 1;
+    filter: blur(0px);
+  }
+  75% {
+    transform: translateY(-5px) scale(1.01);
+  }
+  88% {
+    transform: translateY(2px) scale(0.998);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0px);
+  }
+}
 .section-eyebrow {
   display: inline-block;
   font-size: 0.78rem;

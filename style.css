@@ -10993,3 +10993,29 @@ body.konami-active .hero-headline {
   color: var(--text-primary);
 }
 
+
+/* ── Hero typewriter blinking cursor ── */
+#heroTyper {
+  position: relative;
+  display: inline-block;
+}
+/* Blinking cursor appears after phrase completes */
+#heroTyper.cursor-blink::after {
+  content: '';
+  position: absolute;
+  right: -2px;
+  top: 10%;
+  height: 80%;
+  width: 2px;
+  background: var(--accent);
+  animation: typerCursorBlink 0.85s step-end infinite;
+  border-radius: 1px;
+  box-shadow: 0 0 6px var(--accent);
+}
+@keyframes typerCursorBlink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+[data-theme="light"] #heroTyper.cursor-blink::after {
+  background: var(--accent);
+}

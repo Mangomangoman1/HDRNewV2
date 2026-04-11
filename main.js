@@ -777,13 +777,17 @@
         typerEl.textContent = current.slice(0, charIndex);
 
         if (charIndex === current.length) {
-          // Done typing — pause, then delete
+          // Done typing — show cursor, then pause and delete
+          typerEl.classList.add('cursor-blink');
           pauseTimer = setTimeout(() => {
+            typerEl.classList.remove('cursor-blink');
             isDeleting = true;
             typeLoop();
           }, PAUSE_AFTER);
           return;
         }
+        // Hide cursor while typing
+        typerEl.classList.remove('cursor-blink');
         setTimeout(typeLoop, TYPE_SPEED + Math.random() * 30);
       } else {
         // Deleting
@@ -791,12 +795,15 @@
         typerEl.textContent = current.slice(0, charIndex);
 
         if (charIndex === 0) {
-          // Done deleting — move to next phrase
+          // Done deleting — move to next phrase (cursor stays hidden)
           isDeleting = false;
+          typerEl.classList.remove('cursor-blink');
           phraseIndex = (phraseIndex + 1) % phrases.length;
           setTimeout(typeLoop, PAUSE_BEFORE);
           return;
         }
+        // Hide cursor while deleting
+        typerEl.classList.remove('cursor-blink');
         setTimeout(typeLoop, DELETE_SPEED);
       }
     }

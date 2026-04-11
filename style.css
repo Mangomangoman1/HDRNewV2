@@ -1878,6 +1878,39 @@ ul { list-style: none; }
   font-weight: 700;
   color: var(--accent);
   position: relative;
+  display: inline-block;
+  /* Ambient glow pulse */
+  text-shadow: 0 0 8px rgba(79, 142, 247, 0.4), 0 0 20px rgba(79, 142, 247, 0.15);
+  animation: pricingHighlightGlow 2.5s ease-in-out infinite;
+}
+@keyframes pricingHighlightGlow {
+  0%, 100% { text-shadow: 0 0 8px rgba(79, 142, 247, 0.4), 0 0 20px rgba(79, 142, 247, 0.15); }
+  50%       { text-shadow: 0 0 14px rgba(79, 142, 247, 0.65), 0 0 32px rgba(79, 142, 247, 0.25), 0 0 48px rgba(79, 142, 247, 0.1); }
+}
+/* Shimmer sweep — triggered when pricing section becomes visible */
+.pricing-highlight::before {
+  content: '';
+  position: absolute;
+  inset: -4px -8px;
+  background: linear-gradient(
+    105deg,
+    transparent 30%,
+    rgba(255, 255, 255, 0.55) 50%,
+    transparent 70%
+  );
+  border-radius: 4px;
+  transform: translateX(-120%) skewX(-15deg);
+  animation: none; /* starts paused, plays on section visibility */
+}
+.pricing-statement.visible .pricing-highlight::before,
+[data-animate].visible .pricing-highlight::before {
+  animation: pricingShimmer 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation-delay: 0.6s; /* wait for entrance */
+}
+@keyframes pricingShimmer {
+  0%   { transform: translateX(-120%) skewX(-15deg); opacity: 0; }
+  40%  { opacity: 1; }
+  100% { transform: translateX(250%) skewX(-15deg); opacity: 0; }
 }
 .pricing-highlight::after {
   content: '';

@@ -149,9 +149,26 @@
   if (nav) {
     // Shadow intensity scales from 0 at top to 1 at ~50% page depth
     const maxDepthPx = window.innerHeight * 2; // ~2 viewports of scroll
+    const heroHeight = document.getElementById('hero')?.offsetHeight || window.innerHeight;
+    let compactTriggered = false;
+
     window.addEventListener('scroll', () => {
       const scrollY = window.scrollY;
       nav.classList.toggle('scrolled', scrollY > 10);
+
+      // Nav morph: compact after scrolling past the hero section
+      if (scrollY > heroHeight * 0.4) {
+        if (!compactTriggered) {
+          compactTriggered = true;
+          nav.classList.add('nav--compact');
+        }
+      } else {
+        if (compactTriggered) {
+          compactTriggered = false;
+          nav.classList.remove('nav--compact');
+        }
+      }
+
       if (scrollY > 10) {
         const depth = Math.min(scrollY / maxDepthPx, 1);
         // Calculate shadow values: blur 8-24px, spread 0-4px, opacity 0.15-0.4

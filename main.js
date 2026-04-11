@@ -561,7 +561,7 @@
   }
 
   // ─── Count-up animation for trust stats ──────────────────
-  const countEls = document.querySelectorAll('[data-countup]');
+  const countEls = document.querySelectorAll('.trust-counter');
 
   if ('IntersectionObserver' in window && countEls.length) {
     const countObserver = new IntersectionObserver((entries) => {
@@ -570,10 +570,13 @@
         const el = entry.target;
         countObserver.unobserve(el);
 
-        const end = parseInt(el.getAttribute('data-countup'), 10);
+        const end = parseFloat(el.getAttribute('data-target'), 10);
         const prefix = el.getAttribute('data-prefix') || '';
         const suffix = el.getAttribute('data-suffix') || '';
-        const duration = 1200;
+        const duration = parseInt(el.getAttribute('data-duration'), 10) || 1200;
+        const decimals = parseInt(el.getAttribute('data-decimals'), 10) || 0;
+        // Detect decimal display: either explicit data-decimals attr, or the target has a decimal point in string form
+        const showDecimal = decimals > 0 || el.getAttribute('data-target').toString().includes('.');
         const start = performance.now();
 
         function tick(now) {
@@ -581,8 +584,8 @@
           const progress = Math.min(elapsed / duration, 1);
           // Ease-out cubic
           const eased = 1 - Math.pow(1 - progress, 3);
-          const current = Math.round(eased * end);
-          el.textContent = prefix + current + suffix;
+          const current = eased * end;
+          el.textContent = prefix + (showDecimal ? current.toFixed(decimals || 1) : Math.round(current)) + suffix;
           if (progress < 1) requestAnimationFrame(tick);
         }
 

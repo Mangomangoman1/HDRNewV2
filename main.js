@@ -598,6 +598,7 @@
 
   // ─── Scroll progress bar ──────────────────────────────────
   const progressBar = document.getElementById('scrollProgress');
+  const navProgressFill = document.getElementById('navProgressFill');
   if (progressBar) {
     // Scroll velocity tracking for comet tail glow effect
     let lastScrollY = window.scrollY;
@@ -609,6 +610,7 @@
       const docHeight = document.documentElement.scrollHeight - window.innerHeight;
       const progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
       progressBar.style.width = progress + '%';
+      if (navProgressFill) navProgressFill.style.width = progress + '%';
 
       // Calculate scroll velocity (px/ms)
       const now = performance.now();

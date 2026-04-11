@@ -222,6 +222,12 @@
 
     hamburger.addEventListener('click', () => {
       const expanded = hamburger.getAttribute('aria-expanded') === 'true';
+      if (!expanded) {
+        hamburger.classList.remove('hamburger-pressed');
+        void hamburger.offsetWidth; // reflow to restart animation
+        hamburger.classList.add('hamburger-pressed');
+        hamburger.addEventListener('animationend', () => hamburger.classList.remove('hamburger-pressed'), { once: true });
+      }
       expanded ? closeMenu() : openMenu();
     });
 

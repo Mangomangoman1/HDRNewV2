@@ -4053,4 +4053,89 @@
 
 
   titleEls.forEach(function(el) { titleObserver.observe(el); });
+
+  // ─── Section context pill — wayfinding breadcrumb on scroll ─
+  (function() {
+    var pill = document.getElementById('sectionContext');
+    if (!pill) return;
+    var iconEl = pill.querySelector('.section-context-icon');
+    var labelEl = pill.querySelector('.section-context-label');
+
+    var sections = [
+      { id: 'services', icon: 'apps',          label: 'Services' },
+      { id: 'pricing',  icon: 'sell',           label: 'Pricing' },
+      { id: 'process',  icon: 'build',           label: 'How It Works' },
+      { id: 'compare',  icon: 'table_compare',   label: 'Vs. Chains' },
+      { id: 'workshop', icon: 'hardware',        label: 'Workshop' },
+      { id: 'area',     icon: 'map',             label: 'Service Area' },
+      { id: 'faq',      icon: 'help',            label: 'FAQ' },
+      { id: 'google',   icon: 'star',             label: 'Google Reviews' },
+      { id: 'contact',  icon: 'mail',            label: 'Get in Touch' }
+    ];
+
+    var HERO_HIDE = 280;  // px from top — hide pill in hero
+    var FOOTER_SHOW = 0.88; // scroll fraction — hide when in last 12% of page
+    var currentSection = null;
+
+    // Build observer for each section (use eyebrow/title as sentinel)
+    var sentinels = [];
+    sections.forEach(function(sec) {
+      var el = document.getElementById(sec.id);
+      if (!el) return;
+      // Observe the first meaningful child as the sentinel
+      var sentinel = el.querySelector('.section-header, .section-eyebrow, .section-title, h2');
+      if (!sentinel) sentinel = el;
+      sentinel.dataset.section = sec.id;
+      sentinels.push(sentinel);
+    });
+
+    function showPill(id) {
+      var sec = sections.find(function(s) { return s.id === id; });
+      if (!sec || id === currentSection) return;
+      currentSection = id;
+      pill.dataset.section = id;
+      iconEl.textContent = sec.icon;
+      labelEl.textContent = sec.label;
+      pill.classList.add('visible');
+    }
+
+    function hidePill() {
+      if (!currentSection) return;
+      currentSection = null;
+      pill.classList.remove('visible');
+    }
+
+    // Watch each section sentinel
+    var observer = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        var id = entry.target.dataset.section;
+        if (entry.isIntersecting) {
+          showPill(id);
+        }
+        // Only hide if ALL sentinels are out
+        var anyVisible = sentinels.some(function(s) {
+          var r = s.getBoundingClientRect();
+          return r.top < window.innerHeight * 0.75 && r.bottom > 0;
+        });
+        if (!anyVisible) hidePill();
+      });
+    }, { threshold: 0.1, rootMargin: '-10% 0px -60% 0px' });
+
+    sentinels.forEach(function(el) { observer.observe(el); });
+
+    // Hide pill near top (hero area) and near bottom (footer)
+    function updatePillPosition() {
+      var scrollY = window.scrollY;
+      var docH = document.documentElement.scrollHeight;
+      var scrollFrac = (scrollY + window.innerHeight) / docH;
+      if (scrollY < HERO_HIDE || scrollFrac > FOOTER_SHOW) {
+        hidePill();
+      }
+    }
+
+    window.addEventListener('scroll', function() {
+      updatePillPosition();
+    }, { passive: true });
+    updatePillPosition();
+  })();
 })();

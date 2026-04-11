@@ -6517,6 +6517,75 @@ body {
 .hero-entrance[data-hero-delay="4"] { animation-delay: 0.9s; }
 .hero-entrance[data-hero-delay="5"] { animation-delay: 1.2s; }
 
+/* ─── SECTION CONTEXT PILL ────────────────────────────────── */
+/* Fixed wayfinding breadcrumb that appears as you scroll sections */
+.section-context {
+  position: fixed;
+  top: 76px;
+  right: 20px;
+  z-index: 80;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.4rem 0.75rem 0.4rem 0.55rem;
+  background: rgba(var(--bg-surface-rgb, 13, 17, 23), 0.72);
+  backdrop-filter: blur(12px) saturate(1.3);
+  -webkit-backdrop-filter: blur(12px) saturate(1.3);
+  border: 1px solid var(--border);
+  border-radius: 100px;
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  opacity: 0;
+  pointer-events: none;
+  transform: translateX(12px);
+  transition: opacity 0.35s ease, transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), color 0.2s ease;
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.2);
+}
+.section-context.visible {
+  opacity: 1;
+  transform: translateX(0);
+  pointer-events: auto;
+}
+.section-context-icon {
+  font-size: 1rem;
+  color: var(--accent);
+  transition: color 0.2s ease;
+  flex-shrink: 0;
+}
+.section-context-label {
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+}
+/* Accent dot separator */
+.section-context::before {
+  content: '';
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--accent);
+  opacity: 0.7;
+  flex-shrink: 0;
+  animation: contextPulse 2s ease-in-out infinite;
+}
+@keyframes contextPulse {
+  0%, 100% { opacity: 0.4; transform: scale(1); }
+  50% { opacity: 0.9; transform: scale(1.3); }
+}
+/* Section-specific accent color overrides */
+.section-context[data-section="services"] { --section-accent: var(--accent); }
+.section-context[data-section="pricing"]  { --section-accent: #a371f7; }
+.section-context[data-section="process"]  { --section-accent: #34d399; }
+.section-context[data-section="compare"]  { --section-accent: #f59e0b; }
+.section-context[data-section="area"]     { --section-accent: #38bdf8; }
+.section-context[data-section="faq"]      { --section-accent: #fb923c; }
+.section-context[data-section="google"]   { --section-accent: #fbbc04; }
+.section-context[data-section="contact"]  { --section-accent: #f472b6; }
+.section-context[data-section="workshop"]  { --section-accent: #22d3ee; }
+.section-context .section-context-icon { color: var(--section-accent, var(--accent)); }
+.section-context .section-context-label { color: var(--section-accent, var(--accent)); }
+.section-context::before { background: var(--section-accent, var(--accent)); }
+
 /* Main entrance: slide up + fade with overshoot */
 @keyframes heroEntrance {
   0% {

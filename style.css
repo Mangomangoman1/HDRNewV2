@@ -5632,6 +5632,35 @@ button[type="submit"].btn-error {
   font-size: 0.85rem;
   color: var(--text-muted);
   margin-top: 0.5rem;
+  display: inline-block;
+  background: linear-gradient(90deg, var(--text-muted) 0%, var(--text-primary) 40%, var(--accent) 60%, var(--text-muted) 100%);
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: footerTaglineShimmer 6s ease-in-out infinite;
+  position: relative;
+}
+
+.footer-tagline::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.15) 50%, transparent 100%);
+  transform: translateX(-100%);
+  animation: taglineSweep 4s ease-in-out 1.5s infinite;
+}
+
+@keyframes footerTaglineShimmer {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+@keyframes taglineSweep {
+  0% { transform: translateX(-100%); opacity: 0; }
+  20% { opacity: 1; }
+  80% { opacity: 1; }
+  100% { transform: translateX(100%); opacity: 0; }
 }
 .footer-links {
   display: flex;

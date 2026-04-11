@@ -10102,6 +10102,11 @@ body {
   height: 100%;
   display: block;
 }
+.hero-mountain-back,
+.hero-mountain-front {
+  will-change: transform;
+  transition: none;
+}
 .hero-mountain-back {
   fill: rgba(79, 142, 247, 0.04);
 }

@@ -948,6 +948,38 @@
     }, { passive: true });
   })();
 
+  // ─── Hero mountain scroll parallax ────────────────────────
+  (function() {
+    var back  = document.querySelector('.hero-mountain-back');
+    var front = document.querySelector('.hero-mountain-front');
+    if (!back || !front) return;
+
+    var hero       = document.querySelector('.hero');
+    var parallaxBack  = 0.25;   // fraction of scroll speed — further = slower
+    var parallaxFront = 0.55;   // closer = faster
+    var ticking = false;
+
+    function updateParallax() {
+      var scrollY = window.scrollY;
+      var heroH   = hero ? hero.offsetHeight : window.innerHeight;
+      // Fade out as hero scrolls away
+      var progress = Math.max(0, 1 - scrollY / (heroH * 0.8));
+      back.style.transform  = 'translateY('  + (scrollY * parallaxBack  * progress).toFixed(2) + 'px)';
+      front.style.transform = 'translateY(' + (scrollY * parallaxFront * progress).toFixed(2) + 'px)';
+      ticking = false;
+    }
+
+    window.addEventListener('scroll', function() {
+      if (!ticking) {
+        requestAnimationFrame(updateParallax);
+        ticking = true;
+      }
+    }, { passive: true });
+
+    // Init at 0
+    updateParallax();
+  })();
+
   // ─── Back-to-top button with progress ring ──────────────
   const backToTop = document.getElementById('backToTop');
   if (backToTop) {

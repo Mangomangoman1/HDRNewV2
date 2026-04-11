@@ -3012,8 +3012,34 @@ ul { list-style: none; }
   transform: scale(1.15) !important;
   filter: drop-shadow(0 0 6px var(--accent));
 }
-.area-town:hover text {
+.area-town:hover text,
+.area-town:hover tspan {
   fill: var(--accent) !important;
+}
+
+/* Town label — centered below dot, multi-line with tspan */
+.area-town-label {
+  fill: var(--area-label);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 14px;
+  text-anchor: middle;
+  pointer-events: none;
+}
+.area-town-label--hailey {
+  fill: var(--accent);
+  font-size: 16px;
+  font-weight: 800;
+}
+.area-town-dist {
+  font-size: 10px;
+  font-family: var(--font-body);
+  font-weight: 600;
+  opacity: 0.65;
+  fill: var(--area-label);
+}
+.area-town:hover .area-town-dist {
+  opacity: 1;
 }
 
 /* Distance markers and labels fade in last */

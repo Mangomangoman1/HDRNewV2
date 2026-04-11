@@ -55,7 +55,7 @@ html.theme-transition *::after {
   --bg-elevated:   #1c2230;
   --bg-card:       #1a2033;
   --bg-input:      #1e2736;
-  --bg-alt:        #111827;
+  --bg-alt:        linear-gradient(180deg, #111827 0%, #0d1928 50%, #111827 100%);
 
   /* Text */
   --text-primary:  #e6edf3;
@@ -146,7 +146,7 @@ html.theme-transition *::after {
   --bg-elevated:   #f0f2f5;
   --bg-card:       #ffffff;
   --bg-input:      #f4f5f7;
-  --bg-alt:        #eef0f4;
+  --bg-alt:        linear-gradient(180deg, #eef0f4 0%, #e8eaef 50%, #eef0f4 100%);
 
   --text-primary:  #111827;
   --text-secondary: #4b5563;

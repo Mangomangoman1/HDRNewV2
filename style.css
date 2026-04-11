@@ -633,6 +633,16 @@ ul { list-style: none; }
   opacity: 1;
   animation: textShimmer 0.8s ease-out forwards;
 }
+/* Text scramble effect — scrambled characters land with a shimmer before resolving */
+@keyframes textScrambleLand {
+  0%   { opacity: 0.3; filter: blur(4px); transform: skewX(-8deg); }
+  40%  { opacity: 1;   filter: blur(1px); transform: skewX(3deg); }
+  70%  { opacity: 1;   filter: blur(0);   transform: skewX(-1deg); }
+  100% { opacity: 1;   filter: blur(0);   transform: skewX(0); }
+}
+.section-title.scramble-done {
+  animation: textScrambleLand 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
 @keyframes textShimmer {
   0% { left: -50%; }
   100% { left: 150%; }

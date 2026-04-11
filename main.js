@@ -4001,3 +4001,50 @@
     }
   });
 })();
+
+// ─── Section title text scramble on scroll entry ─────
+(function() {
+  var TEXT_CHARS = '!<>-_\\/\\[]{}—=+*^?#_日照函数式ANDROID＆疆́àiPhone★↯↭⌘✦⚡✗✓◈⬟◉✱⛓╱╲│┤╔╗║╚╝╟╢ℹ️⌥⎋⏎⇧⌃⇪⎙⏏⌨⎗';
+  var PREFS_REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function scrambleEl(el, finalText, charDur, totalDur) {
+    var start = Date.now();
+    var frame;
+    function step() {
+      var elapsed = Date.now() - start;
+      var progress = Math.min(elapsed / totalDur, 1);
+      var easedProgress = 1 - Math.pow(1 - progress, 2);
+      var charsSoFar = Math.round(finalText.length * easedProgress);
+      var result = '';
+      for (var i = 0; i < finalText.length; i++) {
+        result += (i < charsSoFar) ? finalText[i] : TEXT_CHARS[Math.floor(Math.random() * TEXT_CHARS.length)];
+      }
+      el.textContent = result;
+      if (progress < 1) {
+        frame = requestAnimationFrame(step);
+      } else {
+        el.textContent = finalText;
+        el.classList.add('scramble-done');
+      }
+    }
+    frame = requestAnimationFrame(step);
+    return function() { cancelAnimationFrame(frame); };
+  }
+
+  var titleEls = document.querySelectorAll('.section-title[data-text-scramble]');
+  if (!titleEls.length) return;
+
+  var titleObserver = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (!entry.isIntersecting) return;
+      var el = entry.target;
+      var finalText = el.textContent.replace(/\s*$/, '');
+      titleObserver.unobserve(el);
+      if (PREFS_REDUCED) { el.classList.add('scramble-done'); return; }
+      scrambleEl(el, finalText, 40, 700);
+    });
+  }, { threshold: 0.15 });
+
+
+  titleEls.forEach(function(el) { titleObserver.observe(el); });
+})();

@@ -1223,6 +1223,32 @@ ul { list-style: none; }
   color: var(--border-strong);
 }
 
+/* ── Hero live status dot — open/closed indicator ── */
+.hero-status-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--color-green, #22c55e);
+  box-shadow: 0 0 6px var(--color-green, #22c55e);
+  animation: statusPulse 2s ease-in-out infinite;
+  flex-shrink: 0;
+}
+.hero-status-dot.closed {
+  background: #ef4444;
+  box-shadow: 0 0 6px #ef4444;
+  animation: none;
+}
+.hero-status-dot.closing-soon {
+  background: #f59e0b;
+  box-shadow: 0 0 6px #f59e0b;
+  animation: statusPulse 1s ease-in-out infinite;
+}
+@keyframes statusPulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.6; transform: scale(0.85); }
+}
+
 .hero-scroll-hint {
   position: absolute;
   bottom: var(--space-xl);

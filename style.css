@@ -10945,3 +10945,25 @@ body.konami-active .hero-headline {
     filter: none !important;
   }
 }
+
+
+/* ═══════════════════════════════════════════════
+   TEXT SELECTION — Brand accent highlight
+   ═══════════════════════════════════════════════ */
+::selection {
+  background: rgba(79, 142, 247, 0.3);
+  color: var(--text-primary);
+}
+::-moz-selection {
+  background: rgba(79, 142, 247, 0.3);
+  color: var(--text-primary);
+}
+[data-theme="light"] ::selection {
+  background: rgba(37, 99, 235, 0.2);
+  color: var(--text-primary);
+}
+[data-theme="light"] ::-moz-selection {
+  background: rgba(37, 99, 235, 0.2);
+  color: var(--text-primary);
+}
+

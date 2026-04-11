@@ -1,10 +1,33 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
   <defs>
-    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#7c3aed"/>
-      <stop offset="100%" stop-color="#06b6d4"/>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0d1117"/>
+      <stop offset="100%" stop-color="#161b22"/>
     </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#6ba3fa"/>
+      <stop offset="100%" stop-color="#4f8ef7"/>
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="1.5" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
   </defs>
-  <rect width="64" height="64" rx="14" fill="#0d1117"/>
-  <text x="32" y="44" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-weight="800" font-size="36" fill="url(#g)">H</text>
+  <rect width="64" height="64" rx="14" fill="url(#bg)"/>
+  <!-- Smartphone icon -->
+  <rect x="20" y="10" width="24" height="44" rx="5" fill="none" stroke="url(#accent)" stroke-width="2.5" filter="url(#glow)"/>
+  <!-- Screen -->
+  <rect x="23" y="15" width="18" height="30" rx="2" fill="url(#accent)" opacity="0.2"/>
+  <!-- Home button / charging dot -->
+  <circle cx="32" cy="49" r="2" fill="url(#accent)" opacity="0.7"/>
+  <!-- Top speaker -->
+  <rect x="27" y="12.5" width="10" height="1.5" rx="0.75" fill="url(#accent)" opacity="0.5"/>
+  <!-- Repair tool — small screwdriver icon top-right corner -->
+  <g transform="translate(38, 6)" opacity="0.85">
+    <line x1="0" y1="10" x2="8" y2="2" stroke="#6ba3fa" stroke-width="2" stroke-linecap="round"/>
+    <circle cx="9.5" cy="0.5" r="2.5" fill="none" stroke="#6ba3fa" stroke-width="1.5"/>
+  </g>
 </svg>

@@ -3895,3 +3895,70 @@
   // Update every minute
   setInterval(updateClock, 60000);
 })();
+
+/* ═══════════════════════════════════════════════
+   KEYBOARD SHORTCUTS — ? to show, 1-5 to navigate
+═══════════════════════════════════════════════ */
+(function() {
+  var overlay = document.getElementById('kbdOverlay');
+  if (!overlay) return;
+
+  // Section targets for number keys
+  var SECTION_KEYS = {
+    '1': 'services',
+    '2': 'pricing',
+    '3': 'process',
+    '4': 'compare',
+    '5': 'contact'
+  };
+
+  document.addEventListener('keydown', function(e) {
+    // Don't fire if user is typing in an input/textarea/select
+    var tag = e.target.tagName;
+    if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || e.target.isContentEditable) return;
+
+    var key = e.key;
+
+    if (key === '?') {
+      e.preventDefault();
+      var isVisible = overlay.classList.contains('visible');
+      overlay.classList.toggle('visible', !isVisible);
+      overlay.setAttribute('aria-hidden', isVisible ? 'true' : 'false');
+      document.body.style.overflow = isVisible ? '' : 'hidden';
+      return;
+    }
+
+    if (overlay.classList.contains('visible') && key === 'Escape') {
+      e.preventDefault();
+      overlay.classList.remove('visible');
+      overlay.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
+      return;
+    }
+
+    if (SECTION_KEYS[key]) {
+      e.preventDefault();
+      var target = document.getElementById(SECTION_KEYS[key]);
+      if (target) {
+        // Close overlay first if open
+        if (overlay.classList.contains('visible')) {
+          overlay.classList.remove('visible');
+          overlay.setAttribute('aria-hidden', 'true');
+          document.body.style.overflow = '';
+        }
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        // Set focus to the section for accessibility
+        setTimeout(function() { target.setAttribute('tabindex', '-1'); target.focus({ preventScroll: true }); }, 500);
+      }
+    }
+  });
+
+  // Close overlay when clicking the backdrop
+  overlay.addEventListener('click', function(e) {
+    if (e.target === overlay) {
+      overlay.classList.remove('visible');
+      overlay.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
+    }
+  });
+})();

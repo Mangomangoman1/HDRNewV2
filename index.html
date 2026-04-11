@@ -1603,6 +1603,50 @@ a{color:inherit;text-decoration:none}
     </button>
   </div>
 
+  <!-- Keyboard shortcuts overlay — press ? to show -->
+  <div class="kbd-overlay" id="kbdOverlay" aria-hidden="true" role="dialog" aria-label="Keyboard shortcuts">
+    <div class="kbd-overlay-inner">
+      <div class="kbd-overlay-header">
+        <span class="material-symbols-outlined" aria-hidden="true">keyboard</span>
+        <strong>Keyboard Shortcuts</strong>
+        <button class="kbd-overlay-close" aria-label="Close shortcuts" onclick="document.getElementById('kbdOverlay').classList.remove('visible'); document.body.style.overflow='';">
+          <span class="material-symbols-outlined" aria-hidden="true">close</span>
+        </button>
+      </div>
+      <div class="kbd-shortcuts-grid">
+        <div class="kbd-shortcut-row">
+          <kbd>?</kbd>
+          <span>Toggle this overlay</span>
+        </div>
+        <div class="kbd-shortcut-row">
+          <kbd>1</kbd>
+          <span>Jump to Services</span>
+        </div>
+        <div class="kbd-shortcut-row">
+          <kbd>2</kbd>
+          <span>Jump to Pricing</span>
+        </div>
+        <div class="kbd-shortcut-row">
+          <kbd>3</kbd>
+          <span>Jump to Process</span>
+        </div>
+        <div class="kbd-shortcut-row">
+          <kbd>4</kbd>
+          <span>Jump to Compare</span>
+        </div>
+        <div class="kbd-shortcut-row">
+          <kbd>5</kbd>
+          <span>Jump to Contact</span>
+        </div>
+        <div class="kbd-shortcut-row">
+          <kbd>Esc</kbd>
+          <span>Close / Go back</span>
+        </div>
+      </div>
+      <p class="kbd-overlay-hint">Press a number key to navigate directly to any section.</p>
+    </div>
+  </div>
+
   <script src="main.js?v=77" defer></script>
 </body>
 </html>

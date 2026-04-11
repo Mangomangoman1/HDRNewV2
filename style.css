@@ -6059,10 +6059,20 @@ button[type="submit"].btn-error {
   opacity: 1;
   transform: translateX(0);
   pointer-events: auto;
+  animation: reviewCardGlow 3s ease-in-out infinite;
 }
 .carousel-slide--exit {
   opacity: 0;
   transform: translateX(-24px);
+  animation: none;
+}
+@keyframes reviewCardGlow {
+  0%, 100% {
+    filter: drop-shadow(0 0 0px rgba(79, 142, 247, 0));
+  }
+  50% {
+    filter: drop-shadow(0 0 18px rgba(79, 142, 247, 0.35));
+  }
 }
 .carousel-slide .review-card {
   text-align: center;

@@ -3721,3 +3721,113 @@
   // Initial rect calculation
   setTimeout(updateCharRects, 500);
 })();
+
+/* ═══════════════════════════════════════════════
+   PARTICLE BURST — CTA button click feedback
+   ═══════════════════════════════════════════════ */
+(function() {
+  var PARTICLE_COLORS = ['#4f8ef7', '#6ba3fa', '#a0c4ff', '#ffffff', 'rgba(255,255,255,0.8)'];
+  var PARTICLE_COUNT = 36;
+  var PARTICLE_GRAVITY = 0.25;
+  var PARTICLE_FRICTION = 0.97;
+  var PARTICLE_LIFE = 0.022; // per-frame decay rate
+
+  function createCanvas() {
+    var canvas = document.createElement('canvas');
+    canvas.style.cssText = [
+      'position:fixed',
+      'top:0',
+      'left:0',
+      'width:100%',
+      'height:100%',
+      'pointer-events:none',
+      'z-index:9999',
+      'overflow:visible'
+    ].join(';');
+    document.body.appendChild(canvas);
+    return canvas;
+  }
+
+  function burst(x, y) {
+    var canvas = createCanvas();
+    var ctx = canvas.getContext('2d');
+    var W = window.innerWidth;
+    var H = window.innerHeight;
+    canvas.width = W;
+    canvas.height = H;
+
+    var particles = [];
+    for (var i = 0; i < PARTICLE_COUNT; i++) {
+      var angle = (Math.PI * 2 * i / PARTICLE_COUNT) + (Math.random() - 0.5) * 0.5;
+      var speed = 2.5 + Math.random() * 5;
+      var size = 2 + Math.random() * 4;
+      var color = PARTICLE_COLORS[Math.floor(Math.random() * PARTICLE_COLORS.length)];
+      particles.push({
+        x: x,
+        y: y,
+        vx: Math.cos(angle) * speed,
+        vy: Math.sin(angle) * speed - (1 + Math.random() * 2), // slight upward bias
+        size: size,
+        color: color,
+        alpha: 1,
+        life: 1
+      });
+    }
+
+    var rafId = null;
+    var alive = true;
+
+    function draw() {
+      if (!alive) return;
+      ctx.clearRect(0, 0, W, H);
+
+      var anyAlive = false;
+      for (var i = 0; i < particles.length; i++) {
+        var p = particles[i];
+        p.vy += PARTICLE_GRAVITY;
+        p.vx *= PARTICLE_FRICTION;
+        p.vy *= PARTICLE_FRICTION;
+        p.x += p.vx;
+        p.y += p.vy;
+        p.life -= PARTICLE_LIFE;
+        p.alpha = Math.max(0, p.life);
+
+        if (p.life > 0) {
+          anyAlive = true;
+          ctx.save();
+          ctx.globalAlpha = p.alpha;
+          ctx.fillStyle = p.color;
+          ctx.shadowColor = p.color;
+          ctx.shadowBlur = p.size * 2;
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.size * p.life, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.restore();
+        }
+      }
+
+      if (anyAlive) {
+        rafId = requestAnimationFrame(draw);
+      } else {
+        alive = false;
+        canvas.remove();
+      }
+    }
+
+    draw();
+
+    // Safety: remove canvas after 2s even if some particles stuck
+    setTimeout(function() {
+      alive = false;
+      if (canvas.parentNode) canvas.remove();
+    }, 2000);
+  }
+
+  document.addEventListener('click', function(e) {
+    var target = e.target.closest('.btn-primary');
+    if (!target) return;
+    // Respect reduced motion
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    burst(e.clientX, e.clientY);
+  }, true);
+})();

@@ -5827,7 +5827,7 @@
         { id: 'hdmi-no-signal', label: 'No HDMI signal', urgency: 5, danger: "Don't bang the console. HDMI ports are fragile.", action: 'Try a different cable. Try a different TV. Text me.', info: 'HDMI port or the connector on the board.' },
         { id: 'disc-issues', label: 'Disc not reading', urgency: 4, danger: "Don't use scratched discs. Clean discs gently.", action: 'Try cleaning the disc. If still failing, it probably needs a new drive.', info: 'Disc drive lasers do wear out.' },
         { id: 'overheating', label: 'Shutting down/Overheating', urgency: 7, danger: "Don't block vents. Don't use in a cabinet.", action: 'Let it cool. Ensure ventilation. Text me if it keeps happening.', info: 'Could need new thermal paste or a fan.' },
-        { id: 'controller-drift', label: 'Controller drift', urgency: 3, drift: "Don't open it yourself — you will void whatever warranty remains.", action: 'Try resetting the controller first.', info: 'Joystick modules can be replaced.' },
+        { id: 'controller-drift', label: 'Controller drift', urgency: 3, danger: "Don't open it yourself — you could damage it further.", action: 'Try resetting the controller first.', info: 'Joystick modules can be replaced.' },
         { id: 'laser-damage', label: 'Lens not reading discs', urgency: 4, danger: "Don't keep trying to force it.", action: 'Try different games. If all fail, the laser likely needs replacing.', info: 'Lasers weaken over time.' }
       ]
     }

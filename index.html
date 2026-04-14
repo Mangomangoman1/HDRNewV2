@@ -1305,6 +1305,274 @@ a{color:inherit;text-decoration:none}
     </div>
   </section>
 
+  <!-- ═══════════════════════════════════════════
+       REPAIR ANATOMY — Interactive Exploded View
+  ══════════════════════════════════════════════ -->
+  <section class="section anatomy-section" id="anatomy" aria-labelledby="anatomy-title">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-eyebrow" data-animate>🔬 Inside the Repair</div>
+        <h2 class="section-title" id="anatomy-title" data-text-scramble>See exactly what gets fixed</h2>
+        <p class="section-sub" data-text-reveal>No mystery, no jargon. Pick a repair and watch the layers come apart — this is what I actually do under the glass.</p>
+      </div>
+
+      <!-- Device type selector -->
+      <div class="anatomy-selector" data-animate>
+        <div class="anatomy-selector-track" role="tablist" aria-label="Select a repair type">
+          <button class="anatomy-tab active" role="tab" aria-selected="true" data-repair="screen" id="anatomyTabScreen" aria-controls="anatomyView">
+            <span class="anatomy-tab-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12" y2="18.01"/>
+              </svg>
+            </span>
+            <span class="anatomy-tab-label">Screen Repair</span>
+          </button>
+          <button class="anatomy-tab" role="tab" aria-selected="false" data-repair="battery" id="anatomyTabBattery" aria-controls="anatomyView">
+            <span class="anatomy-tab-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="6" y="7" width="12" height="10" rx="1"/><line x1="14" y1="10" x2="14" y2="14"/><line x1="12" y1="12" x2="12" y2="12.01"/><rect x="9" y="4" width="6" height="3" rx="1"/>
+              </svg>
+            </span>
+            <span class="anatomy-tab-label">Battery Swap</span>
+          </button>
+          <button class="anatomy-tab" role="tab" aria-selected="false" data-repair="charging" id="anatomyTabCharging" aria-controls="anatomyView">
+            <span class="anatomy-tab-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 21v-6M8 18h8M13 3L8 12h4l-1 5 5-9h-4l1-5"/>
+              </svg>
+            </span>
+            <span class="anatomy-tab-label">Charging Port</span>
+          </button>
+          <button class="anatomy-tab" role="tab" aria-selected="false" data-repair="water" id="anatomyTabWater" aria-controls="anatomyView">
+            <span class="anatomy-tab-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 2C12 2 5 10 5 14a7 7 0 0014 0c0-4-7-12-7-12z"/>
+              </svg>
+            </span>
+            <span class="anatomy-tab-label">Water Damage</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Main anatomy view -->
+      <div class="anatomy-view" id="anatomyView" role="tabpanel" data-animate>
+
+        <!-- Exploded device visualization -->
+        <div class="anatomy-device-area">
+          <div class="anatomy-exploded" id="anatomyExploded">
+
+            <!-- Layer: Back glass -->
+            <div class="anatomy-layer" data-layer="back" data-anatomy-order="6">
+              <div class="anatomy-layer-visual">
+                <div class="anatomy-layer-part anatomy-part-back"></div>
+              </div>
+              <div class="anatomy-layer-connector" aria-hidden="true"></div>
+            </div>
+
+            <!-- Layer: Logic board -->
+            <div class="anatomy-layer" data-layer="logic" data-anatomy-order="5">
+              <div class="anatomy-layer-visual">
+                <div class="anatomy-layer-part anatomy-part-logic">
+                  <div class="anatomy-chip anatomy-chip--main"></div>
+                  <div class="anatomy-chip anatomy-chip--sub"></div>
+                  <div class="anatomy-trace anatomy-trace--1"></div>
+                  <div class="anatomy-trace anatomy-trace--2"></div>
+                  <div class="anatomy-trace anatomy-trace--3"></div>
+                </div>
+              </div>
+              <div class="anatomy-layer-connector" aria-hidden="true"></div>
+            </div>
+
+            <!-- Layer: Battery -->
+            <div class="anatomy-layer" data-layer="battery" data-anatomy-order="4">
+              <div class="anatomy-layer-visual">
+                <div class="anatomy-layer-part anatomy-part-battery">
+                  <div class="anatomy-battery-label">
+                    <span class="anatomy-battery-icon" aria-hidden="true">⚡</span>
+                    <span class="anatomy-battery-text">Li‑Ion Cell</span>
+                  </div>
+                </div>
+              </div>
+              <div class="anatomy-layer-connector" aria-hidden="true"></div>
+            </div>
+
+            <!-- Layer: Mid-frame / chassis -->
+            <div class="anatomy-layer" data-layer="frame" data-anatomy-order="3">
+              <div class="anatomy-layer-visual">
+                <div class="anatomy-layer-part anatomy-part-frame">
+                  <div class="anatomy-frame-bolt"></div>
+                  <div class="anatomy-frame-bolt"></div>
+                  <div class="anatomy-frame-bolt"></div>
+                  <div class="anatomy-frame-bolt"></div>
+                </div>
+              </div>
+              <div class="anatomy-layer-connector" aria-hidden="true"></div>
+            </div>
+
+            <!-- Layer: Display assembly -->
+            <div class="anatomy-layer" data-layer="display" data-anatomy-order="2">
+              <div class="anatomy-layer-visual">
+                <div class="anatomy-layer-part anatomy-part-display">
+                  <div class="anatomy-display-screen">
+                    <div class="anatomy-display-pixelgrid" aria-hidden="true"></div>
+                  </div>
+                  <div class="anatomy-display-earpiece"></div>
+                  <div class="anatomy-display-home"></div>
+                </div>
+              </div>
+              <div class="anatomy-layer-connector" aria-hidden="true"></div>
+            </div>
+
+            <!-- Layer: Glass / outer surface -->
+            <div class="anatomy-layer" data-layer="glass" data-anatomy-order="1">
+              <div class="anatomy-layer-visual">
+                <div class="anatomy-layer-part anatomy-part-glass">
+                  <div class="anatomy-glass-shine" aria-hidden="true"></div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Floating annotations that appear on hover/selection -->
+          <div class="anatomy-annotations" id="anatomyAnnotations" aria-live="polite">
+            <div class="anatomy-annotation" data-annotation="glass" id="annoGlass">
+              <div class="anatomy-anno-dot" aria-hidden="true"></div>
+              <div class="anatomy-anno-content">
+                <strong class="anatomy-anno-title">Front Glass</strong>
+                <span class="anatomy-anno-detail">Oleophobic-coated tempered glass</span>
+              </div>
+            </div>
+            <div class="anatomy-annotation" data-annotation="display" id="annoDisplay">
+              <div class="anatomy-anno-dot" aria-hidden="true"></div>
+              <div class="anatomy-anno-content">
+                <strong class="anatomy-anno-title">Display Assembly</strong>
+                <span class="anatomy-anno-detail">LCD/OLED panel + digitizer</span>
+              </div>
+            </div>
+            <div class="anatomy-annotation" data-annotation="frame" id="annoFrame">
+              <div class="anatomy-anno-dot" aria-hidden="true"></div>
+              <div class="anatomy-anno-content">
+                <strong class="anatomy-anno-title">Mid-frame</strong>
+                <span class="anatomy-anno-detail">Aluminum chassis + screw mounts</span>
+              </div>
+            </div>
+            <div class="anatomy-annotation" data-annotation="battery" id="annoBattery">
+              <div class="anatomy-anno-dot" aria-hidden="true"></div>
+              <div class="anatomy-anno-content">
+                <strong class="anatomy-anno-title">Battery</strong>
+                <span class="anatomy-anno-detail">Lithium-ion cell with BMS</span>
+              </div>
+            </div>
+            <div class="anatomy-annotation" data-annotation="logic" id="annoLogic">
+              <div class="anatomy-anno-dot" aria-hidden="true"></div>
+              <div class="anatomy-anno-content">
+                <strong class="anatomy-anno-title">Logic Board</strong>
+                <span class="anatomy-anno-detail">Main board + connectors</span>
+              </div>
+            </div>
+            <div class="anatomy-annotation" data-annotation="back" id="annoBack">
+              <div class="anatomy-anno-dot" aria-hidden="true"></div>
+              <div class="anatomy-anno-content">
+                <strong class="anatomy-anno-title">Back Glass</strong>
+                <span class="anatomy-anno-detail">Rear panel + wireless charge coil</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Info panel on the right -->
+        <div class="anatomy-info" id="anatomyInfo">
+
+          <div class="anatomy-info-header">
+            <div class="anatomy-info-icon" id="anatomyInfoIcon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12" y2="18.01"/>
+              </svg>
+            </div>
+            <div>
+              <h3 class="anatomy-info-title" id="anatomyInfoTitle">Screen Repair</h3>
+              <p class="anatomy-info-subtitle" id="anatomyInfoSubtitle">iPhone front glass + display</p>
+            </div>
+          </div>
+
+          <!-- What gets replaced -->
+          <div class="anatomy-info-block">
+            <h4 class="anatomy-info-block-title">
+              <span class="material-symbols-outlined" aria-hidden="true">build</span>
+              What's involved
+            </h4>
+            <ul class="anatomy-parts-list" id="anatomyPartsList">
+              <li class="anatomy-part-item anatomy-part-replaced" data-part="glass">
+                <span class="anatomy-part-indicator" aria-hidden="true"></span>
+                Front glass panel
+              </li>
+              <li class="anatomy-part-item anatomy-part-replaced" data-part="display">
+                <span class="anatomy-part-indicator" aria-hidden="true"></span>
+                LCD/OLED display assembly
+              </li>
+              <li class="anatomy-part-item anatomy-part-checked">
+                <span class="anatomy-part-indicator" aria-hidden="true"></span>
+                Digitizer calibration
+              </li>
+              <li class="anatomy-part-item anatomy-part-checked">
+                <span class="anatomy-part-indicator" aria-hidden="true"></span>
+                Adhesive seal replacement
+              </li>
+              <li class="anatomy-part-item anatomy-part-checked">
+                <span class="anatomy-part-indicator" aria-hidden="true"></span>
+                Earpiece speaker test
+              </li>
+            </ul>
+          </div>
+
+          <!-- Process steps -->
+          <div class="anatomy-info-block">
+            <h4 class="anatomy-info-block-title">
+              <span class="material-symbols-outlined" aria-hidden="true">format_list_numbered</span>
+              The process
+            </h4>
+            <ol class="anatomy-steps-list" id="anatomyStepsList">
+              <li>Heat and soften the adhesive seal</li>
+              <li>Carefully separate glass from the frame</li>
+              <li>Disconnect display cables from logic board</li>
+              <li>Install new display assembly</li>
+              <li>Reconnect, calibrate, and test everything</li>
+            </ol>
+          </div>
+
+          <!-- Trust badge -->
+          <div class="anatomy-trust-badge" id="anatomyTrustBadge">
+            <div class="anatomy-trust-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                <polyline points="9 12 11 14 15 10"/>
+              </svg>
+            </div>
+            <div class="anatomy-trust-text">
+              <strong>OEM-grade parts</strong>
+              <span>Tested and matched to your device</span>
+            </div>
+          </div>
+
+          <!-- CTA -->
+          <a href="sms:+12083666111" class="btn btn-primary btn-lg anatomy-cta">
+            <span class="material-symbols-outlined" aria-hidden="true">sms</span>
+            Text Samuel — (208) 366-6111
+          </a>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Ambient background effects -->
+    <div class="anatomy-bg" aria-hidden="true">
+      <div class="anatomy-bg-grid"></div>
+      <div class="anatomy-bg-orb anatomy-bg-orb--1"></div>
+      <div class="anatomy-bg-orb anatomy-bg-orb--2"></div>
+    </div>
+  </section>
+
   <div class="wave-divider wave-divider--flip" aria-hidden="true"><svg viewBox="0 0 1440 48" preserveAspectRatio="none"><path class="wave-fill" d="M0,24 C240,0 480,48 720,24 C960,0 1200,48 1440,24 L1440,48 L0,48 Z"/></svg></div>
 
   <!-- ═══════════════════════════════════════════

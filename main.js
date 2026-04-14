@@ -6628,13 +6628,13 @@
           { cls: 'anatomy-part-checked', text: 'Earpiece speaker test' }
         ],
         steps: [
-          {title: 'Heat and soften the adhesive seal', detail: 'iOpener or heat gun at 70°C loosens factory adhesive without damaging OLED panel'},
-          'Carefully separate glass from the frame',
-          'Disconnect display cables from logic board',
-          'Install new display assembly',
-          'Reconnect, calibrate, and test everything'
+          {title: 'Heat and soften the adhesive seal', detail: 'iOpener or heat gun at 70°C for 2 minutes. Factory adhesive (3M 468MP) softens without damaging the OLED panel beneath.'},
+          {title: 'Separate glass from the frame', detail: 'Thin pry tool (nylon) slides between glass and frame, releasing each of 4 adhesive clips along the edges without cracking.'},
+          {title: 'Disconnect display cables', detail: 'Metal shield removed with tweezers. Three ZIF connectors released with nylon spudger. Display flex carefully threaded through mid-frame.'},
+          {title: 'Install new display assembly', detail: 'New OEM or OEM-quality display seated. Connectors secured, metal shield replaced. Flex cables routed exactly as original.'},
+          {title: 'Calibrate and test everything', detail: 'Multi-touch test (5-finger), True Tone re-enrollment via Settings > Accessibility > Display, ambient light sensor calibration, drop test.'}
         ],
-        tools: ['iFixit Pro Kit', 'Heat Gun / iOpener', 'Suction Handle', 'Spudger', 'ESD Wrist Strap', '99% IPA'],
+        tools: ['iFixit Pro Tech Kit', 'Heat Gun (70°C)', 'Nylon Spudger Set', 'Suction Handle', 'ESD Wrist Strap', '99% IPA + Lint-Free Wipes', 'Tweezers (anti-magnetic)'],
         highlight: ['glass', 'display']
       },
       battery: {
@@ -6653,13 +6653,13 @@
           { cls: 'anatomy-part-checked', text: 'Charging behavior test' }
         ],
         steps: [
-          {title: 'Power down device and verify battery level', detail: 'ESD wrist strap grounded. Battery at 25% or below for safe handling.'},
-          'Heat back glass to soften adhesive',
-          'Carefully remove battery with safety precautions',
-          'Install new OEM battery with fresh adhesive',
-          'Verify battery health and charging performance'
+          {title: 'Power down and verify safe battery level', detail: 'ESD wrist strap grounded. Battery at 25% or below for safe handling. Power button held 4 seconds until shutdown.'},
+          {title: 'Heat back glass to soften battery adhesive', detail: 'iOpener applied for 90 seconds at 40°C. Adhesive becomes pliable without softening the water resistance seal.'},
+          {title: 'Carefully remove battery', detail: 'Battery pull tabs (3M 4210 adhesive) stretched at 45° angle. Pull slowly — sudden force can cause puncture.'},
+          {title: 'Install new OEM battery', detail: 'Fresh battery with 3M 468MP adhesive pre-applied. BMS connector seated. Battery percentage at 0% on first boot — normal.'},
+          {title: 'Verify battery health and charging', detail: 'iOS Settings > Battery > Health shows capacity. 30-min charge test: 0→52%. Sleep/wake cycle test. Face ID retained.'}
         ],
-        tools: ['iFixit Pro Kit', 'iOpener', 'Plastic Spudger', 'Battery Pull Tab', 'ESD Wrist Strap', '99% IPA'],
+        tools: ['iFixit Pro Tech Kit', 'iOpener (40°C)', 'Battery Pull Tabs (3M 4210)', 'Nylon Spudger', 'ESD Wrist Strap', '99% IPA + Lint-Free Wipes', 'USB-C Ammeter'],
         highlight: ['battery']
       },
       charging: {
@@ -6678,13 +6678,13 @@
           { cls: 'anatomy-part-checked', text: 'Audio/lightning connector' }
         ],
         steps: [
-          {title: 'Diagnose port failure (no charge, loose, lint buildup)', detail: 'USB-Ampere meter test. Endoscope inspection inside port bore.'},
-          'Disassemble device to access port',
-          'Remove damaged port carefully',
-          'Clean and/or replace with new port',
-          'Test all charging methods and data sync'
+          {title: 'Diagnose port failure', detail: 'USB-Ampere meter test confirms no current draw. Endoscope inspection reveals lint compaction + bent pins inside port bore.'},
+          {title: 'Disassemble device to access port', detail: 'Pentalobe screws removed. Display pulled (screen intact). EMI shields露出. Port accessible from front.'},
+          {title: 'Remove damaged port carefully', detail: 'Soldering iron at 380°C. Two ground tabs + four data/power pins desoldered. Port extracted without disturbing nearby components.'},
+          {title: 'Install and solder new port', detail: 'New OEM port aligned with silk-screen guides. Four signal pins + two ground tabs soldered. Continuity tested with multimeter.'},
+          {title: 'Test all charging methods', detail: 'USB-Ampere: 0.8A → 2.1A with OEM cable. Data sync verified (iTunes/Finder). Wireless charging coil test. Speaker/mic retained.'}
         ],
-        tools: ['iFixit Pro Kit', 'Spudger', 'Soldering Iron', 'USB-C Tester', 'ESD Wrist Strap', 'Magnifying Loupe'],
+        tools: ['iFixit Pro Tech Kit', 'Soldering Station (380°C)', 'Multimeter', 'USB-C Ammeter', 'Endoscope (USB)', 'ESD Wrist Strap', 'Flux + Solder Wick', 'Magnifying Loupe'],
         highlight: ['frame', 'battery', 'logic']
       },
       water: {

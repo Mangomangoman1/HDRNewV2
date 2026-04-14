@@ -1633,6 +1633,128 @@ a{color:inherit;text-decoration:none}
   </section>
 
   <!-- ═══════════════════════════════════════════
+       WHY FIX CALCULATOR — Environmental & financial impact
+  ══════════════════════════════════════════════ -->
+  <section class="section why-fix-section" id="why-fix" aria-labelledby="why-fix-title">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-eyebrow" data-animate>Impact Calculator</div>
+        <h2 class="section-title" id="why-fix-title" data-text-scramble>See what fixing actually saves</h2>
+        <p class="section-sub" data-text-reveal>Pick your device. See the real cost of replacing vs. fixing — for your wallet and the planet.</p>
+      </div>
+
+      <div class="why-fix-widget" id="whyFixWidget" aria-label="Repair vs replace impact calculator">
+        <!-- Step 1: Pick device -->
+        <div class="wf-step wf-step--active" id="wfStep1" role="group" aria-labelledby="wf-prompt-1">
+          <p class="wf-prompt" id="wf-prompt-1">What are you thinking about fixing?</p>
+          <div class="wf-devices" role="radiogroup" aria-label="Device type">
+            <button class="wf-device-btn" data-device="phone" type="button" aria-label="Phone">
+              <span class="material-symbols-outlined wf-device-icon" aria-hidden="true">smartphone</span>
+              <span class="wf-device-label">Phone</span>
+            </button>
+            <button class="wf-device-btn" data-device="laptop" type="button" aria-label="Laptop">
+              <span class="material-symbols-outlined wf-device-icon" aria-hidden="true">laptop</span>
+              <span class="wf-device-label">Laptop</span>
+            </button>
+            <button class="wf-device-btn" data-device="tablet" type="button" aria-label="Tablet">
+              <span class="material-symbols-outlined wf-device-icon" aria-hidden="true">tablet_android</span>
+              <span class="wf-device-label">Tablet</span>
+            </button>
+            <button class="wf-device-btn" data-device="console" type="button" aria-label="Console">
+              <span class="material-symbols-outlined wf-device-icon" aria-hidden="true">sports_esports</span>
+              <span class="wf-device-label">Console</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Step 2: Pick issue -->
+        <div class="wf-step" id="wfStep2" role="group" aria-labelledby="wf-prompt-2">
+          <button class="wf-back-btn" id="wfBack1" type="button" aria-label="Go back to device selection">
+            <span class="material-symbols-outlined" aria-hidden="true">arrow_back</span>
+          </button>
+          <p class="wf-prompt" id="wf-prompt-2">What's the issue? <span class="wf-device-label-accent" id="wfDeviceAccent"></span></p>
+          <div class="wf-issues" id="wfIssues" role="radiogroup" aria-label="Issue type"></div>
+        </div>
+
+        <!-- Step 3: Results -->
+        <div class="wf-step" id="wfStep3" role="group" aria-labelledby="wf-prompt-3">
+          <button class="wf-back-btn" id="wfBack2" type="button" aria-label="Go back to issue selection">
+            <span class="material-symbols-outlined" aria-hidden="true">arrow_back</span>
+          </button>
+          <p class="wf-prompt" id="wf-prompt-3">Here's the real cost</p>
+
+          <div class="wf-results" id="wfResults">
+            <!-- Comparison bars -->
+            <div class="wf-comparison">
+              <div class="wf-compare-col wf-compare--fix">
+                <div class="wf-compare-icon">
+                  <span class="material-symbols-outlined" aria-hidden="true">build</span>
+                </div>
+                <h3 class="wf-compare-title">Fix It</h3>
+                <div class="wf-compare-value" id="wfFixCost">—</div>
+                <div class="wf-compare-label">typical repair cost</div>
+                <div class="wf-compare-bar-wrap">
+                  <div class="wf-compare-bar" id="wfFixBar" style="width: 0%"></div>
+                </div>
+              </div>
+              <div class="wf-compare-vs">
+                <span>vs</span>
+              </div>
+              <div class="wf-compare-col wf-compare--replace">
+                <div class="wf-compare-icon">
+                  <span class="material-symbols-outlined" aria-hidden="true">shopping_cart</span>
+                </div>
+                <h3 class="wf-compare-title">Replace It</h3>
+                <div class="wf-compare-value" id="wfReplaceCost">—</div>
+                <div class="wf-compare-label">new device cost</div>
+                <div class="wf-compare-bar-wrap">
+                  <div class="wf-compare-bar" id="wfReplaceBar" style="width: 0%"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Impact stats -->
+            <div class="wf-impact-grid">
+              <div class="wf-impact-card" id="wfImpactMoney">
+                <div class="wf-impact-icon">
+                  <span class="material-symbols-outlined" aria-hidden="true">savings</span>
+                </div>
+                <div class="wf-impact-value" id="wfMoneySaved">—</div>
+                <div class="wf-impact-label">money saved</div>
+              </div>
+              <div class="wf-impact-card" id="wfImpactCarbon">
+                <div class="wf-impact-icon wf-impact-icon--green">
+                  <span class="material-symbols-outlined" aria-hidden="true">eco</span>
+                </div>
+                <div class="wf-impact-value" id="wfCarbonSaved">—</div>
+                <div class="wf-impact-label">CO₂ avoided</div>
+              </div>
+              <div class="wf-impact-card" id="wfImpactWaste">
+                <div class="wf-impact-icon wf-impact-icon--amber">
+                  <span class="material-symbols-outlined" aria-hidden="true">delete</span>
+                </div>
+                <div class="wf-impact-value" id="wfWasteSaved">—</div>
+                <div class="wf-impact-label">e-waste prevented</div>
+              </div>
+            </div>
+
+            <!-- Context -->
+            <div class="wf-context" id="wfContext"></div>
+          </div>
+
+          <div class="wf-cta">
+            <a href="sms:+12083666111?body=Hey%2C%20I'd%20rather%20fix%20than%20replace.%20Can%20you%20help%3F" class="wf-sms-btn" id="wfSmsBtn">
+              <span class="material-symbols-outlined" aria-hidden="true">sms</span>
+              <span>Text Samuel to Fix It</span>
+            </a>
+            <button class="wf-reset-btn" id="wfReset" type="button">Try another device</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════
        SERVICE AREA MAP
   ══════════════════════════════════════════════ -->
   <section class="section" id="area">
@@ -2731,6 +2853,145 @@ a{color:inherit;text-decoration:none}
         mfParallaxLoop();
       }
     }
+  })();
+
+  /* ─── Why Fix Calculator ─── */
+  (function() {
+    var DATA = {
+      phone: {
+        label: 'Phone',
+        issues: [
+          { id: 'screen', label: 'Cracked screen', icon: 'broken_image', fix: '$80–180', replace: '$400–1200', fixNum: 130, replaceNum: 800, co2Fix: 1, co2Replace: 70, wasteFix: 0.05, wasteReplace: 0.5, context: 'Manufacturing a new phone generates <strong>70 kg of CO₂</strong> — equivalent to driving 170 miles. A screen repair? About 1 kg.' },
+          { id: 'battery', label: 'Battery dying', icon: 'battery_alert', fix: '$50–90', replace: '$400–1200', fixNum: 70, replaceNum: 800, co2Fix: 0.5, co2Replace: 70, wasteFix: 0.02, wasteReplace: 0.5, context: 'A new phone means mining rare earth metals, shipping across oceans, and 70 kg of carbon. A battery swap costs a fraction of that — financially and environmentally.' },
+          { id: 'charging', label: 'Charging port broke', icon: 'power', fix: '$50–80', replace: '$400–1200', fixNum: 65, replaceNum: 800, co2Fix: 0.5, co2Replace: 70, wasteFix: 0.01, wasteReplace: 0.5, context: 'A charging port is a $65 fix. Replacing the whole phone? 70 kg of CO₂ and another device in a landfill.' },
+          { id: 'water', label: 'Water damage', icon: 'water_drop', fix: '$80–150', replace: '$400–1200', fixNum: 115, replaceNum: 800, co2Fix: 2, co2Replace: 70, wasteFix: 0.05, wasteReplace: 0.5, context: 'Water damage can often be reversed with professional cleaning and component repair. Don't write off your phone before letting someone look at it.' }
+        ]
+      },
+      laptop: {
+        label: 'Laptop',
+        issues: [
+          { id: 'screen', label: 'Broken display', icon: 'broken_image', fix: '$120–300', replace: '$600–2500', fixNum: 210, replaceNum: 1200, co2Fix: 3, co2Replace: 300, wasteFix: 0.1, wasteReplace: 4.5, context: 'Making a new laptop generates <strong>300 kg of CO₂</strong> — that's 730 miles of driving. Screen repair? About 3 kg.' },
+          { id: 'keyboard', label: 'Keyboard issues', icon: 'keyboard', fix: '$80–180', replace: '$600–2500', fixNum: 130, replaceNum: 1200, co2Fix: 2, co2Replace: 300, wasteFix: 0.05, wasteReplace: 4.5, context: 'Keyboard replacement is one of the most common and affordable repairs. Don't ditch a working laptop for a key problem.' },
+          { id: 'battery', label: 'Battery won\'t hold charge', icon: 'battery_alert', fix: '$80–150', replace: '$600–2500', fixNum: 115, replaceNum: 1200, co2Fix: 1, co2Replace: 300, wasteFix: 0.3, wasteReplace: 4.5, context: 'A new laptop battery breathes years of life into your machine. The alternative: 300 kg of CO₂ for a replacement device.' },
+          { id: 'hard', label: 'Hard drive / SSD failure', icon: 'storage', fix: '$100–200', replace: '$600–2500', fixNum: 150, replaceNum: 1200, co2Fix: 2, co2Replace: 300, wasteFix: 0.05, wasteReplace: 4.5, context: 'Dead drive does not mean dead laptop. Storage swaps are quick, affordable, and save your entire machine from the recycling bin.' }
+        ]
+      },
+      tablet: {
+        label: 'Tablet',
+        issues: [
+          { id: 'screen', label: 'Cracked screen', icon: 'broken_image', fix: '$80–200', replace: '$300–1100', fixNum: 140, replaceNum: 600, co2Fix: 1, co2Replace: 100, wasteFix: 0.05, wasteReplace: 0.7, context: 'Manufacturing a new tablet generates <strong>100 kg of CO₂</strong>. Your cracked screen? Fixable for a fraction of that cost and carbon.' },
+          { id: 'battery', label: 'Battery problems', icon: 'battery_alert', fix: '$60–120', replace: '$300–1100', fixNum: 90, replaceNum: 600, co2Fix: 0.5, co2Replace: 100, wasteFix: 0.02, wasteReplace: 0.7, context: 'Dead tablet battery? A quick swap costs $90 on average. Replacing the whole tablet: 100 kg of carbon and $600+ gone.' },
+          { id: 'port', label: 'Charging port damage', icon: 'power', fix: '$50–90', replace: '$300–1100', fixNum: 70, replaceNum: 600, co2Fix: 0.5, co2Replace: 100, wasteFix: 0.01, wasteReplace: 0.7, context: 'A charging port repair costs less than one month of streaming service. Replacing the device costs as much as 6+ months.' }
+        ]
+      },
+      console: {
+        label: 'Console',
+        issues: [
+          { id: 'hdmi', label: 'HDMI port broke', icon: 'cable', fix: '$60–100', replace: '$300–500', fixNum: 80, replaceNum: 400, co2Fix: 1, co2Replace: 50, wasteFix: 0.01, wasteReplace: 2.5, context: 'Your PS5 or Xbox isn't dead — it just needs an HDMI port. Manufacturing a new console produces <strong>50 kg of CO₂</strong>.' },
+          { id: 'overheat', label: 'Overheating', icon: 'device_thermostat', fix: '$60–120', replace: '$300–500', fixNum: 90, replaceNum: 400, co2Fix: 1, co2Replace: 50, wasteFix: 0.02, wasteReplace: 2.5, context: 'Overheating is almost always a cleaning and thermal paste job. Don't replace what you can clean and refresh.' },
+          { id: 'disc', label: 'Disc drive won\'t read', icon: 'album', fix: '$60–100', replace: '$300–500', fixNum: 80, replaceNum: 400, co2Fix: 1, co2Replace: 50, wasteFix: 0.02, wasteReplace: 2.5, context: 'Disc drive replacements are straightforward. Save $320+ and keep your console out of the e-waste stream.' }
+        ]
+      }
+    };
+
+    var step1 = document.getElementById('wfStep1');
+    var step2 = document.getElementById('wfStep2');
+    var step3 = document.getElementById('wfStep3');
+    var issuesContainer = document.getElementById('wfIssues');
+    var deviceAccent = document.getElementById('wfDeviceAccent');
+    var back1 = document.getElementById('wfBack1');
+    var back2 = document.getElementById('wfBack2');
+    var resetBtn = document.getElementById('wfReset');
+    var fixBar = document.getElementById('wfFixBar');
+    var replaceBar = document.getElementById('wfReplaceBar');
+
+    var selectedDevice = null;
+    var selectedIssue = null;
+
+    if (!step1) return;
+
+    // Device selection
+    step1.querySelectorAll('.wf-device-btn').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        selectedDevice = btn.dataset.device;
+        showStep2();
+      });
+    });
+
+    function showStep2() {
+      var device = DATA[selectedDevice];
+      if (!device) return;
+      deviceAccent.textContent = device.label;
+      issuesContainer.innerHTML = '';
+      device.issues.forEach(function(issue) {
+        var btn = document.createElement('button');
+        btn.className = 'wf-issue-btn';
+        btn.type = 'button';
+        btn.dataset.issue = issue.id;
+        btn.innerHTML = '<span class="material-symbols-outlined wf-issue-icon" aria-hidden="true">' + issue.icon + '</span>' + issue.label;
+        btn.addEventListener('click', function() {
+          selectedIssue = issue;
+          showStep3();
+        });
+        issuesContainer.appendChild(btn);
+      });
+      step1.classList.remove('wf-step--active');
+      step2.classList.add('wf-step--active');
+    }
+
+    back1.addEventListener('click', function() {
+      step2.classList.remove('wf-step--active');
+      step1.classList.add('wf-step--active');
+    });
+
+    function showStep3() {
+      if (!selectedIssue) return;
+      var d = selectedIssue;
+
+      document.getElementById('wfFixCost').textContent = d.fix;
+      document.getElementById('wfReplaceCost').textContent = d.replace;
+
+      // Money saved
+      var savings = d.replaceNum - d.fixNum;
+      document.getElementById('wfMoneySaved').textContent = '$' + savings;
+
+      // CO2
+      var co2Saved = d.co2Replace - d.co2Fix;
+      document.getElementById('wfCarbonSaved').textContent = co2Saved + ' kg';
+
+      // E-waste
+      var wasteSaved = (d.wasteReplace - d.wasteFix).toFixed(2);
+      document.getElementById('wfWasteSaved').textContent = wasteSaved + ' kg';
+
+      // Context
+      document.getElementById('wfContext').innerHTML = d.context;
+
+      // Bars
+      var maxCost = Math.max(d.fixNum, d.replaceNum);
+      requestAnimationFrame(function() {
+        fixBar.style.width = ((d.fixNum / maxCost) * 100) + '%';
+        replaceBar.style.width = ((d.replaceNum / maxCost) * 100) + '%';
+      });
+
+      step2.classList.remove('wf-step--active');
+      step3.classList.add('wf-step--active');
+    }
+
+    back2.addEventListener('click', function() {
+      step3.classList.remove('wf-step--active');
+      step2.classList.add('wf-step--active');
+      fixBar.style.width = '0%';
+      replaceBar.style.width = '0%';
+    });
+
+    resetBtn.addEventListener('click', function() {
+      step3.classList.remove('wf-step--active');
+      step1.classList.add('wf-step--active');
+      selectedDevice = null;
+      selectedIssue = null;
+      fixBar.style.width = '0%';
+      replaceBar.style.width = '0%';
+    });
   })();
   </script>
 </body>

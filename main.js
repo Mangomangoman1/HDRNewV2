@@ -6628,7 +6628,7 @@
           { cls: 'anatomy-part-checked', text: 'Earpiece speaker test' }
         ],
         steps: [
-          'Heat and soften the adhesive seal',
+          {title: 'Heat and soften the adhesive seal', detail: 'iOpener or heat gun at 70°C loosens factory adhesive without damaging OLED panel'},
           'Carefully separate glass from the frame',
           'Disconnect display cables from logic board',
           'Install new display assembly',
@@ -6652,7 +6652,7 @@
           { cls: 'anatomy-part-checked', text: 'Charging behavior test' }
         ],
         steps: [
-          'Power down device and verify battery level',
+          {title: 'Power down device and verify battery level', detail: 'ESD wrist strap grounded. Battery at 25% or below for safe handling.'},
           'Heat back glass to soften adhesive',
           'Carefully remove battery with safety precautions',
           'Install new OEM battery with fresh adhesive',
@@ -6676,7 +6676,7 @@
           { cls: 'anatomy-part-checked', text: 'Audio/lightning connector' }
         ],
         steps: [
-          'Diagnose port failure (no charge, loose, lint buildup)',
+          {title: 'Diagnose port failure (no charge, loose, lint buildup)', detail: 'USB-Ampere meter test. Endoscope inspection inside port bore.'},
           'Disassemble device to access port',
           'Remove damaged port carefully',
           'Clean and/or replace with new port',
@@ -6700,7 +6700,7 @@
           { cls: 'anatomy-part-checked', text: 'Speaker/mic functionality test' }
         ],
         steps: [
-          'DO NOT power on — this causes short circuits',
+          {title: 'DO NOT power on — this causes short circuits', detail: 'Immediately disconnect battery. No charging. Power button OFF.'},
           'Immediate disassembly and alcohol cleaning',
           'Ultrasonic bath for stubborn corrosion',
           'Thorough drying (24-48 hours minimum)',
@@ -6720,7 +6720,7 @@
           { cls: 'anatomy-part-checked', text: 'Battery health check' }
         ],
         steps: [
-          'Remove bottom case screws and carefully separate',
+          {title: 'Remove bottom case screws and carefully separate', detail: 'Pentalobe + Phillips bits. Soften adhesive with heat gun at 60°C.'},
           'Disconnect battery and trackpad flex cables',
           'Remove keyboard mounting screws and top case clips',
           'Install new keyboard/top case as a single unit',
@@ -6744,7 +6744,7 @@
           { cls: 'anatomy-part-checked', text: 'Front camera test' }
         ],
         steps: [
-          'Heat perimeter of broken glass to soften old adhesive',
+          {title: 'Heat perimeter of broken glass to soften old adhesive', detail: 'Heat gun at 70°C for 2 min. Work in 5-min intervals.'},
           'Use thin guitar pick to slice through adhesive evenly',
           'Lift glass carefully without cracking the LCD underneath',
           'Disconnect digitizer and display from main board',

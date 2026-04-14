@@ -4493,22 +4493,22 @@
 
     // Step detail descriptions shown below timeline labels — rich, technical
     const stepDetails = [
-      '"Hey Samuel, iPhone 14 screen cracked on the corner." Device model, color, storage confirmed. Repair slot queued.',
-      'Visual inspection at 10x magnification. Crack at ~9 o\'clock. Backlight bleed confirmed. Secondary damage check complete.',
-      '$189 parts + labor. OEM display quoted. 40-day warranty. Customer asked about aftermarket vs OEM — answered.',
-      'Quote approved via text. $50 deposit received. Parts pulled and verified. Repair confirmed for today.',
-      'ESD workspace active. Heat gun at 70°C for 90 sec. Adhesive separator along left edge. ZIF released. New display seated.',
-      'All 5-finger touch ✓ True Tone re-enrolled ✓ Face ID functional ✓ Display uniform ✓ Device polished and boxed.'
+      '"Hey Samuel, iPhone 14 screen cracked on the corner." — Device model, color (Midnight, 256GB), and iOS version confirmed. Repair slot queued. Customer texted from Ketchum, asked about same-day turnaround — available.',
+      'Visual inspection at 10x magnification. Crack at ~9 o\'clock extending 42mm across glass. Backlight bleed confirmed at 3 of 7 LED zones. Face ID camera bracket intact. Battery: 84% health — no swap needed. Secondary damage check: zero.',
+      '$189 parts + labor. OEM display quoted (Apple-supplier grade). 40-day warranty. Customer asked aftermarket vs OEM — explained color accuracy, True Tone, and brightness differences. Opted OEM. Repair confirmed.',
+      'Quote approved via text. $50 deposit received via Venmo. Parts pulled from inventory shelf B-17, serial verified against quote. New display tested functional before assembly. Repair slot confirmed for 10:15 AM.',
+      'ESD workspace active. Heat gun at 70°C for 90 sec. Adhesive separator along left edge — 3M 468MP confirmed. ZIF connectors released with nylon spudger. New display seated, connectors secured. Metal shield replaced. Boot test: 0.3s Apple logo ✓',
+      'All 5-finger multi-touch ✓ True Tone re-enrolled via iOS settings ✓ Face ID: dot projector + IR camera functional ✓ Display uniform @ 100% brightness, 0 dead pixels ✓ Ambient light sensor calibrated ✓ Device polished, boxed, ready for pickup — customer notified at 11:02 AM.'
     ];
 
     // Status messages — richer, more technical, per-step arrays
     const statusMessages = [
-      ['9:04 AM — Text received', '"iPhone 14, screen cracked on the corner"'],
-      ['9:41 AM — Diagnosis complete', 'Cracked LCD confirmed. No Face ID or battery damage.', 'Backlight bleed visible through cracked glass.'],
-      ['9:52 AM — Quote sent', '$189 parts + labor', 'Answered OEM vs aftermarket questions'],
-      ['9:58 AM — Approved', 'Deposit received', 'Parts pulled and verified from inventory'],
-      ['10:15 AM — Repair started', 'Heat gun at 70°C, 90 seconds', 'Adhesive separator applied along left edge', 'ZIF connectors released — display free', 'New display seated and connected', 'Running multi-point test suite...'],
-      ['11:02 AM — All tests passed ✓', 'True Tone re-enrolled ✓', 'Face ID: fully functional ✓', 'Device polished, boxed, ready for pickup']
+      ['9:04 AM — Text received', '"iPhone 14, screen cracked on the corner"', 'Model: A2882 (US)', 'Storage: 256GB / Midnight', 'Customer drove from Ketchum'],
+      ['9:41 AM — Diagnosis complete', '✓ Cracked LCD at 9 o\'clock (42mm crack)', '✓ Backlight bleed — 3 of 7 zones', '✓ Face ID bracket: intact', '✓ Battery: 84% health — no swap', '✓ No water damage indicators'],
+      ['9:52 AM — Quote sent', '$189 parts + labor', 'OEM display — Apple-supplier grade', '40-day warranty included', 'Customer approved — asked OEM over aftermarket'],
+      ['9:58 AM — Approved', '$50 deposit received via Venmo', 'Display pulled from shelf B-17', 'Serial # verified against quote', 'Confirmed for 10:15 AM repair slot'],
+      ['10:15 AM — Repair started', 'ESD mat grounded ✓', 'Heat gun: 70°C, 90 sec on left edge', 'Adhesive separator applied (3M 468MP)', 'ZIF connectors released (nylon spudger)', 'New display seated + connectors secured', 'Metal shield reinstalled', 'Boot test: 0.3s Apple logo ✓', 'Running multi-point test suite...', '→ True Tone re-enrollment...', '→ Face ID calibration...', '→ Dead pixel scan...'],
+      ['11:02 AM — All tests passed ✓', '✓ True Tone re-enrolled', '✓ Face ID: dot projector functional', '✓ Face ID: IR camera functional', '✓ 5-finger multi-touch: all zones', '✓ Dead pixel scan: 0 defects', '✓ Display uniform: 100% brightness', '✓ Ambient light sensor: calibrated', '✓ Device polished + boxed', '📱 Ready for pickup — customer notified']
     ];
 
     let currentStep = -1;
@@ -4637,8 +4637,8 @@
       timelineProgress.style.width = '0%';
       statusLog.innerHTML = '';
 
-      // Step timing (in ms) — cinematic pacing
-      const stepDurations = [1200, 1800, 1500, 1200, 2800, 2000];
+      // Step timing (in ms) — cinematic pacing, longer for repair step with more detail
+      const stepDurations = [1400, 2000, 1800, 1400, 4500, 2500];
       
       let elapsed = 0;
 
@@ -4717,10 +4717,14 @@
     function addStatusMessages(messages, stepIndex) {
       const icons = ['📩', '🔍', '💰', '✅', '🔧', '✓'];
       const iconChar = icons[stepIndex] || '→';
+      const delay = stepIndex === 4 ? 280 : 320; // faster during repair step
       messages.forEach((msg, index) => {
         setTimeout(() => {
           const item = document.createElement('div');
           item.className = 'lr-status-item';
+          item.style.opacity = '0';
+          item.style.transform = 'translateX(-12px)';
+          item.style.transition = 'opacity 0.4s ease, transform 0.4s var(--ease-spring)';
           const icon = document.createElement('span');
           icon.className = 'lr-status-icon';
           icon.textContent = index === 0 ? iconChar : '→';
@@ -4731,9 +4735,15 @@
           item.appendChild(text);
           statusLog.appendChild(item);
           
+          // Trigger animation after append
+          requestAnimationFrame(() => {
+            item.style.opacity = '1';
+            item.style.transform = 'translateX(0)';
+          });
+          
           // Auto-scroll to latest
           statusLog.scrollTop = statusLog.scrollHeight;
-        }, index * 350);
+        }, index * delay);
       });
     }
 

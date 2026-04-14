@@ -4839,3 +4839,67 @@
     }
   }
 })();
+
+/* ═══════════════════════════════════════════════════════════
+   LIVE REPAIR - Scroll-linked border gradient effect
+   ═══════════════════════════════════════════════════════════ */
+(function() {
+  'use strict';
+
+  document.addEventListener('DOMContentLoaded', initLrScrollEffects);
+  document.addEventListener('opensclaw:resumed', initLrScrollEffects);
+
+  function initLrScrollEffects() {
+    const stage = document.getElementById('liveRepairStage');
+    if (!stage) return;
+
+    let borderAngle = 0;
+    let animating = false;
+
+    // Update border angle based on scroll position within section
+    function updateBorderAngle() {
+      if (!stage.dataset.animated) return;
+      
+      const rect = stage.getBoundingClientRect();
+      const sectionHeight = rect.height;
+      const viewportHeight = window.innerHeight;
+      
+      // How far through the section (0 to 1)
+      let progress = 1 - (rect.bottom / (sectionHeight + viewportHeight));
+      progress = Math.max(0, Math.min(1, progress));
+      
+      // Update CSS custom property
+      stage.style.setProperty('--border-angle', `${progress * 360}deg`);
+    }
+
+    const scrollHandler = () => {
+      if (!animating) {
+        animating = true;
+        requestAnimationFrame(() => {
+          updateBorderAngle();
+          animating = false;
+        });
+      }
+    };
+
+    window.addEventListener('scroll', scrollHandler, { passive: true });
+
+    // Also add animated class when section comes into view
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            stage.dataset.animated = 'true';
+            stage.classList.add('animated');
+          } else {
+            stage.dataset.animated = '';
+            stage.classList.remove('animated');
+          }
+        });
+      },
+      { threshold: 0.1 }
+    );
+
+    observer.observe(stage);
+  }
+})();

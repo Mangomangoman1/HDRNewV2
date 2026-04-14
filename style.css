@@ -12791,3 +12791,52 @@ kbd:active {
   letter-spacing: 0.05em;
   margin-bottom: var(--space-sm);
 }
+
+/* Live Repair Stage - Scroll-linked border effect */
+.live-repair-stage {
+  position: relative;
+}
+
+.live-repair-stage::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+  background: conic-gradient(
+    from var(--border-angle, 0deg),
+    var(--accent),
+    var(--color-cyan),
+    var(--color-purple),
+    var(--accent)
+  );
+  animation: lrBorderRotate 4s linear infinite;
+  z-index: -1;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+.live-repair-stage.animated::before {
+  opacity: 1;
+}
+
+@keyframes lrBorderRotate {
+  to { --border-angle: 360deg; }
+}
+
+/* Better mobile layout */
+@media (max-width: 600px) {
+  .lr-device {
+    width: 70px;
+    height: 140px;
+  }
+  
+  .lr-device-frame {
+    border-radius: 14px;
+    padding: 5px;
+  }
+  
+  .lr-device-notch {
+    width: 20px;
+    height: 3px;
+  }
+}

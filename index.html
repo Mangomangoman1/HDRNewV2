@@ -2686,6 +2686,51 @@ a{color:inherit;text-decoration:none}
         smsBtn.style.transform = '';
       });
     }
+
+    /* ─── Mouse-follow parallax on floating icons ─── */
+    var mfFloat = document.getElementById('manifestoFloat');
+    if (mfFloat && manifestoSection) {
+      var mfParallaxItems = mfFloat.querySelectorAll('.mf-item');
+      var mfRafId = null;
+      var mfMouseX = 0;
+      var mfMouseY = 0;
+      var mfCurrentX = 0;
+      var mfCurrentY = 0;
+
+      manifestoSection.addEventListener('mousemove', function(e) {
+        var rect = manifestoSection.getBoundingClientRect();
+        // Normalize mouse position to -1...1
+        mfMouseX = ((e.clientX - rect.left) / rect.width - 0.5) * 2;
+        mfMouseY = ((e.clientY - rect.top) / rect.height - 0.5) * 2;
+      });
+
+      manifestoSection.addEventListener('mouseleave', function() {
+        mfMouseX = 0;
+        mfMouseY = 0;
+      });
+
+      // Check reduced motion
+      var mfReduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      if (!mfReduceMotion) {
+        function mfParallaxLoop() {
+          // Smooth interpolation
+          mfCurrentX += (mfMouseX - mfCurrentX) * 0.05;
+          mfCurrentY += (mfMouseY - mfCurrentY) * 0.05;
+
+          mfParallaxItems.forEach(function(item, i) {
+            // Each item has a different depth/parallax factor
+            var depth = (i + 1) * 6; // 6, 12, 18, 24, 30, 36
+            var moveX = mfCurrentX * depth;
+            var moveY = mfCurrentY * depth;
+            item.style.transform = 'translate(' + moveX + 'px, ' + moveY + 'px)';
+          });
+
+          mfRafId = requestAnimationFrame(mfParallaxLoop);
+        }
+        mfParallaxLoop();
+      }
+    }
   })();
   </script>
 </body>

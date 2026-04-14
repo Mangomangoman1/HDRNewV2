@@ -14532,54 +14532,37 @@ body.panic-open {
 .mf-item {
   position: absolute;
   color: var(--accent);
-  animation: mfFloat 10s ease-in-out infinite;
   opacity: 0;
-  transition: opacity 0.5s ease;
+  transition: opacity 0.8s ease;
+  will-change: transform;
 }
 .mf-item.visible { opacity: 1; }
 .mf-item--phone {
   top: 8%;
   left: 5%;
-  animation-duration: 14s;
-  animation-delay: 0s;
 }
 .mf-item--laptop {
   top: 15%;
   right: 8%;
-  animation-duration: 16s;
-  animation-delay: -3s;
 }
 .mf-item--chip {
   top: 45%;
   left: 3%;
-  animation-duration: 12s;
-  animation-delay: -6s;
 }
 .mf-item--battery {
   bottom: 20%;
   left: 12%;
-  animation-duration: 18s;
-  animation-delay: -2s;
 }
 .mf-item--watch {
   top: 60%;
   right: 5%;
-  animation-duration: 13s;
-  animation-delay: -9s;
 }
 .mf-item--tablet {
   bottom: 10%;
   right: 15%;
-  animation-duration: 15s;
-  animation-delay: -5s;
 }
 
-@keyframes mfFloat {
-  0%, 100% { transform: translateY(0) rotate(0deg); }
-  25% { transform: translateY(-15px) rotate(2deg); }
-  50% { transform: translateY(5px) rotate(-1deg); }
-  75% { transform: translateY(-8px) rotate(1.5deg); }
-}
+
 
 /* Container */
 .manifesto-container {
@@ -14858,9 +14841,6 @@ body.panic-open {
   .manifesto-orb {
     animation: none;
   }
-  .mf-item {
-    animation: none;
-  }
   .manifesto-statement {
     opacity: 1;
     transform: none;
@@ -14885,6 +14865,9 @@ body.panic-open {
     opacity: 1;
     transform: none;
     transition: none;
+  }
+  .mf-item {
+    transform: none !important;
   }
 }
 

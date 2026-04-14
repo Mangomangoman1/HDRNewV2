@@ -5977,3 +5977,224 @@
   }
 
 })();
+
+/* ═══════════════════════════════════════════
+   REPAIR VITAL SIGNS — Diagnostic Dashboard
+   ═══════════════════════════════════════════ */
+
+(function() {
+  'use strict';
+
+  // Skip if reduced motion is preferred
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // Elements
+  const vitalsSection = document.getElementById('vitals');
+  const vitalsRevealElements = vitalsSection?.querySelectorAll('[data-vitals-reveal]');
+  const gaugeFill = vitalsSection?.querySelector('.vitals-gauge-fill');
+  const gaugeTarget = gaugeFill?.dataset.gaugeTarget;
+  const counterElements = vitalsSection?.querySelectorAll('[data-counter-target]');
+  const deviceButtons = vitalsSection?.querySelectorAll('.vitals-device-btn');
+  const healthIssuesContainer = document.getElementById('vitalsHealthIssues');
+  const vitalsResultTitle = document.getElementById('vitalsResultTitle');
+  const vitalsResultPercent = document.getElementById('vitalsResultPercent');
+  const vitalsBarFill = document.getElementById('vitalsBarFill');
+  const vitalsHealthDetail = document.getElementById('vitalsHealthDetail');
+  const vitalsHealthTags = document.getElementById('vitalsHealthTags');
+
+  // Device health data
+  const deviceHealthData = {
+    phone: {
+      issues: [
+        { name: 'Cracked Screen', rate: 92, desc: 'One of the most common repairs. Usually fixable in under an hour with OEM-quality parts.', tags: ['Same-Day', 'Most Common', '$65-150'] },
+        { name: 'Dead Battery', rate: 78, desc: 'Batteries degrade over time. A replacement restores like-new battery life.', tags: ['Same-Day', '30-45 min', '$49-80'] },
+        { name: 'Charging Port', rate: 65, desc: 'Often just lint buildup, sometimes need a port replacement. Usually same-day.', tags: ['Same-Day', 'Often Fixable', '$35-65'] },
+        { name: 'Water Damage', rate: 45, desc: 'The sooner you bring it in, the better the odds. Don\'t try rice — that\'s a myth.', tags: ['Urgent', 'Time-Sensitive', '~$50 diag'] },
+        { name: 'No Power', rate: 35, desc: 'Could be a dead battery, bad charging circuit, or something else. diagnostics needed.', tags: ['Diagnostics', 'Varies', '~$30 diag'] }
+      ]
+    },
+    laptop: {
+      issues: [
+        { name: 'Screen Crack', rate: 82, desc: 'Laptop screens are fragile.Replacement takes 1-2 hours with the right part.', tags: ['1-2 Hours', 'Parts Vary', '$80-200'] },
+        { name: 'Keyboard Issue', rate: 70, desc: 'Spilled coffee is the usual culprit. May need just a keyboard or full top case.', tags: ['1-2 Hours', 'Common Issue', '$40-150'] },
+        { name: 'Battery Swollen', rate: 55, desc: 'Dangerous — can damage other components. Stop using it and bring it in ASAP.', tags: ['Urgent', 'Safety Risk', '$60-120'] },
+        { name: 'No Boot', rate: 40, desc: 'Could be software, RAM, SSD, or logic board. We\'ll diagnose and quote.', tags: ['Diagnostics', 'May Take Time', '~$40 diag'] },
+        { name: 'Overheating', rate: 75, desc: 'Usually dust buildup or old thermal paste. Easy fix — clean and re-paste.', tags: ['Quick Fix', '1 Hour', '$35-50'] }
+      ]
+    },
+    tablet: {
+      issues: [
+        { name: 'Screen Crack', rate: 88, desc: 'Tablets take abuse. Most screen repairs are same-day for popular models.', tags: ['Same-Day', 'Common', '$60-150'] },
+        { name: 'Dead Battery', rate: 72, desc: 'iPad and Galaxy Tab batteries are replaceable. Restores full daily use.', tags: ['Same-Day', '1-2 Hours', '$50-100'] },
+        { name: 'Not Charging', rate: 58, desc: 'Usually the charging port or cable. We\'ll troubleshoot first.', tags: ['Often Simple', '30 min', '$25-50'] },
+        { name: 'Digitizer', rate: 50, desc: 'Touch not working but display fine? Just the digitizer layer needs replacing.', tags: ['Parts Vary', '1-2 Hours', '$45-90'] }
+      ]
+    },
+    console: {
+      issues: [
+        { name: 'Joy-Con Drift', rate: 90, desc: 'Super common on Nintendo Switch. Fix takes under an hour for all four.', tags: ['< 1 Hour', 'Very Common', '$30-50'] },
+        { name: 'HDMI Port', rate: 40, desc: 'Common PS5 issue. Usually a reflow or port replacement fixes it.', tags: ['Same-Day', 'Moderate', '$50-100'] },
+        { name: 'Disk Read Error', rate: 35, desc: 'Could be the drive or lens. We\'ll diagnose before quoting.', tags: ['Diagnostics', 'Varies', '~$30 diag'] },
+        { name: 'Overheating', rate: 45, desc: 'Consoles collect dust. Deep clean and new thermal paste helps a lot.', tags: ['1-2 Hours', 'Maintenance', '$35-60'] },
+        { name: 'Controller Drift', rate: 75, desc: 'Xbox/PS controllers have the same drift issue. New joystick needed.', tags: ['Same-Day', 'Common', '$35-60'] }
+      ]
+    }
+  };
+
+  // Counter animation
+  function animateCounter(el, target, prefix = '', suffix = '') {
+    if (prefersReducedMotion) {
+      el.textContent = prefix + target + suffix;
+      return;
+    }
+    const duration = 1500;
+    const startTime = performance.now();
+    const startVal = 0;
+
+    function update(currentTime) {
+      const elapsed = currentTime - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      // Ease out cubic
+      const easeProgress = 1 - Math.pow(1 - progress, 3);
+      const currentVal = Math.round(startVal + (target - startVal) * easeProgress);
+      el.textContent = prefix + currentVal + suffix;
+
+      if (progress < 1) {
+        requestAnimationFrame(update);
+      }
+    }
+    requestAnimationFrame(update);
+  }
+
+  // Gauge animation
+  function animateGauge() {
+    if (!gaugeFill || !gaugeTarget || prefersReducedMotion) {
+      if (gaugeFill) gaugeFill.style.strokeDashoffset = '29.15';
+      return;
+    }
+    const circumference = 364.42;
+    const targetOffset = circumference * (1 - parseFloat(gaugeTarget));
+    setTimeout(() => {
+      gaugeFill.style.strokeDashoffset = targetOffset;
+    }, 300);
+  }
+
+  // Scroll reveal for vitals section
+  function initVitalsReveal() {
+    if (!vitalsSection || !vitalsRevealElements.length) return;
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          const el = entry.target;
+          el.classList.add('vitals-visible');
+
+          // Trigger counter animations
+          if (el.classList.contains('vitals-card--gauge')) {
+            animateGauge();
+          }
+
+          const statValue = el.querySelector('.vitals-stat-value');
+          if (statValue && statValue.dataset.counterTarget) {
+            const target = parseInt(statValue.dataset.counterTarget);
+            const prefix = statValue.dataset.counterPrefix || '';
+            const suffix = statValue.dataset.counterSuffix || '';
+            animateCounter(statValue, target, prefix, suffix);
+          }
+
+          // Stagger animation for sibling cards
+          const siblings = el.parentElement?.querySelectorAll('[data-vitals-reveal]') || [];
+          const index = Array.from(siblings).indexOf(el);
+          if (index > -1 && index < siblings.length) {
+            setTimeout(() => {
+              siblings[index]?.classList.add('vitals-visible');
+            }, index * 100);
+          }
+        }
+      });
+    }, { threshold: 0.2 });
+
+    vitalsRevealElements.forEach(el => observer.observe(el));
+  }
+
+  // Health picker device switching
+  function initHealthPicker() {
+    if (!deviceButtons?.length || !healthIssuesContainer) return;
+
+    function renderIssues(deviceType) {
+      const data = deviceHealthData[deviceType];
+      if (!data) return;
+
+      healthIssuesContainer.innerHTML = data.issues.map((issue, i) => `
+        <button class="vitals-issue-chip" data-issue-index="${i}" data-device="${deviceType}">
+          ${issue.name}
+        </button>
+      `).join('');
+
+
+      // Add click handlers
+      healthIssuesContainer.querySelectorAll('.vitals-issue-chip').forEach(chip => {
+        chip.addEventListener('click', () => {
+          healthIssuesContainer.querySelectorAll('.vitals-issue-chip').forEach(c => c.classList.remove('vitals-issue-chip--active'));
+          chip.classList.add('vitals-issue-chip--active');
+          showHealthResult(chip.dataset.device, parseInt(chip.dataset.issueIndex));
+        });
+      });
+    }
+
+    function showHealthResult(deviceType, issueIndex) {
+      const issue = deviceHealthData[deviceType]?.issues[issueIndex];
+      if (!issue) return;
+
+      // Update result
+      vitalsResultTitle.textContent = issue.name;
+      vitalsResultPercent.textContent = issue.rate + '%';
+      vitalsHealthDetail.innerHTML = `<p>${issue.desc}</p>`;
+
+      // Update bar
+      vitalsBarFill.style.width = issue.rate + '%';
+      vitalsBarFill.classList.remove('vitals-bar--warning', 'vitals-bar--danger');
+      if (issue.rate >= 70) {
+        // Great - no class needed (green default)
+      } else if (issue.rate >= 40) {
+        vitalsBarFill.classList.add('vitals-bar--warning');
+      } else {
+        vitalsBarFill.classList.add('vitals-bar--danger');
+      }
+
+      // Update tags
+      vitalsHealthTags.innerHTML = issue.tags.map(tag => `<span class="vitals-tag">${tag}</span>`).join('');
+    }
+
+    // Device button handlers
+    deviceButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        deviceButtons.forEach(b => {
+          b.classList.remove('vitals-device-btn--active');
+          b.setAttribute('aria-selected', 'false');
+        });
+        btn.classList.add('vitals-device-btn--active');
+        btn.setAttribute('aria-selected', 'true');
+
+        // Reset result
+        vitalsResultTitle.textContent = 'Select an issue';
+        vitalsResultPercent.textContent = '—';
+        vitalsBarFill.style.width = '0';
+        vitalsHealthDetail.innerHTML = '<p>Pick a device and issue above to see the repair outlook.</p>';
+        vitalsHealthTags.innerHTML = '';
+
+        renderIssues(btn.dataset.vitalsDevice);
+      });
+    });
+
+    // Initialize with phone issues
+    renderIssues('phone');
+  }
+
+  // Init
+  if (vitalsSection) {
+    initVitalsReveal();
+    initHealthPicker();
+  }
+
+})();

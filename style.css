@@ -15342,3 +15342,518 @@ body.panic-open {
     letter-spacing: 0;
   }
 }
+
+/* ═══════════════════════════════════════════
+   REPAIR VITAL SIGNS — Diagnostic Dashboard
+   ═══════════════════════════════════════════ */
+
+.vitals-section {
+  position: relative;
+  background: var(--bg-base);
+  overflow: hidden;
+  padding: var(--space-4xl) 0;
+}
+
+.vitals-particles {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  opacity: 0.4;
+}
+
+.vitals-scanline {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--accent), transparent);
+  opacity: 0.15;
+  animation: vitalsScan 6s ease-in-out infinite;
+}
+
+@keyframes vitalsScan {
+  0%, 100% { top: 10%; opacity: 0; }
+  10% { opacity: 0.15; }
+  90% { opacity: 0.15; }
+  100% { top: 90%; opacity: 0; }
+}
+
+.vitals-eyebrow-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  background: var(--color-green);
+  border-radius: 50%;
+  margin-right: 6px;
+  animation: vitalsPulse 2s ease-in-out infinite;
+  vertical-align: middle;
+}
+
+@keyframes vitalsPulse {
+  0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(63, 185, 80, 0.5); }
+  50% { opacity: 0.7; box-shadow: 0 0 0 6px rgba(63, 185, 80, 0); }
+}
+
+.vitals-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-lg);
+  margin-top: var(--space-2xl);
+  margin-bottom: var(--space-3xl);
+}
+
+.vitals-card {
+  position: relative;
+  background: var(--bg-card);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-lg);
+  padding: var(--space-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  overflow: hidden;
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), border-color 0.3s, box-shadow 0.3s;
+}
+
+.vitals-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--accent);
+  box-shadow: 0 8px 32px rgba(79, 142, 247, 0.12);
+}
+
+.vitals-card-glow {
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, var(--accent-glow) 0%, transparent 60%);
+  opacity: 0;
+  transition: opacity 0.5s;
+  pointer-events: none;
+}
+
+.vitals-card:hover .vitals-card-glow {
+  opacity: 0.3;
+}
+
+.vitals-card--gauge {
+  grid-column: 1;
+  grid-row: 1 / 3;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.vitals-gauge-wrap {
+  position: relative;
+  width: 140px;
+  height: 140px;
+  margin: 0 auto var(--space-md);
+}
+
+.vitals-gauge-svg {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+
+.vitals-gauge-track {
+  fill: none;
+  stroke: var(--border-default);
+  stroke-width: 8;
+}
+
+.vitals-gauge-fill {
+  fill: none;
+  stroke: url(#vitalsGaugeGrad);
+  stroke-width: 8;
+  stroke-linecap: round;
+  stroke-dasharray: 364.42;
+  stroke-dashoffset: 364.42;
+  transition: stroke-dashoffset 1.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.vitals-gauge-pulse {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 8;
+  stroke-linecap: round;
+  stroke-dasharray: 364.42;
+  stroke-dashoffset: 364.42;
+  opacity: 0;
+  filter: blur(4px);
+  transform-origin: center;
+  animation: vitalsGaugePulse 3s ease-in-out infinite;
+}
+
+@keyframes vitalsGaugePulse {
+  0%, 100% { opacity: 0; }
+  50% { opacity: 0.3; }
+}
+
+.vitals-gauge-center {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.vitals-gauge-value {
+  font-family: var(--font-display);
+  font-size: 1.8rem;
+  font-weight: 800;
+  line-height: 1;
+  color: var(--text-primary);
+}
+
+.vitals-gauge-label {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-top: 4px;
+}
+
+.vitals-card-icon {
+  width: 40px;
+  height: 40px;
+  color: var(--accent);
+  margin-bottom: var(--space-xs);
+}
+
+.vitals-card-icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+.vitals-card-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.vitals-stat-value {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  line-height: 1.2;
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+
+.vitals-stars {
+  font-size: 0.9rem;
+  color: #fbbf24;
+  letter-spacing: 1px;
+}
+
+[data-theme="light"] .vitals-stars {
+  color: #f59e0b;
+}
+
+.vitals-stat-label {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.vitals-card-title {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: var(--space-xs);
+}
+
+.vitals-card-desc {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  line-height: 1.55;
+}
+
+.vitals-health-picker {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-xl);
+  padding: var(--space-xl);
+  max-width: 720px;
+  margin: 0 auto var(--space-2xl);
+}
+
+.vitals-health-title {
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: var(--space-xs);
+}
+
+.vitals-health-sub {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  margin-bottom: var(--space-lg);
+}
+
+.vitals-health-devices {
+  display: flex;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-lg);
+  flex-wrap: wrap;
+}
+
+.vitals-device-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0.5rem 1rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-pill);
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.vitals-device-btn .material-symbols-outlined {
+  font-size: 1.1rem;
+}
+
+.vitals-device-btn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  transform: translateY(-1px);
+}
+
+.vitals-device-btn--active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+  box-shadow: 0 4px 14px var(--accent-glow);
+}
+
+.vitals-device-btn--active:hover {
+  color: #fff;
+}
+
+.vitals-health-issues {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-lg);
+}
+
+.vitals-issue-chip {
+  padding: 0.4rem 0.85rem;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.vitals-issue-chip:hover {
+  border-color: var(--accent);
+  color: var(--text-primary);
+  transform: translateY(-1px);
+}
+
+.vitals-issue-chip--active,
+.vitals-issue-chip:hover {
+  background: var(--accent-dim);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.vitals-issue-chip--active {
+  font-weight: 600;
+  box-shadow: 0 2px 8px var(--accent-glow);
+}
+
+.vitals-health-result {
+  background: var(--bg-card);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-lg);
+  padding: var(--space-lg);
+}
+
+.vitals-health-bar-wrap {
+  margin-bottom: var(--space-md);
+}
+
+.vitals-health-bar-label {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: var(--space-sm);
+}
+
+#vitalsResultTitle {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--text-primary);
+}
+
+#vitalsResultPercent {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1.1rem;
+}
+
+.vitals-health-bar {
+  height: 10px;
+  background: var(--bg-elevated);
+  border-radius: var(--radius-pill);
+  overflow: hidden;
+}
+
+.vitals-health-bar-fill {
+  height: 100%;
+  width: 0;
+  border-radius: var(--radius-pill);
+  background: linear-gradient(90deg, var(--color-green), #22d3ee);
+  transition: width 0.8s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.5s;
+}
+
+.vitals-health-bar-fill.vitals-bar--warning {
+  background: linear-gradient(90deg, #fbbf24, var(--color-orange));
+}
+
+.vitals-health-bar-fill.vitals-bar--danger {
+  background: linear-gradient(90deg, var(--color-orange), #f85149);
+}
+
+.vitals-health-detail {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+.vitals-health-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-xs);
+  margin-top: var(--space-sm);
+}
+
+.vitals-tag {
+  padding: 0.25rem 0.6rem;
+  background: var(--accent-dim);
+  color: var(--accent);
+  border-radius: var(--radius-pill);
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.vitals-cta {
+  text-align: center;
+  margin-top: var(--space-2xl);
+}
+
+.vitals-cta-text {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  color: var(--text-secondary);
+  margin-bottom: var(--space-lg);
+}
+
+[data-vitals-reveal] {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1), transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+[data-vitals-reveal].vitals-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.vitals-check-path {
+  stroke-dasharray: 20;
+  stroke-dashoffset: 20;
+  animation: vitalsCheckDraw 0.8s ease-out 0.5s forwards;
+}
+
+@keyframes vitalsCheckDraw {
+  to { stroke-dashoffset: 0; }
+}
+
+@media (max-width: 900px) {
+  .vitals-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .vitals-card--gauge {
+    grid-column: 1 / -1;
+    grid-row: auto;
+    flex-direction: row;
+    gap: var(--space-lg);
+    text-align: left;
+  }
+  .vitals-gauge-wrap {
+    margin: 0;
+  }
+}
+
+@media (max-width: 640px) {
+  .vitals-grid {
+    grid-template-columns: 1fr;
+  }
+  .vitals-card--gauge {
+    flex-direction: column;
+    text-align: center;
+  }
+  .vitals-health-picker {
+    padding: var(--space-lg);
+  }
+  .vitals-health-devices {
+    gap: var(--space-xs);
+  }
+  .vitals-device-btn {
+    padding: 0.4rem 0.7rem;
+    font-size: 0.8rem;
+  }
+  .vitals-stat-value {
+    font-size: 1.3rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .vitals-scanline,
+  .vitals-eyebrow-dot {
+    animation: none;
+  }
+  .vitals-gauge-pulse {
+    animation: none;
+  }
+  .vitals-card:hover {
+    transform: none;
+  }
+  [data-vitals-reveal] {
+    transition: opacity 0.2s;
+    transform: none;
+  }
+  [data-vitals-reveal].vitals-visible {
+    transform: none;
+  }
+  .vitals-health-bar-fill {
+    transition: width 0.3s;
+  }
+  .vitals-issue-chip:hover {
+    transform: none;
+  }
+}

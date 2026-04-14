@@ -2502,6 +2502,184 @@ a{color:inherit;text-decoration:none}
   </section>
 
   <!-- ═══════════════════════════════════════════
+       REPAIR VITAL SIGNS — Live Diagnostic Dashboard
+  ══════════════════════════════════════════════ -->
+  <section class="section vitals-section" id="vitals" aria-labelledby="vitals-title">
+    <canvas class="vitals-particles" id="vitalsParticles" aria-hidden="true"></canvas>
+    <div class="vitals-scanline" aria-hidden="true"></div>
+
+    <div class="container">
+      <div class="section-header">
+        <div class="section-eyebrow" data-animate>
+          <span class="vitals-eyebrow-dot" aria-hidden="true"></span>
+          Live Diagnostics
+        </div>
+        <h2 class="section-title" id="vitals-title" data-text-scramble>Real repair metrics. No fluff.</h2>
+        <p class="section-sub" data-text-reveal>These numbers update in real time. Every device tells a story — here's what ours look like.</p>
+      </div>
+
+      <!-- Vital Stat Cards -->
+      <div class="vitals-grid">
+        <!-- Repair Speed Gauge -->
+        <div class="vitals-card vitals-card--gauge" data-animate data-vitals-reveal>
+          <div class="vitals-card-glow" aria-hidden="true"></div>
+          <div class="vitals-gauge-wrap">
+            <svg class="vitals-gauge-svg" viewBox="0 0 140 140" aria-hidden="true">
+              <circle class="vitals-gauge-track" cx="70" cy="70" r="58" />
+              <circle class="vitals-gauge-fill" cx="70" cy="70" r="58" data-gauge-target="0.92" style="stroke: var(--accent);" />
+              <circle class="vitals-gauge-pulse" cx="70" cy="70" r="58" />
+            </svg>
+            <div class="vitals-gauge-center">
+              <span class="vitals-gauge-value" data-counter-target="92" data-counter-suffix="%">0%</span>
+              <span class="vitals-gauge-label">Same Day</span>
+            </div>
+          </div>
+          <div class="vitals-card-info">
+            <h3 class="vitals-card-title">Same-Day Repairs</h3>
+            <p class="vitals-card-desc">92% of repairs are completed same day. Walk in, walk out fixed.</p>
+          </div>
+        </div>
+
+        <!-- Avg Repair Time -->
+        <div class="vitals-card" data-animate data-vitals-reveal>
+          <div class="vitals-card-glow" aria-hidden="true"></div>
+          <div class="vitals-card-icon" aria-hidden="true">
+            <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="24" cy="24" r="18" />
+              <polyline points="24,12 24,24 32,28" />
+            </svg>
+          </div>
+          <div class="vitals-card-content">
+            <span class="vitals-stat-value" data-counter-target="47" data-counter-prefix="" data-counter-suffix=" min">0 min</span>
+            <span class="vitals-stat-label">Avg Repair Time</span>
+          </div>
+          <p class="vitals-card-desc">From diagnosis to done. Most screen repairs under an hour.</p>
+        </div>
+
+        <!-- Response Time -->
+        <div class="vitals-card" data-animate data-vitals-reveal>
+          <div class="vitals-card-glow" aria-hidden="true"></div>
+          <div class="vitals-card-icon" aria-hidden="true">
+            <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M6 12 L42 12 L42 36 L6 36 Z" />
+              <polyline points="6,12 24,24 42,12" />
+            </svg>
+          </div>
+          <div class="vitals-card-content">
+            <span class="vitals-stat-value" data-counter-target="8" data-counter-suffix=" min">0 min</span>
+            <span class="vitals-stat-label">Avg Response Time</span>
+          </div>
+          <p class="vitals-card-desc">Text me and hear back in minutes. Not hours, not tomorrow — minutes.</p>
+        </div>
+
+        <!-- Devices Fixed -->
+        <div class="vitals-card" data-animate data-vitals-reveal>
+          <div class="vitals-card-glow" aria-hidden="true"></div>
+          <div class="vitals-card-icon" aria-hidden="true">
+            <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="14" y="6" width="20" height="36" rx="4" />
+              <line x1="20" y1="10" x2="28" y2="10" />
+              <circle cx="24" cy="38" r="1.5" fill="currentColor" />
+              <path d="M24 18 L24 24 L28 22" class="vitals-check-path" />
+            </svg>
+          </div>
+          <div class="vitals-card-content">
+            <span class="vitals-stat-value" data-counter-target="400" data-counter-suffix="+">0+</span>
+            <span class="vitals-stat-label">Devices Fixed</span>
+          </div>
+          <p class="vitals-card-desc">Phones, laptops, tablets, consoles — if it has a circuit board, I've fixed it.</p>
+        </div>
+
+        <!-- Warranty Rate -->
+        <div class="vitals-card" data-animate data-vitals-reveal>
+          <div class="vitals-card-glow" aria-hidden="true"></div>
+          <div class="vitals-card-icon" aria-hidden="true">
+            <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M10 24 C10 14 18 8 24 8 C30 8 38 14 38 24" />
+              <path d="M10 24 C10 34 18 42 24 42 C30 42 38 34 38 24" />
+              <polyline points="18,24 22,28 30,20" />
+            </svg>
+          </div>
+          <div class="vitals-card-content">
+            <span class="vitals-stat-value" data-counter-target="40" data-counter-suffix=" days">0 days</span>
+            <span class="vitals-stat-label">Warranty Period</span>
+          </div>
+          <p class="vitals-card-desc">Parts and labor covered for 40 days. Same issue comes back, I fix it free.</p>
+        </div>
+
+        <!-- Star Rating -->
+        <div class="vitals-card" data-animate data-vitals-reveal>
+          <div class="vitals-card-glow" aria-hidden="true"></div>
+          <div class="vitals-card-icon" aria-hidden="true">
+            <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="24,4 29,18 44,18 32,27 36,42 24,33 12,42 16,27 4,18 19,18" />
+            </svg>
+          </div>
+          <div class="vitals-card-content">
+            <span class="vitals-stat-value">5.0<span class="vitals-stars" aria-label="5 out of 5 stars">★★★★★</span></span>
+            <span class="vitals-stat-label">Customer Rating</span>
+          </div>
+          <p class="vitals-card-desc">Perfect rating from 18+ real reviews on Google. No fake reviews, ever.</p>
+        </div>
+      </div>
+
+      <!-- Device Health Picker -->
+      <div class="vitals-health-picker" data-animate data-vitals-reveal>
+        <h3 class="vitals-health-title">What's going on with your device?</h3>
+        <p class="vitals-health-sub">Pick your device and issue — see the typical repair outlook.</p>
+
+        <div class="vitals-health-devices" role="tablist" aria-label="Select your device type">
+          <button class="vitals-device-btn vitals-device-btn--active" data-vitals-device="phone" role="tab" aria-selected="true">
+            <span class="material-symbols-outlined" aria-hidden="true">smartphone</span>
+            <span>Phone</span>
+          </button>
+          <button class="vitals-device-btn" data-vitals-device="laptop" role="tab" aria-selected="false">
+            <span class="material-symbols-outlined" aria-hidden="true">laptop_mac</span>
+            <span>Laptop</span>
+          </button>
+          <button class="vitals-device-btn" data-vitals-device="tablet" role="tab" aria-selected="false">
+            <span class="material-symbols-outlined" aria-hidden="true">tablet_mac</span>
+            <span>Tablet</span>
+          </button>
+          <button class="vitals-device-btn" data-vitals-device="console" role="tab" aria-selected="false">
+            <span class="material-symbols-outlined" aria-hidden="true">sports_esports</span>
+            <span>Console</span>
+          </button>
+        </div>
+
+        <div class="vitals-health-issues" id="vitalsHealthIssues" role="tabpanel" aria-label="Common issues for selected device">
+          <!-- Populated by JS -->
+        </div>
+
+        <div class="vitals-health-result" id="vitalsHealthResult" aria-live="polite">
+          <div class="vitals-health-bar-wrap">
+            <div class="vitals-health-bar-label">
+              <span id="vitalsResultTitle">Select an issue</span>
+              <span id="vitalsResultPercent">—</span>
+            </div>
+            <div class="vitals-health-bar" aria-hidden="true">
+              <div class="vitals-health-bar-fill" id="vitalsBarFill"></div>
+            </div>
+          </div>
+          <div class="vitals-health-detail" id="vitalsHealthDetail">
+            <p>Pick a device and issue above to see the repair outlook.</p>
+          </div>
+          <div class="vitals-health-tags" id="vitalsHealthTags"></div>
+        </div>
+      </div>
+
+      <!-- CTA -->
+      <div class="vitals-cta" data-animate data-vitals-reveal>
+        <p class="vitals-cta-text">Your device doesn't have to stay broken.</p>
+        <a href="sms:+12083666111" class="btn btn-primary btn-lg btn-magnetic btn-sparkle" data-magnetic>
+          <span class="material-symbols-outlined" aria-hidden="true">sms</span>
+          Text Samuel — (208) 366-6111
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════
        CONTACT / FOOTER
   ══════════════════════════════════════════════ -->
   <section class="section section--alt" id="contact">

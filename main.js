@@ -6614,6 +6614,10 @@
     var repairData = {
       screen: {
         title: 'Screen Repair',
+        complexity: 'medium',
+        time: '45–60',
+        price: '$89',
+        warranty: '90',
         subtitle: 'iPhone front glass + display',
         icon: '<svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12" y2="18.01"/></svg>',
         parts: [
@@ -6634,6 +6638,10 @@
       },
       battery: {
         title: 'Battery Swap',
+        complexity: 'low',
+        time: '30–45',
+        price: '$69',
+        warranty: '90',
         subtitle: 'iPhone lithium-ion replacement',
         icon: '<svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="7" width="12" height="10" rx="1"/><line x1="14" y1="10" x2="14" y2="14"/><line x1="12" y1="12" x2="12" y2="12.01"/><rect x="9" y="4" width="6" height="3" rx="1"/></svg>',
         parts: [
@@ -6654,6 +6662,10 @@
       },
       charging: {
         title: 'Charging Port Repair',
+        complexity: 'medium',
+        time: '40–60',
+        price: '$59',
+        warranty: '90',
         subtitle: 'Lightning/USB-C port cleaning or replacement',
         icon: '<svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21v-6M8 18h8M13 3L8 12h4l-1 5 5-9h-4l1-5"/></svg>',
         parts: [
@@ -6674,6 +6686,10 @@
       },
       water: {
         title: 'Water Damage Recovery',
+        complexity: 'high',
+        time: '2–4 hrs',
+        price: '$99',
+        warranty: '90',
         subtitle: 'Gentle cleaning and component rescue',
         icon: '<svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2C12 2 5 10 5 14a7 7 0 0014 0c0-4-7-12-7-12z"/></svg>',
         parts: [

@@ -14397,20 +14397,83 @@ kbd:active {
 }
 
 .lr-step-label {
-  font-size: 0.75rem;
-  font-weight: 600;
+  font-size: 0.8rem;
+  font-weight: 700;
   color: var(--text-primary);
-  margin-bottom: 2px;
+  margin-bottom: 4px;
+  transition: color 0.3s;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.lr-step.active .lr-step-label {
+  color: var(--accent);
+  text-shadow: 0 0 20px var(--accent-glow);
 }
 
 .lr-step-time {
-  font-size: 0.7rem;
+  font-size: 0.72rem;
   color: var(--text-muted);
+  transition: color 0.3s;
 }
 
 .lr-step.done .lr-step-label,
 .lr-step.done .lr-step-time {
   color: var(--text-secondary);
+}
+
+.lr-step-number {
+  font-size: 0.65rem;
+  font-weight: 800;
+  color: var(--text-muted);
+  position: absolute;
+  top: -18px;
+  left: 50%;
+  transform: translateX(-50%);
+  transition: color 0.3s;
+}
+
+.lr-step.active .lr-step-number {
+  color: var(--accent);
+}
+
+.lr-step.active .lr-step-dot {
+  transform: scale(1.15);
+}
+
+/* Step detail on active */
+.lr-step-detail {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-top: 6px;
+  opacity: 0;
+  max-height: 0;
+  overflow: hidden;
+  transition: all 0.45s var(--ease-spring);
+  text-align: left;
+  line-height: 1.5;
+  background: var(--bg-elevated);
+  padding: 0 8px;
+  border-radius: var(--radius-sm);
+  border-left: 3px solid var(--accent);
+  transform: translateY(-5px);
+}
+
+.lr-step.active .lr-step-detail {
+  opacity: 1;
+  max-height: 70px;
+  padding: 8px 10px;
+  margin-top: 10px;
+  animation: stepDetailIn 0.5s var(--ease-spring) forwards;
+}
+
+@keyframes stepDetailIn {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.lr-step.active .lr-step-detail {
+  animation: stepDetailIn 0.5s var(--ease-spring) forwards;
 }
 
 /* Status Feed */
@@ -14595,6 +14658,28 @@ kbd:active {
 
 /* CTA */
 .live-repair-cta {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-md);
+  padding: var(--space-xl);
+  background: var(--bg-elevated);
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--border-subtle);
+  transition: all 0.4s var(--ease-spring);
+}
+
+.live-repair-cta:hover {
+  border-color: var(--accent);
+  box-shadow: 0 0 40px var(--accent-glow);
+  transform: translateY(-2px);
+}
+
+.lr-cta-hint {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  transition: color 0.3s;
   text-align: center;
 }
 

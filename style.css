@@ -14050,6 +14050,27 @@ kbd:active {
   100% { top: 95%; opacity: 0; transform: scaleX(0.5); }
 }
 
+/* CRT overlay for technical feel */
+.lr-crt-overlay {
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(0, 0, 0, 0.03) 0px,
+    rgba(0, 0, 0, 0.03) 1px,
+    transparent 1px,
+    transparent 2px
+  );
+  pointer-events: none;
+  border-radius: inherit;
+  z-index: 20;
+  animation: crtFlicker 0.1s steps(2) infinite;
+}
+@keyframes crtFlicker {
+  0% { opacity: 0.97; }
+  50% { opacity: 1; }
+}
+
 /* Device wrapper */
 .lr-device-wrap {
   position: relative;
@@ -14473,34 +14494,50 @@ kbd:active {
 
 .lr-step-dot {
   position: relative;
-  width: 32px;
-  height: 32px;
-  margin: 0 auto var(--space-sm);
+  width: 36px;
+  height: 36px;
+  margin: 20px auto var(--space-sm);
   background: var(--bg-elevated);
   border: 2px solid var(--border-strong);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.4s ease;
+  transition: all 0.5s var(--ease-spring);
 }
 
 .lr-step.active .lr-step-dot {
   border-color: var(--accent);
-  box-shadow: 0 0 20px var(--accent-glow);
+  border-width: 3px;
+  box-shadow: 0 0 25px var(--accent-glow), 0 0 50px var(--accent-glow);
+  transform: scale(1.2);
+  background: var(--bg-card);
 }
 
 .lr-step.done .lr-step-dot {
   border-color: var(--color-green);
+  border-width: 3px;
   background: var(--color-green);
+  box-shadow: 0 0 15px rgba(63, 185, 80, 0.5);
 }
 
 .lr-step-dot-inner {
-  width: 10px;
-  height: 10px;
+  width: 12px;
+  height: 12px;
   background: var(--text-muted);
   border-radius: 50%;
-  transition: all 0.4s ease;
+  transition: all 0.4s var(--ease-spring);
+}
+
+.lr-step.active .lr-step-dot-inner {
+  background: var(--accent);
+  box-shadow: 0 0 10px var(--accent);
+  transform: scale(1.3);
+}
+
+.lr-step.done .lr-step-dot-inner {
+  background: white;
+  transform: scale(0.8);
 }
 
 .lr-step.active .lr-step-dot-inner {

@@ -2231,7 +2231,22 @@ ul { list-style: none; }
 .anatomy-section .section-header {
   position: relative;
   z-index: 2;
-  margin-bottom: var(--space-2xl);
+  margin-bottom: var(--space-3xl);
+  animation: headerReveal 0.8s var(--ease-spring) forwards;
+}
+
+@keyframes headerReveal {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.section-eyebrow {
+  animation: eyebrowPulse 3s ease-in-out infinite;
+}
+
+@keyframes eyebrowPulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.02); }
 }
 
 /* BACKGROUND EFFECTS — Enhanced floating elements */
@@ -13880,8 +13895,23 @@ kbd:active {
   overflow: hidden;
 }
 
+.live-repair-section .section-header {
+  animation: lrHeaderReveal 0.8s var(--ease-spring) forwards;
+}
+
+@keyframes lrHeaderReveal {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
 .live-repair-section .section-sub {
   margin-bottom: var(--space-3xl);
+  animation: lrSubFade 0.6s ease-out 0.2s both;
+}
+
+@keyframes lrSubFade {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 /* Stage Container */

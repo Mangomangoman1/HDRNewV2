@@ -5127,3 +5127,264 @@
     observer.observe(stage);
   }
 })();
+
+/* ═══════════════════════════════════════════
+   BEFORE YOU PANIC — Interactive Symptom Checker
+   ═══════════════════════════════════════════ */
+(() => {
+  'use strict';
+
+  // Panic data - honest, helpful guidance
+  const panicData = {
+    'cracked-screen': {
+      title: 'Cracked Screen',
+      icon: 'smartphone_screen_shot',
+      urgency: { label: 'Common', class: 'panic-urgency--high' },
+      verdictEmoji: '📱',
+      verdictText: 'Usually saveable. Glass-only cracks keep working, but get worse fast.',
+      what: "Either just the glass (cheaper fix) or the full display assembly. I'll diagnose and give you a firm price before working.",
+      now: [
+        'Stop touching the crack — broken glass can cut or damage internal components',
+        'Get a temporary screen protector to keep it from spreading',
+        'Backup your data NOW just in case'
+      ],
+      dont: [
+        'Don\'t use tape on the screen (leaves residue)',
+        'Don\'t ignore it — damage spreads and water gets in',
+        'Don\'t assume you need a whole new phone'
+      ],
+      fix: 'Screen replacement on almost any device. Most iPhones and Galaxies done same day. I use quality parts that look and work like OEM.'
+    },
+    'water-damage': {
+      title: 'Water Damage',
+      icon: 'water_damage',
+      urgency: { label: 'Act Fast', class: 'panic-urgency--critical' },
+      verdictEmoji: '💧',
+      verdictText: 'Not dead yet. Speed matters — don\'t wait.',
+      what: 'Water gets inside and corrodes circuits. The sooner you get it to me, the better chance of saving it. Severity depends on water type and how long it sat.',
+      now: [
+        'Power it OFF immediately if it\'s still on',
+        'Don\'t try to charge it or turn it on',
+        'Text me NOW — timing is everything'
+      ],
+      dont: [
+        'DON\'T PUT IT IN RICE — rice does nothing',
+        'Don\'t use a hairdryer (pushes water deeper)',
+        'Don\'t assume it\'s dead because it\'s off'
+      ],
+      fix: 'I open it up, clean the corrosion with isopropyl alcohol, and assess the damage. Success rate depends on how quickly you bring it in. Fee covers diagnosis either way.'
+    },
+    'dead-battery': {
+      title: 'Battery Dying Fast',
+      icon: 'battery_alert',
+      urgency: { label: 'Annoying', class: 'panic-urgency--medium' },
+      verdictEmoji: '🔋',
+      verdictText: 'Probably just the battery. But could be software.',
+      what: 'Batteries degrade over time (2-3 years typically). But excessive drain could also be an app, software issue, or a faulty charging port.',
+      now: [
+        'Check battery health in Settings > Battery',
+        'Try a different charger/cable',
+        'Note which apps drain the most power'
+      ],
+      dont: [
+        'Don\'t cover the phone while charging',
+        'Don\'t use off-brand chargers',
+        'Don\'t ignore it — degraded batteries can swell'
+      ],
+      fix: 'Battery replacement on almost everything. I\'ll verify it\'s the battery first. If it\'s a software issue, I\'ll point you in the right direction at no cost.'
+    },
+    'wont-charge': {
+      title: 'Won\'t Charge',
+      icon: 'power_off',
+      urgency: { label: 'Common', class: 'panic-urgency--high' },
+      verdictEmoji: '🔌',
+      verdictText: 'Often the port, not the phone. Or the cable.',
+      what: 'Could be: charging port buildup, bad cable/adapter, battery failure, or a software glitch. The port is the most common culprit.',
+      now: [
+        'Try a DIFFERENT charger and cable',
+        'Try a DIFFERENT outlet',
+        'Check the port with a flashlight — any debris?'
+      ],
+      dont: [
+        'Don\'t jam a toothpick in there aggressively',
+        'Don\'t assume the phone is dead',
+        'Don\'t keep forcing the charger'
+      ],
+      fix: 'Charging port cleaning or replacement. Most ports are modular and replaceable. I\'ll clean it first — sometimes that\'s all it takes.'
+    },
+    'black-screen': {
+      title: 'Black Screen / Won\'t Turn On',
+      icon: 'mobile_off',
+      urgency: { label: 'Common', class: 'panic-urgency--high' },
+      verdictEmoji: '🖥️',
+      verdictText: 'Don\'t panic. It might just be a software crash.',
+      what: 'Could be: software freeze, battery completely drained, display issue, or water damage. About 30% are fixable with just a forced restart.',
+      now: [
+        'Force restart: press and hold both buttons for 30 seconds',
+        'Try charging for 30 minutes — try a different charger',
+        'Check if you hear anything when you press buttons'
+      ],
+      dont: [
+        'Don\'t assume it\'s completely dead',
+        'Don\'t keep smashing buttons',
+        'Don\'t open it up unless you\'ve tried the basics'
+      ],
+      fix: 'Depends on the cause. Sometimes a hard reset works. Sometimes the display needs replacing. I\'ll diagnose and give you options.'
+    },
+    'overheating': {
+      title: 'Phone Overheating',
+      icon: 'thermostat',
+      urgency: { label: 'Annoying', class: 'panic-urgency--medium' },
+      verdictEmoji: '♨️',
+      verdictText: 'Usually fixable. Could be software or hardware.',
+      what: 'Could be: too many background apps, a bad update, battery issues, or the device working too hard (games, navigation). Rarely the actual processor.',
+      now: [
+        'Close all apps and let it cool down',
+        'Turn off background app refresh',
+        'Check what\'s using the most battery in Settings'
+      ],
+      dont: [
+        'Don\'t put it in the freezer (condensation = water damage)',
+        'Don\'t use it while charging if it\'s hot',
+        'Don\'t ignore repeated overheating'
+      ],
+      fix: 'Software troubleshooting first (free). If it\'s hardware, could be battery replacement or thermal management. I\'ll figure out what\'s causing it.'
+    },
+    'data-loss': {
+      title: 'Lost Data / Photos',
+      icon: 'cloud_off',
+      urgency: { label: 'Act Fast', class: 'panic-urgency--critical' },
+      verdictEmoji: '💾',
+      verdictText: 'Often recoverable. Don\'t write anything new to the drive.',
+      what: 'Whether it\'s a dead phone, deleted files, or a crashed drive — there\'s usually a way to recover data. The key is stopping ALL further writes to the device.',
+      now: [
+        'STOP using the device immediately',
+        'Don\'t try to fix it yourself with apps',
+        'Call or text me BEFORE doing anything'
+      ],
+      dont: [
+        'Don\'t attempt recovery software yourself',
+        'Don\'t restore from backup until data is recovered',
+        'Don\'t let anyone connect to the device unless they\'re recovery Pros'
+      ],
+      fix: 'I work with recovery specialists when needed for physical damage. Even water-damaged phones often have recoverable data. I can guide you on options.'
+    },
+    'slow-device': {
+      title: 'Running Slow',
+      icon: 'hourglass_empty',
+      urgency: { label: 'Fixable', class: 'panic-urgency--low' },
+      verdictEmoji: '🐢',
+      verdictText: 'You probably don\'t need a new phone.',
+      what: 'Usually: too many apps running, not enough storage, outdated software, or a degraded battery. Rarely the actual processor.',
+      now: [
+        'Delete apps you don\'t use',
+        'Clear cache and temporary files',
+        'Check for software updates'
+      ],
+      dont: [
+        'Don\'t fall for "you need a new phone" — you probably don\'t',
+        'Don\'t install "speed up" apps (they\'re junk)',
+        'Don\'t factory reset without trying the basics first'
+      ],
+      fix: 'Tune-up service: I clean out the junk, optimize settings, check the battery, and get it running like new again. Much cheaper than replacement.'
+    }
+  };
+
+  // DOM elements
+  const panicGrid = document.getElementById('panicGrid');
+  const panicDetail = document.getElementById('panicDetail');
+  const panicBackdrop = document.getElementById('panicBackdrop');
+  const panicClose = document.getElementById('panicClose');
+
+  // Detail element refs
+  const detailEls = {
+    icon: document.getElementById('panicDetailIcon'),
+    urgency: document.getElementById('panicDetailUrgency'),
+    title: document.getElementById('panicDetailTitle'),
+    verdictEmoji: document.getElementById('panicVerdictEmoji'),
+    verdictText: document.getElementById('panicVerdictText'),
+    whatText: document.getElementById('panicDetailWhatText'),
+    nowList: document.getElementById('panicDetailNowList'),
+    dontList: document.getElementById('panicDetailDontList'),
+    fixText: document.getElementById('panicDetailFixText')
+  };
+
+  // Open detail panel
+  function openPanicDetail(key) {
+    const data = panicData[key];
+    if (!data) return;
+
+    // Build icon
+    detailEls.icon.innerHTML = `<span class="material-symbols-outlined">${data.icon}</span>`;
+
+    // Build urgency badge
+    detailEls.urgency.innerHTML = `<span class="panic-urgency-dot"></span>${data.urgency.label}`;
+    detailEls.urgency.className = 'panic-detail-urgency ' + data.urgency.class;
+
+    // Title & verdict
+    detailEls.title.textContent = data.title;
+    detailEls.verdictEmoji.textContent = data.verdictEmoji;
+    detailEls.verdictText.textContent = data.verdictText;
+
+    // What section
+    detailEls.whatText.textContent = data.what;
+
+    // Now list
+    detailEls.nowList.innerHTML = data.now.map(item => `<li>${item}</li>`).join('');
+
+    // Don't list
+    detailEls.dontList.innerHTML = data.dont.map(item => `<li>${item}</li>`).join('');
+
+    // Fix section
+    detailEls.fixText.textContent = data.fix;
+
+    // Open panel
+    panicDetail.classList.add('open');
+    document.body.classList.add('panic-open');
+    panicClose.focus();
+  }
+
+  // Close detail panel
+  function closePanicDetail() {
+    panicDetail.classList.remove('open');
+    document.body.classList.remove('panic-open');
+  }
+
+  // Event listeners
+  if (panicGrid) {
+    panicGrid.addEventListener('click', (e) => {
+      const card = e.target.closest('.panic-card');
+      if (card) {
+        const key = card.dataset.panic;
+        openPanicDetail(key);
+      }
+    });
+
+    panicGrid.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        const card = e.target.closest('.panic-card');
+        if (card) {
+          e.preventDefault();
+          const key = card.dataset.panic;
+          openPanicDetail(key);
+        }
+      }
+    });
+  }
+
+  if (panicClose) {
+    panicClose.addEventListener('click', closePanicDetail);
+  }
+
+  if (panicBackdrop) {
+    panicBackdrop.addEventListener('click', closePanicDetail);
+  }
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && panicDetail && panicDetail.classList.contains('open')) {
+      closePanicDetail();
+    }
+  });
+
+})();
+

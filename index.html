@@ -1711,6 +1711,179 @@ a{color:inherit;text-decoration:none}
   </section>
 
   <!-- ═══════════════════════════════════════════
+       BEFORE YOU PANIC — Interactive Symptom Checker
+  ══════════════════════════════════════════════ -->
+  <section class="section section--alt" id="panic" aria-label="Before you panic — common device emergencies">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-eyebrow" data-animate>🆘 Emergency Guide</div>
+        <h2 class="section-title" data-animate data-text-scramble>Before You Panic</h2>
+        <p class="section-sub" data-text-reveal>Device just did something terrifying? Take a breath. Here's what's probably going on — and what to do next.</p>
+      </div>
+
+      <div class="panic-grid" id="panicGrid">
+        <!-- Card: Cracked Screen -->
+        <button class="panic-card" data-panic="cracked-screen" data-animate data-card-glow>
+          <div class="panic-card-shimmer" aria-hidden="true"></div>
+          <div class="panic-card-icon">
+            <span class="material-symbols-outlined">smartphone_screen_shot</span>
+          </div>
+          <div class="panic-card-urgency panic-urgency--high">
+            <span class="panic-urgency-dot"></span> Common
+          </div>
+          <h3 class="panic-card-title">Cracked Screen</h3>
+          <p class="panic-card-hint">Tap for the honest truth →</p>
+        </button>
+
+        <!-- Card: Water Damage -->
+        <button class="panic-card" data-panic="water-damage" data-animate data-card-glow>
+          <div class="panic-card-shimmer" aria-hidden="true"></div>
+          <div class="panic-card-icon">
+            <span class="material-symbols-outlined">water_damage</span>
+          </div>
+          <div class="panic-card-urgency panic-urgency--critical">
+            <span class="panic-urgency-dot"></span> Act Fast
+          </div>
+          <h3 class="panic-card-title">Water Damage</h3>
+          <p class="panic-card-hint">Tap before you reach for the rice →</p>
+        </button>
+
+        <!-- Card: Dead Battery -->
+        <button class="panic-card" data-panic="dead-battery" data-animate data-card-glow>
+          <div class="panic-card-shimmer" aria-hidden="true"></div>
+          <div class="panic-card-icon">
+            <span class="material-symbols-outlined">battery_alert</span>
+          </div>
+          <div class="panic-card-urgency panic-urgency--medium">
+            <span class="panic-urgency-dot"></span> Annoying
+          </div>
+          <h3 class="panic-card-title">Battery Dying Fast</h3>
+          <p class="panic-card-hint">Tap to see if it's really the battery →</p>
+        </button>
+
+        <!-- Card: Won't Charge -->
+        <button class="panic-card" data-panic="wont-charge" data-animate data-card-glow>
+          <div class="panic-card-shimmer" aria-hidden="true"></div>
+          <div class="panic-card-icon">
+            <span class="material-symbols-outlined">power_off</span>
+          </div>
+          <div class="panic-card-urgency panic-urgency--high">
+            <span class="panic-urgency-dot"></span> Common
+          </div>
+          <h3 class="panic-card-title">Won't Charge</h3>
+          <p class="panic-card-hint">Tap — it might not be what you think →</p>
+        </button>
+
+        <!-- Card: Black Screen -->
+        <button class="panic-card" data-panic="black-screen" data-animate data-card-glow>
+          <div class="panic-card-shimmer" aria-hidden="true"></div>
+          <div class="panic-card-icon">
+            <span class="material-symbols-outlined">mobile_off</span>
+          </div>
+          <div class="panic-card-urgency panic-urgency--high">
+            <span class="panic-urgency-dot"></span> Common
+          </div>
+          <h3 class="panic-card-title">Black Screen / Won't Turn On</h3>
+          <p class="panic-card-hint">Tap — don't assume it's dead →</p>
+        </button>
+
+        <!-- Card: Overheating -->
+        <button class="panic-card" data-panic="overheating" data-animate data-card-glow>
+          <div class="panic-card-shimmer" aria-hidden="true"></div>
+          <div class="panic-card-icon">
+            <span class="material-symbols-outlined">thermostat</span>
+          </div>
+          <div class="panic-card-urgency panic-urgency--medium">
+            <span class="panic-urgency-dot"></span> Annoying
+          </div>
+          <h3 class="panic-card-title">Phone Overheating</h3>
+          <p class="panic-card-hint">Tap to cool things down →</p>
+        </button>
+
+        <!-- Card: Data Recovery -->
+        <button class="panic-card" data-panic="data-loss" data-animate data-card-glow>
+          <div class="panic-card-shimmer" aria-hidden="true"></div>
+          <div class="panic-card-icon">
+            <span class="material-symbols-outlined">cloud_off</span>
+          </div>
+          <div class="panic-card-urgency panic-urgency--critical">
+            <span class="panic-urgency-dot"></span> Act Fast
+          </div>
+          <h3 class="panic-card-title">Lost Data / Photos</h3>
+          <p class="panic-card-hint">Tap — there's still hope →</p>
+        </button>
+
+        <!-- Card: Slow Device -->
+        <button class="panic-card" data-panic="slow-device" data-animate data-card-glow>
+          <div class="panic-card-shimmer" aria-hidden="true"></div>
+          <div class="panic-card-icon">
+            <span class="material-symbols-outlined">hourglass_empty</span>
+          </div>
+          <div class="panic-card-urgency panic-urgency--low">
+            <span class="panic-urgency-dot"></span> Fixable
+          </div>
+          <h3 class="panic-card-title">Running Slow</h3>
+          <p class="panic-card-hint">Tap — you don't need a new one →</p>
+        </button>
+      </div>
+
+      <!-- Detail Panel (hidden until a card is selected) -->
+      <div class="panic-detail" id="panicDetail" aria-hidden="true">
+        <div class="panic-detail-backdrop" id="panicBackdrop"></div>
+        <div class="panic-detail-card">
+          <div class="panic-detail-inner">
+            <button class="panic-detail-close" id="panicClose" aria-label="Close detail panel">
+              <span class="material-symbols-outlined">close</span>
+            </button>
+
+            <div class="panic-detail-header">
+              <div class="panic-detail-icon" id="panicDetailIcon"></div>
+              <div class="panic-detail-urgency" id="panicDetailUrgency"></div>
+              <h3 class="panic-detail-title" id="panicDetailTitle"></h3>
+            </div>
+
+            <div class="panic-detail-verdict" id="panicDetailVerdict">
+              <div class="panic-verdict-emoji" id="panicVerdictEmoji"></div>
+              <div class="panic-verdict-text" id="panicVerdictText"></div>
+            </div>
+
+            <div class="panic-detail-body">
+              <div class="panic-detail-what" id="panicDetailWhat">
+                <h4>What's probably happening</h4>
+                <p id="panicDetailWhatText"></p>
+              </div>
+
+              <div class="panic-detail-now" id="panicDetailNow">
+                <h4>Do this right now</h4>
+                <ul id="panicDetailNowList"></ul>
+              </div>
+
+              <div class="panic-detail-dont" id="panicDetailDont">
+                <h4>Don't do this</h4>
+                <ul id="panicDetailDontList"></ul>
+              </div>
+
+              <div class="panic-detail-fix" id="panicDetailFix">
+                <h4>How I fix it</h4>
+                <p id="panicDetailFixText"></p>
+              </div>
+            </div>
+
+            <div class="panic-detail-cta">
+              <a href="sms:+12083666111" class="btn btn-primary btn-lg btn-magnetic btn-sparkle" data-magnetic>
+                <span class="material-symbols-outlined" aria-hidden="true">chat</span>
+                Text Me About This
+              </a>
+              <span class="panic-detail-cta-sub">Response in under 2 hours, usually faster</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════
        CONTACT / FOOTER CTA
   ══════════════════════════════════════════════ -->
   <section class="section" id="contact">

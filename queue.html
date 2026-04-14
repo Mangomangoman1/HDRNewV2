@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
+  <link rel="dns-prefetch" href="https://fonts.gstatic.com" />
+  <title>Repair Queue — Hailey Device Repair | Live Status</title>
+  <meta name="description" content="See what's currently at the bench. Live repair queue status for Hailey Device Repair — iPhone, Android, laptop, tablet, and console repairs in Hailey, Idaho." />
+  <meta name="keywords" content="repair queue, repair status, device repair Hailey, phone repair status, laptop repair status, local repair shop" />
+  <meta name="theme-color" content="#0d1117" />
+  <meta property="og:title" content="Repair Queue — Hailey Device Repair" />
+  <meta property="og:description" content="See what's currently at the bench. Live repair queue status." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://haileyrepair.com/queue" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Repair Queue — Hailey Device Repair" />
+  <link rel="canonical" href="https://haileyrepair.com/queue" />
+
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="favicon.svg" />
+  <link rel="manifest" href="manifest.json" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+
+  <style id="critical-css">
+:root {--bg-base: #0d1117;--bg-primary: #0d1117;--bg-surface: #161b22;--bg-elevated: #1c2230;--bg-card: #1a2033;--bg-input: #1e2736;--bg-alt: #111827;--text-primary: #e6edf3;--text-secondary: #8b949e;--text-muted: #7e8a99;--text-on-accent: #ffffff;--border-subtle: rgba(255,255,255,0.07);--border-default: rgba(255,255,255,0.12);--border-strong: rgba(255,255,255,0.2);--accent: #4f8ef7;--accent-hover: #6ba3fa;--accent-dim: rgba(79,142,247,0.12);--accent-glow: rgba(79,142,247,0.25);--color-blue: #4f8ef7;--color-green: #3fb950;--color-purple: #a371f7;--color-orange: #f78166;--color-cyan: #39c5cf;--color-indigo: #818cf8;--color-amber: #f0b429;--space-xs: 0.25rem;--space-sm: 0.5rem;--space-md: 1rem;--space-lg: 1.5rem;--space-xl: 2rem;--space-2xl: 3rem;--space-3xl: 4rem;--space-4xl: 6rem;--font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;--font-display: 'Plus Jakarta Sans', 'Inter', sans-serif;--radius-sm: 6px;--radius-md: 10px;--radius-lg: 16px;--radius-xl: 24px;--radius-pill: 999px;--shadow-card: 0 1px 3px rgba(0,0,0,0.4), 0 4px 16px rgba(0,0,0,0.3);--shadow-float: 0 8px 32px rgba(0,0,0,0.5);--transition: 200ms cubic-bezier(0.4, 0, 0.2, 1);}
+[data-theme="light"] {--bg-base: #f8f9fb;--bg-primary: #f8f9fb;--bg-surface: #ffffff;--bg-elevated: #f0f2f5;--bg-card: #ffffff;--bg-input: #f4f5f7;--bg-alt: #eef0f4;--text-primary: #111827;--text-secondary: #4b5563;--text-muted: #6b7280;--text-on-accent: #ffffff;--border-subtle: rgba(0,0,0,0.05);--border-default: rgba(0,0,0,0.09);--border-strong: rgba(0,0,0,0.15);--accent: #2563eb;--accent-hover: #1e40af;--accent-dim: rgba(37,99,235,0.06);--accent-glow: rgba(37,99,235,0.15);--color-blue: #2563eb;--color-green: #059669;--color-purple: #7c3aed;--color-orange: #ea580c;--color-cyan: #0891b2;--color-indigo: #4f46e5;--color-amber: #d97706;--shadow-card: 0 1px 3px rgba(0,0,0,0.08), 0 4px 16px rgba(0,0,0,0.06);--shadow-float: 0 8px 32px rgba(0,0,0,0.12);}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{font-family:var(--font-body);background:var(--bg-primary);color:var(--text-primary);line-height:1.6;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+.container{width:100%;max-width:1200px;margin:0 auto;padding:0 var(--space-lg)}
+.nav{position:fixed;top:0;left:0;right:0;z-index:100;background:var(--bg-surface);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--border-default)}
+.nav-inner{display:flex;align-items:center;justify-content:space-between;height:60px;gap:1rem}
+.nav-logo{display:flex;align-items:center;gap:0.5rem;font-weight:700;font-size:0.95rem;white-space:nowrap}
+.nav-logo-icon{font-size:1.4rem;color:var(--accent)}
+.nav-logo-text{color:var(--text-primary)}
+.nav-links{display:flex;gap:0.25rem;list-style:none}
+.nav-link{padding:0.4rem 0.75rem;border-radius:8px;font-size:0.85rem;font-weight:500;color:var(--text-secondary);transition:color 0.2s,background 0.2s}
+.nav-link:hover,.nav-link.active{background:var(--bg-elevated);color:var(--text-primary)}
+.nav-link--queue{color:var(--color-green)}
+.btn{display:inline-flex;align-items:center;gap:0.5rem;padding:0.6rem 1.2rem;border-radius:10px;font-weight:600;font-size:0.85rem;border:none;cursor:pointer;transition:all 0.2s;text-decoration:none}
+.btn-primary{background:var(--accent);color:#fff}
+.btn-primary:hover{background:var(--accent-hover)}
+.btn-outline{background:transparent;border:1px solid var(--border-default);color:var(--text-primary)}
+.btn-outline:hover{background:var(--bg-elevated)}
+.btn-lg{padding:0.85rem 1.8rem;font-size:1rem}
+.btn-sm{padding:0.4rem 0.9rem;font-size:0.8rem}
+.hero{min-height:auto;padding:7rem 0 3rem;position:relative;overflow:hidden}
+.hero-bg-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(79,142,247,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(79,142,247,0.03) 1px,transparent 1px);background-size:40px 40px;pointer-events:none}
+.hero-glow{position:absolute;border-radius:50%;filter:blur(80px);opacity:0.4;pointer-events:none}
+.hero-glow-1{width:400px;height:400px;background:var(--accent);top:-100px;right:-100px}
+.hero-glow-2{width:300px;height:300px;background:var(--color-cyan);bottom:-50px;left:-50px;opacity:0.2}
+.page-curtain{position:fixed;inset:0;z-index:9999;background:var(--bg-primary);display:flex;align-items:center;justify-content:center;transition:opacity 0.4s,visibility 0.4s}
+.page-curtain.done{opacity:0;visibility:hidden;pointer-events:none}
+.section{padding:var(--space-3xl) 0}
+.section-header{text-align:center;max-width:640px;margin:0 auto var(--space-xl)}
+.section-eyebrow{display:inline-block;font-size:0.78rem;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--accent);margin-bottom:0.75rem}
+.section-title{font-family:var(--font-display);font-size:clamp(1.5rem,3vw,2.2rem);font-weight:800;line-height:1.2;margin-bottom:0.75rem}
+.section-sub{color:var(--text-secondary);font-size:1rem;max-width:560px;margin:0 auto}
+.text-accent{background:linear-gradient(135deg,var(--accent),var(--color-cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.text-green{color:var(--color-green)}
+.text-orange{color:var(--color-orange)}
+.text-amber{color:var(--color-amber)}
+@media(max-width:768px){.nav-links{display:none}}
+</style>
+  <link rel="preload" href="style.css" as="style" onload="this.onload=null;this.rel='stylesheet'" />
+  <noscript><link rel="stylesheet" href="style.css" /></noscript>
+
+  <!-- Queue Page Styles -->
+  <style>
+    .queue-hero{padding-top:5rem;text-align:center;position:relative}
+    .queue-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at top, var(--accent-dim) 0%, transparent 70%);pointer-events:none}
+    .queue-badge{display:inline-flex;align-items:center;gap:0.5rem;background:var(--bg-card);border:1px solid var(--border-default);border-radius:100px;padding:0.5rem 1.2rem;font-size:0.85rem;margin-bottom:1.5rem}
+    .queue-badge-dot{width:8px;height:8px;border-radius:50%;background:var(--color-green);animation:pulse-dot 2s ease-in-out infinite}
+    @keyframes pulse-dot{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.6;transform:scale(0.9)}}
+    .queue-title{font-family:var(--font-display);font-size:clamp(2rem,5vw,3rem);font-weight:800;line-height:1.1;margin-bottom:1rem}
+    .queue-subtitle{color:var(--text-secondary);font-size:1.1rem;max-width:540px;margin:0 auto 2rem}
+    .queue-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;max-width:900px;margin:0 auto 3rem}
+    @media(max-width:640px){.queue-stats{grid-template-columns:repeat(2,1fr)}}
+    .queue-stat{background:var(--bg-card);border:1px solid var(--border-default);border-radius:var(--radius-lg);padding:1.25rem;text-align:center;transition:all 0.3s}
+    .queue-stat:hover{transform:translateY(-2px);box-shadow:var(--shadow-card)}
+    .queue-stat-value{font-family:var(--font-display);font-size:2rem;font-weight:800;display:block;margin-bottom:0.25rem}
+    .queue-stat-label{font-size:0.8rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.05em}
+    .queue-stat--queued .queue-stat-value{color:var(--text-muted)}
+    .queue-stat--repair .queue-stat-value{color:var(--color-orange)}
+    .queue-stat--parts .queue-stat-value{color:var(--color-amber)}
+    .queue-stat--ready .queue-stat-value{color:var(--color-green)}
+    .queue-board{background:var(--bg-card);border:1px solid var(--border-default);border-radius:var(--radius-xl);overflow:hidden;margin-bottom:3rem}
+    .queue-board-header{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.5rem;border-bottom:1px solid var(--border-default);background:var(--bg-elevated)}
+    .queue-board-title{font-weight:600;font-size:0.95rem;display:flex;align-items:center;gap:0.5rem}
+    .queue-board-title .material-symbols-outlined{font-size:1.2rem}
+    .queue-board-meta{font-size:0.8rem;color:var(--text-muted)}
+    .queue-board-filters{display:flex;gap:0.5rem;flex-wrap:wrap}
+    .queue-filter-btn{padding:0.4rem 0.8rem;border-radius:var(--radius-md);font-size:0.8rem;font-weight:500;background:transparent;border:1px solid var(--border-default);color:var(--text-secondary);cursor:pointer;transition:all 0.2s}
+    .queue-filter-btn:hover{background:var(--bg-surface);color:var(--text-primary)}
+    .queue-filter-btn.active{background:var(--accent);border-color:var(--accent);color:#fff}
+    .queue-columns{display:grid;grid-template-columns:repeat(4,1fr);min-height:400px}
+    @media(max-width:900px){.queue-columns{grid-template-columns:repeat(2,1fr)}}
+
+    .queue-column{background:var(--bg-surface);border-right:1px solid var(--border-default);padding:1rem;min-height:350px}
+    .queue-column:last-child{border-right:none}
+    .queue-column-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;padding-bottom:0.75rem;border-bottom:1px solid var(--border-subtle)}
+    .queue-column-title{font-weight:600;font-size:0.85rem;display:flex;align-items:center;gap:0.5rem}
+    .queue-column-count{font-size:0.75rem;background:var(--bg-elevated);padding:0.2rem 0.5rem;border-radius:var(--radius-pill);color:var(--text-muted)}
+    .queue-column--queued .queue-column-title{color:var(--text-muted)}
+    .queue-column--repair .queue-column-title{color:var(--color-orange)}
+    .queue-column--parts .queue-column-title{color:var(--color-amber)}
+    .queue-column--ready .queue-column-title{color:var(--color-green)}
+    .queue-column-items{display:flex;flex-direction:column;gap:0.75rem}
+    .queue-card{background:var(--bg-card);border:1px solid var(--border-default);border-radius:var(--radius-md);padding:1rem;cursor:pointer;transition:all 0.2s}
+    .queue-card:hover{transform:translateY(-2px);box-shadow:var(--shadow-card);border-color:var(--accent)}
+    .queue-card-icon{width:36px;height:36px;background:var(--bg-elevated);border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;margin-bottom:0.75rem}
+    .queue-card-icon .material-symbols-outlined{font-size:1.2rem;color:var(--text-secondary)}
+    .queue-card-device{font-weight:600;font-size:0.9rem;margin-bottom:0.25rem}
+    .queue-card-issue{font-size:0.8rem;color:var(--text-muted);margin-bottom:0.5rem}
+    .queue-card-meta{display:flex;align-items:center;justify-content:space-between;font-size:0.75rem;color:var(--text-muted)}
+    .queue-card-time{display:flex;align-items:center;gap:0.25rem}
+    .queue-card-status{font-weight:500;padding:0.2rem 0.5rem;border-radius:var(--radius-sm);font-size:0.7rem;text-transform:uppercase;letter-spacing:0.03em}
+    .queue-card-status--queued{background:rgba(255,255,255,0.05);color:var(--text-muted)}
+    .queue-card-status--repair{background:rgba(247,129,102,0.15);color:var(--color-orange)}
+    .queue-card-status--parts{background:rgba(240,180,41,0.15);color:var(--color-amber)}
+    .queue-card-status--ready{background:rgba(63,185,80,0.15);color:var(--color-green)}
+    .queue-card--active{animation:card-pulse 3s ease-in-out infinite}
+    @keyframes card-pulse{0%,100%{box-shadow:var(--shadow-card)}50%{box-shadow:0 0 0 2px var(--accent),var(--shadow-card)}}
+    .queue-empty{text-align:center;padding:2rem;color:var(--text-muted);font-size:0.9rem}
+
+    .queue-lookup{background:var(--bg-card);border:1px solid var(--border-default);border-radius:var(--radius-xl);padding:2rem;max-width:600px;margin:0 auto 3rem}
+    .queue-lookup-title{font-family:var(--font-display);font-size:1.25rem;font-weight:700;margin-bottom:0.5rem;text-align:center}
+    .queue-lookup-sub{color:var(--text-muted);text-align:center;margin-bottom:1.5rem;font-size:0.9rem}
+    .queue-lookup-input-wrap{position:relative}
+    .queue-lookup-input{width:100%;padding:1rem 1rem 1rem 3rem;border-radius:var(--radius-md);border:1px solid var(--border-default);background:var(--bg-input);color:var(--text-primary);font-size:1rem;font-family:var(--font-body)}
+    .queue-lookup-input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-dim)}
+    .queue-lookup-icon{position:absolute;left:1rem;top:50%;transform:translateY(-50%);color:var(--text-muted)}
+    .queue-lookup-results{margin-top:1rem;padding:1rem;background:var(--bg-surface);border-radius:var(--radius-md);display:none}
+    .queue-lookup-results.visible{display:block}
+    .queue-lookup-results-title{font-size:0.85rem;color:var(--text-muted);margin-bottom:0.5rem}
+    .queue-lookup-match-count{font-weight:700;color:var(--accent)}
+
+    .queue-dropin{background:linear-gradient(135deg,var(--bg-elevated) 0%,var(--bg-card) 100%);border:1px solid var(--border-default);border-radius:var(--radius-xl);padding:2rem;text-align:center;max-width:700px;margin:0 auto}
+    .queue-dropin-title{font-family:var(--font-display);font-size:1.5rem;font-weight:800;margin-bottom:0.5rem}
+    .queue-dropin-sub{color:var(--text-secondary);margin-bottom:2rem}
+    .queue-slots{display:grid;grid-template-columns:repeat(4,1fr);gap:0.75rem;margin-bottom:1.5rem}
+    @media(max-width:600px){.queue-slots{grid-template-columns:repeat(2,1rem);gap:0.5rem}}
+    .queue-slot{background:var(--bg-card);border:1px solid var(--border-default);border-radius:var(--radius-md);padding:0.75rem;cursor:pointer;transition:all 0.2s;text-align:center}
+    .queue-slot:hover:not(.booked){border-color:var(--accent);background:var(--accent-dim)}
+    .queue-slot.selected{border-color:var(--accent);background:var(--accent);color:#fff}
+    .queue-slot.selected .queue-slot-time{color:#fff}
+    .queue-slot.booked{opacity:0.4;cursor:not-allowed}
+    .queue-slot-label{font-size:0.75rem;color:var(--text-muted);margin-bottom:0.25rem}
+    .queue-slot-time{font-weight:600;font-size:0.85rem}
+    .queue-slot-day{font-size:0.7rem}
+    .queue-slot.booked .queue-slot-time{text-decoration:line-through}
+
+    .queue-modal{position:fixed;inset:0;z-index:1000;display:none;align-items:center;justify-content:center}
+    .queue-modal.visible{display:flex}
+    .queue-modal-backdrop{position:absolute;inset:0;background:rgba(0,0,0,0.7);backdrop-filter:blur(4px)}
+    .queue-modal-content{background:var(--bg-card);border:1px solid var(--border-default);border-radius:var(--radius-xl);padding:2rem;max-width:420px;width:90%;position:relative;z-index:1}
+    .queue-modal-close{position:absolute;top:1rem;right:1rem;background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:1.5rem}
+    .queue-modal-title{font-family:var(--font-display);font-size:1.25rem;font-weight:700;margin-bottom:1.5rem}
+    .queue-form-group{margin-bottom:1rem}
+    .queue-form-label{display:block;font-size:0.85rem;font-weight:500;margin-bottom:0.5rem}
+    .queue-form-input{width:100%;padding:0.75rem;border-radius:var(--radius-md);border:1px solid var(--border-default);background:var(--bg-input);color:var(--text-primary);font-size:1rem}
+    .queue-form-input:focus{outline:none;border-color:var(--accent)}
+    .queue-modal-cta{width:100%;margin-top:1rem}
+
+    .queue-cta{text-align:center;padding:2rem 0}
+    .queue-cta-text{color:var(--text-secondary);margin-bottom:1rem}
+    .queue-footer{padding:2rem 0;text-align:center;border-top:1px solid var(--border-subtle);margin-top:2rem}
+    .queue-footer a{color:var(--accent);text-decoration:underline}
+  </style>
+</head>
+<body>
+
+  <div class="page-curtain" id="pageCurtain">
+    <div class="page-curtain-logo">
+      <span class="material-symbols-outlined">smartphone</span>
+      Hailey Device Repair
+    </div>
+  </div>
+
+  <nav class="nav" role="navigation">
+    <div class="nav-inner container">
+      <a href="/" class="nav-logo" aria-label="Hailey Device Repair Home">
+        <span class="material-symbols-outlined nav-logo-icon">smartphone</span>
+        <span class="nav-logo-text">Hailey Device <strong>Repair</strong></span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="/#services" class="nav-link">Services</a></li>
+        <li><a href="/pricing" class="nav-link">Pricing</a></li>
+        <li><a href="/tips" class="nav-link">Tips</a></li>
+        <li><a href="/about" class="nav-link">About</a></li>
+        <li><a href="/contact" class="nav-link">Contact</a></li>
+        <li><a href="/queue" class="nav-link nav-link--queue active">Queue</a></li>
+      </ul>
+      <a href="#contact" class="btn btn-primary btn-sm">Get a Quote</a>
+    </div>
+  </nav>
+
+  <main>
+    <!-- Hero -->
+    <section class="queue-hero">
+      <div class="hero-bg-grid"></div>
+      <div class="hero-glow hero-glow-1"></div>
+      <div class="hero-glow hero-glow-2"></div>
+      <div class="container">
+        <div class="queue-badge">
+          <span class="queue-badge-dot"></span>
+          Live at the bench
+        </div>
+        <h1 class="queue-title"> Repair Queue</h1>
+        <p class="queue-subtitle">See what's currently being worked on. Drop off without waiting — reserve a time slot below.</p>
+
+        <!-- Stats Strip -->
+        <div class="queue-stats">
+          <div class="queue-stat queue-stat--queued">
+            <span class="queue-stat-value" id="statQueued">0</span>
+            <span class="queue-stat-label">In Queue</span>
+          </div>
+          <div class="queue-stat queue-stat--repair">
+            <span class="queue-stat-value" id="statRepair">0</span>
+            <span class="queue-stat-label">In Repair</span>
+          </div>
+          <div class="queue-stat queue-stat--parts">
+            <span class="queue-stat-value" id="statParts">0</span>
+            <span class="queue-stat-label">Waiting on Parts</span>
+          </div>
+          <div class="queue-stat queue-stat--ready">
+            <span class="queue-stat-value" id="statReady">0</span>
+            <span class="queue-stat-label">Ready for Pickup</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="container">
+      <!-- Queue Board -->
+      <div class="queue-board">
+        <div class="queue-board-header">
+          <div class="queue-board-title">
+            <span class="material-symbols-outlined">inventory_2</span>
+            Current Repairs
+            <span class="queue-board-meta" id="lastUpdated">Updated just now</span>
+          </div>
+          <div class="queue-board-filters">
+            <button class="queue-filter-btn active" data-filter="all">All</button>
+            <button class="queue-filter-btn" data-filter="phone">Phones</button>
+            <button class="queue-filter-btn" data-filter="laptop">Laptops</button>
+            <button class="queue-filter-btn" data-filter="console">Consoles</button>
+          </div>
+        </div>
+        <div class="queue-columns">
+          <div class="queue-column queue-column--queued">
+            <div class="queue-column-header">
+              <span class="queue-column-title">In Queue</span>
+              <span class="queue-column-count" data-count="queued">0</span>
+            </div>
+            <div class="queue-column-items" id="columnQueued"></div>
+          </div>
+          <div class="queue-column queue-column--repair">
+            <div class="queue-column-header">
+              <span class="queue-column-title">In Repair</span>
+              <span class="queue-column-count" data-count="repair">0</span>
+            </div>
+            <div class="queue-column-items" id="columnRepair"></div>
+          </div>
+          <div class="queue-column queue-column--parts">
+            <div class="queue-column-header">
+              <span class="queue-column-title">Waiting on Parts</span>
+              <span class="queue-column-count" data-count="parts">0</span>
+            </div>
+            <div class="queue-column-items" id="columnParts"></div>
+          </div>
+          <div class="queue-column queue-column--ready">
+            <div class="queue-column-header">
+              <span class="queue-column-title">Ready</span>
+              <span class="queue-column-count" data-count="ready">0</span>
+            </div>
+            <div class="queue-column-items" id="columnReady"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Lookup -->
+      <div class="queue-lookup">
+        <h2 class="queue-lookup-title">Find Your Device</h2>
+        <p class="queue-lookup-sub">Enter your device type to see if there are similar repairs in progress</p>
+        <div class="queue-lookup-input-wrap">
+          <span class="material-symbols-outlined queue-lookup-icon">search</span>
+          <input type="text" class="queue-lookup-input" id="lookupInput" placeholder="e.g. iPhone 14, Galaxy S24, MacBook Air..." />
+        </div>
+        <div class="queue-lookup-results" id="lookupResults">
+          <div class="queue-lookup-results-title">
+            Found <span class="queue-lookup-match-count" id="matchCount">0</span> repairs matching your device
+          </div>
+          <div class="queue-column-items" id="lookupMatches"></div>
+        </div>
+      </div>
+
+      <!-- Drop-In Slots -->
+      <div class="queue-dropin">
+        <h2 class="queue-dropin-title">Reserve a Drop-Off Time</h2>
+        <p class="queue-dropin-sub">Skip the wait — reserve a slot and I'll be ready for your device.</p>
+        <div class="queue-slots" id="slotPicker">
+          <!-- Slots populated by JS -->
+        </div>
+        <p class="queue-cta-text">Or just <a href="sms:+12083666111">text me</a> — I respond in under 2 hours</p>
+      </div>
+
+      <div class="queue-footer">
+        <p><a href="/">&larr; Back to Hailey Device Repair</a></p>
+        <p style="margin-top:0.5rem;color:var(--text-muted);font-size:0.85rem">(208) 366-6111 &middot; samuel@haileyrepair.com</p>
+      </div>
+    </div>
+  </main>
+
+  <!-- Booking Modal -->
+  <div class="queue-modal" id="bookingModal">
+    <div class="queue-modal-backdrop" id="modalBackdrop"></div>
+    <div class="queue-modal-content">
+      <button class="queue-modal-close" id="modalClose">&times;</button>
+      <h3 class="queue-modal-title">Confirm Your Drop-Off</h3>
+      <div class="queue-form-group">
+        <label class="queue-form-label">Your Phone Number</label>
+        <input type="tel" class="queue-form-input" id="bookingPhone" placeholder="(208) 555-0100" />
+      </div>
+      <div class="queue-form-group">
+        <label class="queue-form-label">Device & Issue</label>
+        <input type="text" class="queue-form-input" id="bookingDevice" placeholder="e.g. iPhone 14 Pro — cracked screen" />
+      </div>
+      <button class="btn btn-primary btn-lg queue-modal-cta" id="confirmBooking">Reserve Time Slot</button>
+    </div>
+  </div>
+
+  <div class="queue-modal" id="confirmModal">
+    <div class="queue-modal-backdrop"></div>
+    <div class="queue-modal-content" style="text-align:center">
+      <div style="font-size:3rem;margin-bottom:1rem">🎉</div>
+      <h3 class="queue-modal-title">Slot Reserved!</h3>
+      <p style="color:var(--text-secondary);margin-bottom:1rem">I'll see you at your selected time. Text me if anything changes.</p>
+      <p style="font-weight:600;margin-bottom:1.5rem" id="confirmedTime"></p>
+      <button class="btn btn-primary" onclick="document.getElementById('confirmModal').classList.remove('visible')">Got it</button>
+    </div>
+  </div>
+
+  <script>
+    // Mock repair queue data
+    const queueData = [
+      { id: 1, device: 'iPhone 14 Pro', issue: 'Screen Replacement', type: 'phone', status: 'repair', time: 35, active: true },
+      { id: 2, device: 'MacBook Air M2', issue: 'Battery Replacement', type: 'laptop', status: 'parts', time: 120, active: false },
+      { id: 3, device: 'Samsung Galaxy S24', issue: 'Charging Port', type: 'phone', status: 'repair', time: 18, active: true },
+      { id: 4, device: 'iPad 10th Gen', issue: 'Cracked Screen', type: 'phone', status: 'ready', time: 0, active: false },
+      { id: 5, device: 'Nintendo Switch OLED', issue: 'Joy-Con Drift', type: 'console', status: 'queued', time: 5, active: false },
+      { id: 6, device: 'iPhone 13', issue: 'Battery + Screen', type: 'phone', status: 'repair', time: 52, active: true },
+      { id: 7, device: 'Dell XPS 15', issue: 'Keyboard Replacement', type: 'laptop', status: 'parts', time: 48, active: false },
+      { id: 8, device: 'iPhone 15 Pro Max', issue: 'Back Glass', type: 'phone', status: 'ready', time: 0, active: false },
+      { id: 9, device: 'PS5', issue: 'HDMI Port', type: 'console', status: 'queued', time: 12, active: false },
+      { id: 10, device: 'Galaxy Tab S9', issue: 'Screen Replacement', type: 'phone', status: 'repair', time: 25, active: true },
+    ];
+
+    const statusLabels = { queued: 'In Queue', repair: 'In Repair', parts: 'Parts', ready: 'Ready' };
+    const typeIcons = { phone: 'smartphone', laptop: 'laptop', tablet: 'tablet_mac', console: 'sports_esports' };
+
+    function renderQueue(filter = 'all') {
+      const filtered = filter === 'all' ? queueData : queueData.filter(d => d.type === filter);
+      
+      const columns = { queued: [], repair: [], parts: [], ready: [] };
+      filtered.forEach(item => columns[item.status].push(item));
+
+      // Update stats
+      document.getElementById('statQueued').textContent = columns.queued.length;
+      document.getElementById('statRepair').textContent = columns.repair.length;
+      document.getElementById('statParts').textContent = columns.parts.length;
+      document.getElementById('statReady').textContent = columns.ready.length;
+
+      // Update column counts
+      document.querySelector('[data-count="queued"]').textContent = columns.queued.length;
+      document.querySelector('[data-count="repair"]').textContent = columns.repair.length;
+      document.querySelector('[data-count="parts"]').textContent = columns.parts.length;
+      document.querySelector('[data-count="ready"]').textContent = columns.ready.length;
+
+      // Render cards
+      Object.keys(columns).forEach(status => {
+        const col = document.getElementById(status === 'parts' ? 'columnParts' : 'column' + status.charAt(0).toUpperCase() + status.slice(1));
+        if (!col) return;
+        
+        if (columns[status].length === 0) {
+          col.innerHTML = '<div class="queue-empty">No devices</div>';
+          return;
+        }
+
+        col.innerHTML = columns[status].map(item => `
+          <div class="queue-card ${item.active ? 'queue-card--active' : ''}" data-id="${item.id}">
+            <div class="queue-card-icon">
+              <span class="material-symbols-outlined">${typeIcons[item.type]}</span>
+            </div>
+            <div class="queue-card-device">${item.device}</div>
+            <div class="queue-card-issue">${item.issue}</div>
+            <div class="queue-card-meta">
+              <span class="queue-card-time">
+                <span class="material-symbols-outlined" style="font-size:0.9rem">schedule</span>
+                ${item.time > 0 ? item.time + ' min' : '—'}
+              </span>
+              <span class="queue-card-status queue-card-status--${item.status}">${statusLabels[item.status]}</span>
+            </div>
+          </div>
+        `).join('');
+      });
+    }
+
+    // Filter buttons
+    document.querySelectorAll('.queue-filter-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.queue-filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        renderQueue(btn.dataset.filter);
+      });
+    });
+
+    // Lookup
+    const lookupInput = document.getElementById('lookupInput');
+    const lookupResults = document.getElementById('lookupResults');
+    const lookupMatches = document.getElementById('lookupMatches');
+    const matchCount = document.getElementById('matchCount');
+
+    let lookupTimeout;
+    lookupInput.addEventListener('input', (e) => {
+      clearTimeout(lookupTimeout);
+      lookupTimeout = setTimeout(() => {
+        const query = e.target.value.toLowerCase().trim();
+        if (query.length < 2) {
+          lookupResults.classList.remove('visible');
+          return;
+        }
+
+        const matches = queueData.filter(d => 
+          d.device.toLowerCase().includes(query) || 
+          d.issue.toLowerCase().includes(query)
+        );
+
+        matchCount.textContent = matches.length;
+        
+        if (matches.length === 0) {
+          lookupMatches.innerHTML = '<div class="queue-empty">No matching repairs. Drop off or mail in your device!</div>';
+        } else {
+          lookupMatches.innerHTML = matches.map(item => `
+            <div class="queue-card">
+              <div class="queue-card-icon">
+                <span class="material-symbols-outlined">${typeIcons[item.type]}</span>
+              </div>
+              <div class="queue-card-device">${item.device}</div>
+              <div class="queue-card-issue">${item.issue}</div>
+              <div class="queue-card-meta">
+                <span class="queue-card-time">${item.time > 0 ? item.time + ' min' : '—'}</span>
+                <span class="queue-card-status queue-card-status--${item.status}">${statusLabels[item.status]}</span>
+              </div>
+            </div>
+          `).join('');
+        }
+        lookupResults.classList.add('visible');
+      }, 200);
+    });
+
+    // Time slots
+    const days = ['Today', 'Tomorrow', 'Thu', 'Fri'];
+    const times = ['9-11am', '11am-1pm', '1-4pm', '4-6pm'];
+    const bookedSlots = new Set(['1-0', '1-2', '2-1', '3-0']); // Mock booked slots
+
+    const slotPicker = document.getElementById('slotPicker');
+    let selectedSlot = null;
+
+    days.forEach((day, dayIdx) => {
+      times.forEach((time, timeIdx) => {
+        const isBooked = bookedSlots.has(`${dayIdx}-${timeIdx}`);
+        const slot = document.createElement('div');
+        slot.className = `queue-slot ${isBooked ? 'booked' : ''}`;
+        slot.innerHTML = `
+          <div class="queue-slot-day">${day}</div>
+          <div class="queue-slot-time">${time}</div>
+        `;
+        if (!isBooked) {
+          slot.addEventListener('click', () => {
+            document.querySelectorAll('.queue-slot').forEach(s => s.classList.remove('selected'));
+            slot.classList.add('selected');
+            selectedSlot = { day, time, dayIdx, timeIdx };
+          });
+        }
+        slotPicker.appendChild(slot);
+      });
+    });
+
+    // Modal
+    const bookingModal = document.getElementById('bookingModal');
+    const confirmModal = document.getElementById('confirmModal');
+    const modalBackdrop = document.getElementById('modalBackdrop');
+    const modalClose = document.getElementById('modalClose');
+
+    slotPicker.addEventListener('click', () => {
+      if (selectedSlot) bookingModal.classList.add('visible');
+    });
+
+    modalBackdrop?.addEventListener('click', () => bookingModal.classList.remove('visible'));
+    modalClose?.addEventListener('click', () => bookingModal.classList.remove('visible'));
+
+    document.getElementById('confirmBooking').addEventListener('click', () => {
+      const phone = document.getElementById('bookingPhone').value;
+      const device = document.getElementById('bookingDevice').value;
+      
+      if (!phone || !device) {
+        alert('Please fill in both fields');
+        return;
+      }
+
+      bookingModal.classList.remove('visible');
+      document.getElementById('confirmedTime').textContent = `${selectedSlot.day} ${selectedSlot.time}`;
+      confirmModal.classList.add('visible');
+      selectedSlot = null;
+      document.querySelectorAll('.queue-slot').forEach(s => s.classList.remove('selected'));
+    });
+
+    // Initial render
+    renderQueue();
+
+    // Page curtain
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        document.getElementById('pageCurtain').classList.add('done');
+      }, 600);
+    });
+  </script>
+</body>
+</html>

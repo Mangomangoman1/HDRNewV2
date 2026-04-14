@@ -14757,7 +14757,7 @@ kbd:active {
 }
 
 .lr-status-item {
-  padding: 6px 8px;
+  padding: 8px 10px;
   border-radius: var(--radius-sm);
   border: 1px solid transparent;
   background: var(--bg-elevated);
@@ -14766,6 +14766,19 @@ kbd:active {
   align-items: flex-start;
   gap: 8px;
   transition: border-color 0.3s, background 0.3s;
+  position: relative;
+  overflow: hidden;
+}
+
+.lr-status-item::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 0;
+  background: linear-gradient(90deg, var(--accent), transparent);
+  transition: width 0.3s var(--ease-spring);
 }
 
 .lr-status-item:hover {
@@ -14773,9 +14786,39 @@ kbd:active {
   background: var(--bg-surface);
 }
 
+.lr-status-item:hover::before {
+  width: 3px;
+}
+
 .lr-status-item:last-child {
   border-color: var(--accent-dim);
   background: rgba(79, 142, 247, 0.06);
+}
+
+.lr-status-icon {
+  font-size: 0.85rem;
+  min-width: 16px;
+  color: var(--accent);
+  transition: transform 0.3s var(--ease-spring);
+  position: relative;
+  z-index: 1;
+}
+
+.lr-status-item:hover .lr-status-icon {
+  transform: scale(1.2);
+}
+
+.lr-status-text {
+  color: var(--text-secondary);
+  line-height: 1.4;
+  flex: 1;
+  position: relative;
+  z-index: 1;
+}
+
+.lr-status-item:last-child .lr-status-text {
+  color: var(--text-primary);
+  font-weight: 500;
 }
 
 .lr-status-icon {

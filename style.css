@@ -20297,3 +20297,307 @@ body.panic-open {
     grid-template-columns: 1fr;
   }
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   ROUND 4 — Final polish and premium feel
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Anatomy: Premium glass reflection effect */
+.anatomy-part-glass {
+  position: relative;
+}
+.anatomy-part-glass .anatomy-glass-reflection {
+  position: absolute;
+  top: 20%;
+  left: 10%;
+  width: 60%;
+  height: 30%;
+  background: linear-gradient(
+    135deg,
+    transparent 0%,
+    rgba(255,255,255,0.08) 30%,
+    rgba(255,255,255,0.15) 50%,
+    rgba(255,255,255,0.08) 70%,
+    transparent 100%
+  );
+  border-radius: 40%;
+  animation: glassReflection 6s ease-in-out infinite;
+  pointer-events: none;
+}
+@keyframes glassReflection {
+  0%, 100% { opacity: 0.4; transform: translateX(0) rotate(0deg); }
+  50% { opacity: 0.8; transform: translateX(5px) rotate(2deg); }
+}
+
+/* Anatomy: Premium display screen — animated gradient background */
+.anatomy-display-screen {
+  position: relative;
+}
+.anatomy-display-screen::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(79,142,247,0.05) 0%,
+    rgba(139,92,246,0.05) 50%,
+    rgba(6,182,212,0.05) 100%
+  );
+  border-radius: inherit;
+  pointer-events: none;
+  animation: screenGradient 8s ease-in-out infinite;
+}
+@keyframes screenGradient {
+  0%, 100% { background: linear-gradient(135deg, rgba(79,142,247,0.05) 0%, rgba(139,92,246,0.05) 50%, rgba(6,182,212,0.05) 100%); }
+  33% { background: linear-gradient(135deg, rgba(6,182,212,0.05) 0%, rgba(79,142,247,0.05) 50%, rgba(139,92,246,0.05) 100%); }
+  66% { background: linear-gradient(135deg, rgba(139,92,246,0.05) 0%, rgba(6,182,212,0.05) 50%, rgba(79,142,247,0.05) 100%); }
+}
+
+/* Anatomy: Tab switch animation — brief scale bounce */
+.anatomy-selector-track {
+  position: relative;
+}
+.anatomy-selector-track::after {
+  content: '';
+  position: absolute;
+  bottom: -8px;
+  left: 50%;
+  width: 60%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--accent-glow), transparent);
+  transform: translateX(-50%);
+  opacity: 0.4;
+  border-radius: 1px;
+}
+
+/* Anatomy: Complexity meter shimmer */
+.anatomy-complexity-fill {
+  position: relative;
+  overflow: hidden;
+}
+.anatomy-complexity-fill::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -50%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+  animation: complexityShimmer 3s ease-in-out infinite;
+}
+@keyframes complexityShimmer {
+  0% { left: -50%; }
+  100% { left: 150%; }
+}
+
+/* Anatomy: Stats row — animated counter effect */
+.anatomy-stat-value {
+  transition: transform 0.4s var(--ease-spring), color 0.3s, text-shadow 0.3s;
+  font-variant-numeric: tabular-nums;
+}
+.anatomy-stat:hover .anatomy-stat-value {
+  transform: translateY(-3px) scale(1.05);
+}
+
+/* Anatomy: Info panel entrance animation */
+.anatomy-info {
+  animation: infoSlideIn 0.8s var(--ease-spring) both;
+  animation-delay: 0.2s;
+}
+@keyframes infoSlideIn {
+  0% { opacity: 0; transform: translateX(20px); }
+  100% { opacity: 1; transform: translateX(0); }
+}
+
+/* Anatomy: Exploded view entrance animation */
+.anatomy-exploded {
+  animation: explodedEntrance 1s var(--ease-spring) both;
+}
+@keyframes explodedEntrance {
+  0% { opacity: 0; transform: rotateY(-20deg) rotateX(10deg) scale(0.9); }
+  100% { opacity: 1; transform: rotateY(-10deg) rotateX(6deg); }
+}
+
+/* Anatomy: Each layer stagger entrance */
+.anatomy-layer {
+  animation: layerSlideIn 0.6s var(--ease-spring) both;
+}
+.anatomy-layer[data-anatomy-order="1"] { animation-delay: 0.1s; }
+.anatomy-layer[data-anatomy-order="2"] { animation-delay: 0.2s; }
+.anatomy-layer[data-anatomy-order="3"] { animation-delay: 0.3s; }
+.anatomy-layer[data-anatomy-order="4"] { animation-delay: 0.4s; }
+.anatomy-layer[data-anatomy-order="5"] { animation-delay: 0.5s; }
+.anatomy-layer[data-anatomy-order="6"] { animation-delay: 0.6s; }
+@keyframes layerSlideIn {
+  0% { opacity: 0; transform: translateY(30px) translateZ(-20px); }
+  100% { opacity: var(--layer-opacity, 1); transform: translateY(var(--layer-y)) translateZ(calc(var(--layer-y) * -0.3)); }
+}
+
+/* Live-repair: Enhanced device frame glow */
+.lr-device-frame {
+  position: relative;
+}
+.lr-device-frame::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: 28px;
+  background: linear-gradient(
+    135deg,
+    rgba(79,142,247,0.2),
+    rgba(139,92,246,0.1),
+    rgba(6,182,212,0.2),
+    rgba(79,142,247,0.1)
+  );
+  background-size: 200% 200%;
+  animation: frameGlow 4s ease-in-out infinite;
+  opacity: 0;
+  transition: opacity 0.6s;
+  z-index: -1;
+}
+.lr-device.repairing .lr-device-frame::before {
+  opacity: 1;
+}
+@keyframes frameGlow {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+.lr-device.done .lr-device-frame::before {
+  background: linear-gradient(
+    135deg,
+    rgba(63,185,80,0.3),
+    rgba(6,212,182,0.2),
+    rgba(63,185,80,0.3)
+  );
+  opacity: 1;
+}
+
+/* Live-repair: Screen content flicker during repair */
+.lr-device.repairing .lr-screen-main {
+  animation: screenFlicker 3s ease-in-out infinite;
+}
+@keyframes screenFlicker {
+  0%, 100% { opacity: 1; }
+  48% { opacity: 1; }
+  49% { opacity: 0.7; }
+  50% { opacity: 1; }
+  78% { opacity: 1; }
+  79% { opacity: 0.8; }
+  80% { opacity: 1; }
+}
+
+/* Live-repair: Summary counter animation enhancement */
+.lr-summary {
+  position: relative;
+  overflow: hidden;
+}
+.lr-summary::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(79,142,247,0.05), transparent);
+  animation: summaryShimmer 5s ease-in-out infinite;
+}
+@keyframes summaryShimmer {
+  0%, 100% { left: -50%; }
+  50% { left: 100%; }
+}
+
+/* Live-repair: Device shadow depth */
+.lr-device-shadow {
+  transition: all 0.6s ease;
+}
+.lr-device.repairing .lr-device-shadow {
+  filter: blur(30px);
+  opacity: 0.4;
+  transform: scaleX(1.05);
+}
+
+/* Anatomy: Section-level breathing glow — ambient feel */
+.anatomy-section {
+  position: relative;
+}
+.anatomy-section::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(ellipse, var(--accent-glow) 0%, transparent 70%);
+  transform: translate(-50%, -50%);
+  opacity: 0.06;
+  animation: sectionBreath 8s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 0;
+}
+@keyframes sectionBreath {
+  0%, 100% { opacity: 0.04; transform: translate(-50%, -50%) scale(1); }
+  50% { opacity: 0.08; transform: translate(-50%, -50%) scale(1.05); }
+}
+
+/* Live-repair: Section-level ambient glow */
+.live-repair-section::before {
+  content: '';
+  position: absolute;
+  top: 30%;
+  right: -100px;
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(ellipse, rgba(79,142,247,0.08) 0%, transparent 70%);
+  animation: lrAmbientGlow 10s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 0;
+}
+.live-repair-section::after {
+  content: '';
+  position: absolute;
+  bottom: 20%;
+  left: -80px;
+  width: 300px;
+  height: 300px;
+  background: radial-gradient(ellipse, rgba(63,185,80,0.06) 0%, transparent 70%);
+  animation: lrAmbientGlow 12s ease-in-out infinite reverse;
+  pointer-events: none;
+  z-index: 0;
+}
+@keyframes lrAmbientGlow {
+  0%, 100% { opacity: 0.5; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.1); }
+}
+
+/* Anatomy: Premium hover lift on part items — satisfaction */
+.anatomy-part-item {
+  position: relative;
+  overflow: hidden;
+}
+.anatomy-part-item::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--accent), var(--color-cyan));
+  transition: width 0.4s var(--ease-spring);
+}
+.anatomy-part-item:hover::after {
+  width: 100%;
+}
+
+/* Live-repair: Premium device notch glow during repair */
+.lr-device.repairing .lr-device-notch {
+  box-shadow: 0 0 8px rgba(79,142,247,0.4), 0 0 16px rgba(79,142,247,0.2);
+}
+
+/* Live-repair: Timeline dot ripple when active */
+.lr-step.active .lr-step-dot-ring {
+  animation: dotRipple 1.5s ease-out infinite;
+}
+@keyframes dotRipple {
+  0% { transform: scale(1); opacity: 0.6; }
+  100% { transform: scale(2); opacity: 0; }
+}

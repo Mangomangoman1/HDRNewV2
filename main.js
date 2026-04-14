@@ -4638,3 +4638,204 @@
     }
   }
 })();
+
+/* ═══════════════════════════════════════════════════════════
+   LIVE REPAIR JOURNEY - Scroll-triggered animated demo
+   ═══════════════════════════════════════════════════════════ */
+(function() {
+  'use strict';
+
+  document.addEventListener('DOMContentLoaded', initLiveRepair);
+  document.addEventListener('opensclaw:resumed', initLiveRepair);
+
+  function initLiveRepair() {
+    const stage = document.getElementById('liveRepairStage');
+    if (!stage || stage.dataset.initialized) return;
+    stage.dataset.initialized = 'true';
+
+    // Elements
+    const device = document.getElementById('lrDevice');
+    const crack = document.getElementById('lrScreenCrack');
+    const repaired = document.getElementById('lrScreenRepaired');
+    const timelineProgress = document.getElementById('lrTimelineProgress');
+    const statusLog = document.getElementById('lrStatusLog');
+    const totalTime = document.getElementById('lrTotalTime');
+
+    // Steps
+    const steps = [
+      document.getElementById('lrStep1'),
+      document.getElementById('lrStep2'),
+      document.getElementById('lrStep3'),
+      document.getElementById('lrStep4'),
+      document.getElementById('lrStep5')
+    ];
+
+    // Status messages for each step
+    const statusMessages = [
+      ['Text received — "iPhone 14 screen cracked"'],
+      ['Diagnosis: cracked LCD, needs new screen assembly'],
+      ['Quote approved: $189 — starting repair now'],
+      ['Screen removed, installing new display...', 'Display connected, testing...'],
+      ['All tests passed! Device ready for pickup.']
+    ];
+
+    let currentStep = -1;
+    let animationRunning = false;
+    let counterInterval = null;
+
+    // Intersection observer for scroll-triggered animation
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting && !animationRunning) {
+            startRepairAnimation();
+          }
+        });
+      },
+      { threshold: 0.3 }
+    );
+
+    observer.observe(stage);
+
+    // Restart animation function
+    function restartAnimation() {
+      // Reset state
+      animationRunning = false;
+      currentStep = -1;
+      
+      // Reset visuals
+      steps.forEach(s => s.classList.remove('active', 'done'));
+      timelineProgress.style.width = '0%';
+      statusLog.innerHTML = '';
+      crack.classList.remove('repaired');
+      repaired.classList.remove('show');
+      device.classList.remove('done', 'repairing');
+      totalTime.textContent = '58';
+      
+      if (counterInterval) clearInterval(counterInterval);
+      
+      // Restart
+      setTimeout(startRepairAnimation, 300);
+    }
+
+    // Magnetic button effect
+    const magneticBtn = document.getElementById('lrMagneticBtn');
+    if (magneticBtn) {
+      magneticBtn.addEventListener('mousemove', handleMagneticMove);
+      magneticBtn.addEventListener('mouseleave', handleMagneticReset);
+      magneticBtn.addEventListener('click', handleCtaClick);
+    }
+
+    // Replay button
+    const replayBtn = document.getElementById('lrReplayBtn');
+    if (replayBtn) {
+      replayBtn.addEventListener('click', restartAnimation);
+    }
+
+    function handleMagneticMove(e) {
+      const rect = magneticBtn.getBoundingClientRect();
+      const x = e.clientX - rect.left - rect.width / 2;
+      const y = e.clientY - rect.top - rect.height / 2;
+      
+      const moveX = x * 0.3;
+      const moveY = y * 0.3;
+      
+      magneticBtn.style.transform = `translate(${moveX}px, ${moveY}px)`;
+    }
+
+    function handleMagneticReset() {
+      magneticBtn.style.transform = '';
+    }
+
+    function handleCtaClick() {
+      const phoneLink = document.querySelector('a[href^="sms:"]');
+      if (phoneLink) {
+        phoneLink.click();
+      } else {
+        window.location.href = 'sms:+12083666111';
+      }
+    }
+
+    // Repair animation sequence
+    function startRepairAnimation() {
+      if (animationRunning) return;
+      animationRunning = true;
+
+      // Add active class to device
+      device.classList.add('repairing');
+
+      // Step timing (in ms)
+      const stepDurations = [800, 1500, 1200, 2000, 1500];
+      
+      function runStep(stepIndex) {
+        if (stepIndex >= steps.length) {
+          finishAnimation();
+          return;
+        }
+
+        const step = steps[stepIndex];
+        currentStep = stepIndex;
+
+        // Activate step
+        steps.forEach((s, i) => {
+          s.classList.remove('active', 'done');
+          if (i < stepIndex) s.classList.add('done');
+        });
+        step.classList.add('active');
+
+        // Update timeline progress
+        const progressPercent = ((stepIndex + 1) / steps.length) * 100;
+        timelineProgress.style.width = progressPercent + '%';
+
+        // Add status messages
+        addStatusMessages(statusMessages[stepIndex]);
+
+        // Stage-specific effects
+        if (stepIndex === 3) {
+          crack.classList.add('repaired');
+          repaired.classList.add('show');
+          device.classList.remove('repairing');
+          device.classList.add('done');
+        }
+
+        // Schedule next step
+        setTimeout(() => {
+          runStep(stepIndex + 1);
+        }, stepDurations[stepIndex]);
+      }
+
+      // Start first step after brief delay
+      setTimeout(() => runStep(0), 500);
+    }
+
+    function addStatusMessages(messages) {
+      messages.forEach((msg, index) => {
+        setTimeout(() => {
+          const item = document.createElement('div');
+          item.className = 'lr-status-item';
+          item.textContent = msg;
+          statusLog.appendChild(item);
+          statusLog.scrollTop = statusLog.scrollHeight;
+        }, index * 400);
+      });
+    }
+
+    function finishAnimation() {
+      steps.forEach(s => {
+        s.classList.remove('active');
+        s.classList.add('done');
+      });
+      
+      timelineProgress.style.width = '100%';
+      
+      // Animate counter
+      let count = 0;
+      const target = 58;
+      counterInterval = setInterval(() => {
+        count++;
+        totalTime.textContent = count;
+        if (count >= target) clearInterval(counterInterval);
+      }, Math.floor(2000 / target));
+    }
+  }
+})();

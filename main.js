@@ -6381,7 +6381,7 @@
           'Heat back glass to soften adhesive',
           'Carefully remove battery with safety precautions',
           'Install new OEM battery with fresh adhesive',
-          'VerifyBattery health and charging performance'
+          'Verify battery health and charging performance'
         ],
         highlight: ['battery']
       },

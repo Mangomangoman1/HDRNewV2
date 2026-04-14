@@ -3135,7 +3135,7 @@ ul { list-style: none; }
 .anatomy-annotation[data-annotation="logic"] { top: 70%; left: 85%; }
 .anatomy-annotation[data-annotation="back"] { top: 85%; left: -10%; }
 
-/* Info panel — premium card with glow border */
+/* Info panel — premium holographic glow card */
 .anatomy-info {
   background: var(--bg-surface);
   border: 1px solid var(--border-default);
@@ -3146,17 +3146,28 @@ ul { list-style: none; }
   gap: var(--space-lg);
   position: relative;
   overflow: hidden;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.04);
+  transition: box-shadow 0.4s ease, transform 0.4s var(--ease-spring);
+}
+
+.anatomy-info:hover {
+  box-shadow: 0 12px 60px rgba(0,0,0,0.4), 0 0 40px var(--accent-glow), inset 0 1px 0 rgba(255,255,255,0.06);
+  transform: translateY(-2px);
 }
 
 .anatomy-info::before {
   content: '';
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, var(--accent), transparent);
-  opacity: 0.5;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--accent), var(--color-cyan), var(--accent), transparent);
+  opacity: 0.7;
+  animation: infoGlow 3s ease-in-out infinite;
+}
+
+@keyframes infoGlow {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
 }
 
 .anatomy-info::after {
@@ -3165,13 +3176,22 @@ ul { list-style: none; }
   inset: -1px;
   border-radius: var(--radius-xl);
   padding: 1px;
-  background: linear-gradient(135deg, var(--accent-glow), transparent, var(--color-purple));
+  background: linear-gradient(135deg, var(--accent-glow), transparent, var(--color-purple), transparent, var(--color-cyan));
   -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   -webkit-mask-composite: xor;
   mask-composite: exclude;
   pointer-events: none;
-  opacity: 0.3;
+  opacity: 0.5;
+  animation: borderRotate 8s linear infinite;
+}
+
+@keyframes borderRotate {
+  0% { background: linear-gradient(0deg, var(--accent-glow), transparent, var(--color-purple), transparent, var(--color-cyan)); }
+  25% { background: linear-gradient(90deg, var(--accent-glow), transparent, var(--color-purple), transparent, var(--color-cyan)); }
+  50% { background: linear-gradient(180deg, var(--accent-glow), transparent, var(--color-purple), transparent, var(--color-cyan)); }
+  75% { background: linear-gradient(270deg, var(--accent-glow), transparent, var(--color-purple), transparent, var(--color-cyan)); }
+  100% { background: linear-gradient(360deg, var(--accent-glow), transparent, var(--color-purple), transparent, var(--color-cyan)); }
 }
 
 .anatomy-info-header {
@@ -3180,17 +3200,26 @@ ul { list-style: none; }
   gap: var(--space-md);
   padding-bottom: var(--space-md);
   border-bottom: 1px solid var(--border-subtle);
+  position: relative;
+  z-index: 1;
 }
 
 .anatomy-info-icon {
-  width: 48px;
-  height: 48px;
+  width: 52px;
+  height: 52px;
   background: var(--accent-dim);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-lg);
   display: flex;
   align-items: center;
   justify-content: center;
   color: var(--accent);
+  box-shadow: 0 0 20px var(--accent-glow);
+  transition: transform 0.4s var(--ease-spring), box-shadow 0.4s;
+}
+
+.anatomy-info:hover .anatomy-info-icon {
+  transform: scale(1.1) rotate(-5deg);
+  box-shadow: 0 0 30px var(--accent-glow);
 }
 
 .anatomy-info-title {
@@ -3241,38 +3270,70 @@ ul { list-style: none; }
 .anatomy-part-item {
   display: flex;
   align-items: center;
-  gap: 10px;
-  font-size: 0.88rem;
+  gap: 12px;
+  font-size: 0.9rem;
   color: var(--text-secondary);
-  padding: 8px 10px;
-  border-radius: var(--radius-md);
-  transition: background 0.2s, color 0.2s;
+  padding: 10px 14px;
+  border-radius: var(--radius-lg);
+  transition: all 0.3s var(--ease-spring);
   cursor: default;
+  border: 1px solid transparent;
+  position: relative;
+  overflow: hidden;
+}
+
+.anatomy-part-item::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, var(--accent-glow), transparent);
+  opacity: 0;
+  transition: opacity 0.3s;
 }
 
 .anatomy-part-item:hover {
   background: var(--bg-elevated);
   color: var(--text-primary);
+  border-color: var(--border-subtle);
+  transform: translateX(4px);
+}
+
+.anatomy-part-item:hover::before {
+  opacity: 0.05;
+  animation: partSweep 0.6s ease-out;
+}
+
+@keyframes partSweep {
+  0% { opacity: 0; transform: translateX(-100%); }
+  100% { opacity: 0.05; transform: translateX(100%); }
 }
 
 .anatomy-part-indicator {
-  width: 22px;
-  height: 22px;
+  width: 26px;
+  height: 26px;
   border-radius: 50%;
   flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 700;
-  transition: all 0.3s var(--ease-spring);
+  transition: all 0.4s var(--ease-spring);
+  position: relative;
+  z-index: 1;
 }
 
 .anatomy-part-replaced .anatomy-part-indicator {
-  background: var(--color-green);
+  background: linear-gradient(135deg, var(--color-green), #2d8a4e);
   color: white;
-  box-shadow: 0 2px 8px rgba(63, 185, 80, 0.4);
+  box-shadow: 0 3px 12px rgba(63, 185, 80, 0.5), 0 0 20px rgba(63, 185, 80, 0.2);
   transform: scale(1);
+  animation: indicatorPulse 3s ease-in-out infinite;
+}
+
+@keyframes indicatorPulse {
+  0%, 100% { box-shadow: 0 3px 12px rgba(63, 185, 80, 0.5), 0 0 20px rgba(63, 185, 80, 0.2); }
+  50% { box-shadow: 0 3px 12px rgba(63, 185, 80, 0.5), 0 0 30px rgba(63, 185, 80, 0.4); }
 }
 
 .anatomy-part-replaced .anatomy-part-indicator::before {
@@ -3282,17 +3343,18 @@ ul { list-style: none; }
 .anatomy-part-checked .anatomy-part-indicator {
   background: var(--accent-dim);
   color: var(--accent);
-  border: 1px solid var(--accent);
+  border: 2px solid var(--accent);
   transform: scale(0.9);
+  box-shadow: 0 0 15px var(--accent-glow);
 }
 
 .anatomy-part-checked .anatomy-part-indicator::before {
   content: '✓';
-  font-size: 10px;
+  font-size: 11px;
 }
 
 .anatomy-part-item:hover .anatomy-part-indicator {
-  transform: scale(1.1);
+  transform: scale(1.15) rotate(10deg);
 }
 
 .anatomy-part-replaced {
@@ -3336,17 +3398,46 @@ ul { list-style: none; }
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-lg);
   padding: var(--space-md);
+  transition: all 0.4s var(--ease-spring);
+  position: relative;
+  overflow: hidden;
+}
+
+.anatomy-trust-badge::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(63,185,80,0.08), transparent);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.anatomy-trust-badge:hover {
+  border-color: var(--color-green);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 20px rgba(63,185,80,0.2);
+}
+
+.anatomy-trust-badge:hover::before {
+  opacity: 1;
 }
 
 .anatomy-trust-icon {
-  width: 36px;
-  height: 36px;
-  background: var(--color-green);
-  border-radius: var(--radius-sm);
+  width: 40px;
+  height: 40px;
+  background: linear-gradient(135deg, var(--color-green), #2d8a4e);
+  border-radius: var(--radius-md);
   display: flex;
   align-items: center;
   justify-content: center;
   color: white;
+  box-shadow: 0 0 20px rgba(63,185,80,0.4);
+  transition: transform 0.4s var(--ease-spring);
+  flex-shrink: 0;
+}
+
+.anatomy-trust-badge:hover .anatomy-trust-icon {
+  transform: scale(1.1) rotate(-5deg);
 }
 
 .anatomy-trust-text {
@@ -3358,6 +3449,7 @@ ul { list-style: none; }
 .anatomy-trust-text strong {
   font-size: 0.9rem;
   color: var(--text-primary);
+  font-weight: 700;
 }
 
 .anatomy-trust-text span {
@@ -3510,34 +3602,57 @@ ul { list-style: none; }
   background: var(--bg-elevated);
   border-radius: var(--radius-lg);
   border: 1px solid var(--border-subtle);
+  transition: box-shadow 0.3s, border-color 0.3s;
+}
+
+.anatomy-stats:hover {
+  box-shadow: 0 0 30px var(--accent-glow);
+  border-color: var(--accent);
 }
 
 .anatomy-stat {
   text-align: center;
+  position: relative;
+  padding: var(--space-sm);
+  border-radius: var(--radius-md);
+  transition: transform 0.3s var(--ease-spring);
+}
+
+.anatomy-stat:hover {
+  transform: translateY(-4px);
 }
 
 .anatomy-stat-value {
   display: block;
-  font-size: 1.4rem;
+  font-size: 1.5rem;
   font-weight: 700;
   font-family: var(--font-display);
   color: var(--accent);
   line-height: 1.2;
+  transition: color 0.3s;
+}
+
+.anatomy-stat:hover .anatomy-stat-value {
+  color: var(--text-primary);
 }
 
 .anatomy-stat-label {
   font-size: 0.7rem;
   color: var(--text-muted);
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.06em;
+  margin-top: 4px;
 }
 
 /* Enhanced steps with details */
 .anatomy-steps-list li {
-  padding: 12px 0 12px 36px;
+  padding: 14px 12px 14px 44px;
   position: relative;
   border-bottom: 1px solid var(--border-subtle);
-  transition: background 0.2s;
+  transition: all 0.35s var(--ease-spring);
+  border-radius: var(--radius-md);
+  margin: 0 -4px;
+  cursor: pointer;
 }
 
 .anatomy-steps-list li:last-child {
@@ -3547,39 +3662,54 @@ ul { list-style: none; }
 .anatomy-steps-list li:hover {
   background: var(--accent-dim);
   margin: 0 -12px;
-  padding-left: 48px;
+  padding-left: 56px;
   border-radius: var(--radius-md);
+  transform: translateX(6px);
+  box-shadow: 0 4px 16px rgba(79,142,247,0.15);
 }
 
 .anatomy-step-num {
   position: absolute;
-  left: 0;
-  top: 14px;
-  font-size: 0.65rem;
+  left: 4px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 0.68rem;
   font-weight: 700;
   font-family: var(--font-display);
-  color: var(--accent);
-  background: var(--accent-dim);
-  padding: 2px 6px;
-  border-radius: 4px;
+  color: var(--bg-primary);
+  background: linear-gradient(135deg, var(--accent), #3a7bd5);
+  padding: 4px 8px;
+  border-radius: 6px;
   letter-spacing: 0.03em;
+  box-shadow: 0 2px 8px var(--accent-glow);
+  transition: all 0.3s var(--ease-spring);
+}
+
+.anatomy-steps-list li:hover .anatomy-step-num {
+  transform: translateY(-50%) scale(1.15) rotate(-8deg);
+  box-shadow: 0 4px 16px var(--accent-glow);
 }
 
 .anatomy-step-detail {
   display: block;
-  font-size: 0.78rem;
+  font-size: 0.82rem;
   color: var(--text-muted);
-  margin-top: 6px;
-  line-height: 1.5;
+  margin-top: 10px;
+  line-height: 1.6;
   opacity: 0;
   max-height: 0;
   overflow: hidden;
-  transition: opacity 0.3s, max-height 0.4s var(--ease-spring);
+  transition: all 0.4s var(--ease-spring);
+  padding: 8px 12px;
+  background: rgba(0,0,0,0.2);
+  border-radius: var(--radius-md);
+  border-left: 3px solid var(--accent);
 }
 
 .anatomy-steps-list li:hover .anatomy-step-detail {
   opacity: 1;
-  max-height: 80px;
+  max-height: 100px;
+  transform: translateY(0);
 }
 
 /* Animated layer enhancements */

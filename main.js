@@ -4481,32 +4481,83 @@
     const statusLog = document.getElementById('lrStatusLog');
     const totalTime = document.getElementById('lrTotalTime');
 
-    // Steps
+    // Steps (6-stage repair journey)
     const steps = [
       document.getElementById('lrStep1'),
       document.getElementById('lrStep2'),
       document.getElementById('lrStep3'),
       document.getElementById('lrStep4'),
-      document.getElementById('lrStep5')
+      document.getElementById('lrStep5'),
+      document.getElementById('lrStep6')
+    ];
+
+    // Step detail descriptions shown below timeline labels
+    const stepDetails = [
+      '"Hey Samuel, iPhone 14 screen cracked on the corner"',
+      'Full diagnostic: LCD, digitizer, face ID, battery',
+      '$189 parts + labor, 1-year warranty, OEM display',
+      'Approved via text — repair confirmed, started',
+      'Heatgun at 70°C, pry tool, spudger, static bracelet',
+      'All tests green — touch, True Tone, face ID'
     ];
 
     // Status messages for each step
     const statusMessages = [
       ['Text received — "iPhone 14 screen cracked"'],
-      ['Diagnosis: cracked LCD, needs new screen assembly'],
-      ['Quote approved: $189 — starting repair now'],
-      ['Screen removed, installing new display...', 'Display connected, testing...'],
-      ['All tests passed! Device ready for pickup.']
+      ['Diagnosis: cracked LCD, backlight bleeding visible'],
+      ['Quote sent: $189 parts + labor', 'Answered questions about OEM vs aftermarket'],
+      ['Quote approved — repair confirmed'],
+      ['Screen removed, adhesive cleared', 'New display seated, connectors secured', 'Running multi-touch and True Tone enrollment...'],
+      ['All tests passed ✓', 'Device ready for pickup — SMS sent']
     ];
 
     let currentStep = -1;
     let animationRunning = false;
+
+    // Show step detail when step activates
+    function showStepDetail(stepIndex) {
+      const detailEl = document.getElementById('lrStep' + (stepIndex + 1) + 'Detail');
+      if (detailEl && stepDetails[stepIndex]) {
+        detailEl.textContent = stepDetails[stepIndex];
+        detailEl.style.maxHeight = '60px';
+        detailEl.style.opacity = '1';
+      }
+    }
+
+    // Reset step details
+    function resetStepDetails() {
+      for (let i = 1; i <= 6; i++) {
+        const d = document.getElementById('lrStep' + i + 'Detail');
+        if (d) { d.textContent = ''; d.style.maxHeight = '0'; d.style.opacity = '0'; }
+      }
+    }
+
+    // Create sparkle particles
+    function spawnParticles() {
+      const container = document.getElementById('lrParticles');
+      if (!container) return;
+      for (let i = 0; i < 12; i++) {
+        const p = document.createElement('div');
+        p.className = 'lr-particle';
+        p.style.left = (30 + Math.random() * 40) + '%';
+        p.style.top = (20 + Math.random() * 60) + '%';
+        p.style.background = i % 2 === 0 ? 'var(--accent)' : 'var(--color-green)';
+        container.appendChild(p);
+        setTimeout(() => {
+          p.style.transition = 'all ' + (0.8 + Math.random() * 0.6) + 's ease-out';
+          p.style.opacity = '0.8';
+          p.style.transform = 'translate(' + ((Math.random() - 0.5) * 80) + 'px, ' + ((Math.random() - 0.5) * 80) + 'px) scale(0)';
+        }, 50 + i * 60);
+        setTimeout(() => p.remove(), 2000);
+      }
+    }
 
     // Intersection observer for scroll-triggered animation
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach(entry => {
           if (entry.isIntersecting && !animationRunning) {
+            resetStepDetails();
             startRepairAnimation();
           }
         });
@@ -4556,8 +4607,8 @@
       // Add active class to device
       device.classList.add('repairing');
 
-      // Step timing (in ms)
-      const stepDurations = [800, 1500, 1200, 2000, 1500];
+      // Step timing (in ms) — 6 steps now
+      const stepDurations = [900, 1600, 1400, 1000, 2200, 1800];
       
       let elapsed = 0;
 
@@ -4578,6 +4629,9 @@
         });
         step.classList.add('active');
 
+        // Show step detail
+        showStepDetail(stepIndex);
+
         // Update timeline progress
         const progressPercent = ((stepIndex + 1) / steps.length) * 100;
         timelineProgress.style.width = progressPercent + '%';
@@ -4587,11 +4641,19 @@
 
         // Stage-specific effects
         if (stepIndex === 3) {
-          // In repair - crack fades out
+          // Approved — device glow starts
+          device.classList.add('repairing');
+        }
+        if (stepIndex === 4) {
+          // In repair — crack fades out
           crack.classList.add('repaired');
           repaired.classList.add('show');
+        }
+        if (stepIndex === 5) {
+          // Complete — spawn particles
           device.classList.remove('repairing');
           device.classList.add('done');
+          spawnParticles();
         }
 
         // Schedule next step
@@ -4609,7 +4671,14 @@
         setTimeout(() => {
           const item = document.createElement('div');
           item.className = 'lr-status-item';
-          item.textContent = msg;
+          const icon = document.createElement('span');
+          icon.className = 'lr-status-icon';
+          icon.textContent = '→';
+          const text = document.createElement('span');
+          text.className = 'lr-status-text';
+          text.textContent = msg;
+          item.appendChild(icon);
+          item.appendChild(text);
           statusLog.appendChild(item);
           
           // Auto-scroll to latest
@@ -4661,33 +4730,84 @@
     const statusLog = document.getElementById('lrStatusLog');
     const totalTime = document.getElementById('lrTotalTime');
 
-    // Steps
+    // Steps (6-stage repair journey)
     const steps = [
       document.getElementById('lrStep1'),
       document.getElementById('lrStep2'),
       document.getElementById('lrStep3'),
       document.getElementById('lrStep4'),
-      document.getElementById('lrStep5')
+      document.getElementById('lrStep5'),
+      document.getElementById('lrStep6')
+    ];
+
+    // Step detail descriptions shown below timeline labels
+    const stepDetails = [
+      '"Hey Samuel, iPhone 14 screen cracked on the corner"',
+      'Full diagnostic: LCD, digitizer, face ID, battery',
+      '$189 parts + labor, 1-year warranty, OEM display',
+      'Approved via text — repair confirmed, started',
+      'Heatgun at 70°C, pry tool, spudger, static bracelet',
+      'All tests green — touch, True Tone, face ID'
     ];
 
     // Status messages for each step
     const statusMessages = [
       ['Text received — "iPhone 14 screen cracked"'],
-      ['Diagnosis: cracked LCD, needs new screen assembly'],
-      ['Quote approved: $189 — starting repair now'],
-      ['Screen removed, installing new display...', 'Display connected, testing...'],
-      ['All tests passed! Device ready for pickup.']
+      ['Diagnosis: cracked LCD, backlight bleeding visible'],
+      ['Quote sent: $189 parts + labor', 'Answered questions about OEM vs aftermarket'],
+      ['Quote approved — repair confirmed'],
+      ['Screen removed, adhesive cleared', 'New display seated, connectors secured', 'Running multi-touch and True Tone enrollment...'],
+      ['All tests passed ✓', 'Device ready for pickup — SMS sent']
     ];
 
     let currentStep = -1;
     let animationRunning = false;
     let counterInterval = null;
 
+    // Show step detail when step activates
+    function showStepDetail(stepIndex) {
+      const detailEl = document.getElementById('lrStep' + (stepIndex + 1) + 'Detail');
+      if (detailEl && stepDetails[stepIndex]) {
+        detailEl.textContent = stepDetails[stepIndex];
+        detailEl.style.maxHeight = '60px';
+        detailEl.style.opacity = '1';
+      }
+    }
+
+    // Reset step details
+    function resetStepDetails() {
+      for (let i = 1; i <= 6; i++) {
+        const d = document.getElementById('lrStep' + i + 'Detail');
+        if (d) { d.textContent = ''; d.style.maxHeight = '0'; d.style.opacity = '0'; }
+      }
+    }
+
+    // Create sparkle particles
+    function spawnParticles() {
+      const container = document.getElementById('lrParticles');
+      if (!container) return;
+      for (let i = 0; i < 12; i++) {
+        const p = document.createElement('div');
+        p.className = 'lr-particle';
+        p.style.left = (30 + Math.random() * 40) + '%';
+        p.style.top = (20 + Math.random() * 60) + '%';
+        p.style.background = i % 2 === 0 ? 'var(--accent)' : 'var(--color-green)';
+        container.appendChild(p);
+        setTimeout(() => {
+          p.style.transition = 'all ' + (0.8 + Math.random() * 0.6) + 's ease-out';
+          p.style.opacity = '0.8';
+          p.style.transform = 'translate(' + ((Math.random() - 0.5) * 80) + 'px, ' + ((Math.random() - 0.5) * 80) + 'px) scale(0)';
+        }, 50 + i * 60);
+        setTimeout(() => p.remove(), 2000);
+      }
+    }
+
     // Intersection observer for scroll-triggered animation
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach(entry => {
           if (entry.isIntersecting && !animationRunning) {
+            resetStepDetails();
             startRepairAnimation();
           }
         });
@@ -4711,6 +4831,9 @@
       repaired.classList.remove('show');
       device.classList.remove('done', 'repairing');
       totalTime.textContent = '58';
+      resetStepDetails();
+      const particles = document.querySelectorAll('.lr-particle');
+      particles.forEach(p => p.remove());
       
       if (counterInterval) clearInterval(counterInterval);
       
@@ -4764,8 +4887,8 @@
       // Add active class to device
       device.classList.add('repairing');
 
-      // Step timing (in ms)
-      const stepDurations = [800, 1500, 1200, 2000, 1500];
+      // Step timing (in ms) — 6 steps
+      const stepDurations = [900, 1600, 1400, 1000, 2200, 1800];
       
       function runStep(stepIndex) {
         if (stepIndex >= steps.length) {
@@ -4783,6 +4906,9 @@
         });
         step.classList.add('active');
 
+        // Show step detail
+        showStepDetail(stepIndex);
+
         // Update timeline progress
         const progressPercent = ((stepIndex + 1) / steps.length) * 100;
         timelineProgress.style.width = progressPercent + '%';
@@ -4792,10 +4918,16 @@
 
         // Stage-specific effects
         if (stepIndex === 3) {
+          device.classList.add('repairing');
+        }
+        if (stepIndex === 4) {
           crack.classList.add('repaired');
           repaired.classList.add('show');
+        }
+        if (stepIndex === 5) {
           device.classList.remove('repairing');
           device.classList.add('done');
+          spawnParticles();
         }
 
         // Schedule next step
@@ -4813,7 +4945,14 @@
         setTimeout(() => {
           const item = document.createElement('div');
           item.className = 'lr-status-item';
-          item.textContent = msg;
+          const icon = document.createElement('span');
+          icon.className = 'lr-status-icon';
+          icon.textContent = '→';
+          const text = document.createElement('span');
+          text.className = 'lr-status-text';
+          text.textContent = msg;
+          item.appendChild(icon);
+          item.appendChild(text);
           statusLog.appendChild(item);
           statusLog.scrollTop = statusLog.scrollHeight;
         }, index * 400);
@@ -4930,25 +5069,76 @@
       document.getElementById('lrStep2'),
       document.getElementById('lrStep3'),
       document.getElementById('lrStep4'),
-      document.getElementById('lrStep5')
+      document.getElementById('lrStep5'),
+      document.getElementById('lrStep6')
+    ];
+
+    // Step detail descriptions shown below timeline labels
+    const stepDetails = [
+      '"Hey Samuel, iPhone 14 screen cracked on the corner"',
+      'Full diagnostic: LCD, digitizer, face ID, battery',
+      '$189 parts + labor, 1-year warranty, OEM display',
+      'Approved via text — repair confirmed, started',
+      'Heatgun at 70°C, pry tool, spudger, static bracelet',
+      'All tests green — touch, True Tone, face ID'
     ];
 
     const statusMessages = [
       ['Text received — "iPhone 14 screen cracked"'],
-      ['Diagnosis: cracked LCD, needs new screen assembly'],
-      ['Quote approved: $189 — starting repair now'],
-      ['Screen removed, installing new display...', 'Display connected, testing...'],
-      ['All tests passed! Device ready for pickup.']
+      ['Diagnosis: cracked LCD, backlight bleeding visible'],
+      ['Quote sent: $189 parts + labor', 'Answered questions about OEM vs aftermarket'],
+      ['Quote approved — repair confirmed'],
+      ['Screen removed, adhesive cleared', 'New display seated, connectors secured', 'Running multi-touch and True Tone enrollment...'],
+      ['All tests passed ✓', 'Device ready for pickup — SMS sent']
     ];
 
     let currentStep = -1;
     let animationRunning = false;
     let counterInterval = null;
 
+    // Show step detail when step activates
+    function showStepDetail(stepIndex) {
+      const detailEl = document.getElementById('lrStep' + (stepIndex + 1) + 'Detail');
+      if (detailEl && stepDetails[stepIndex]) {
+        detailEl.textContent = stepDetails[stepIndex];
+        detailEl.style.maxHeight = '60px';
+        detailEl.style.opacity = '1';
+      }
+    }
+
+    // Reset step details
+    function resetStepDetails() {
+      for (let i = 1; i <= 6; i++) {
+        const d = document.getElementById('lrStep' + i + 'Detail');
+        if (d) { d.textContent = ''; d.style.maxHeight = '0'; d.style.opacity = '0'; }
+      }
+    }
+
+    // Create sparkle particles
+    function spawnParticles() {
+      const container = document.getElementById('lrParticles');
+      if (!container) return;
+      for (let i = 0; i < 12; i++) {
+        const p = document.createElement('div');
+        p.className = 'lr-particle';
+        p.style.left = (30 + Math.random() * 40) + '%';
+        p.style.top = (20 + Math.random() * 60) + '%';
+        p.style.background = i % 2 === 0 ? 'var(--accent)' : 'var(--color-green)';
+        container.appendChild(p);
+        setTimeout(() => {
+          p.style.transition = 'all ' + (0.8 + Math.random() * 0.6) + 's ease-out';
+          p.style.opacity = '0.8';
+          p.style.transform = 'translate(' + ((Math.random() - 0.5) * 80) + 'px, ' + ((Math.random() - 0.5) * 80) + 'px) scale(0)';
+        }, 50 + i * 60);
+        setTimeout(() => p.remove(), 2000);
+      }
+    }
+
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach(entry => {
           if (entry.isIntersecting && !animationRunning) {
+            resetStepDetails();
             startRepairAnimation();
           }
         });
@@ -4969,6 +5159,9 @@
       device.classList.remove('done', 'repairing', 'celebrating');
       totalTime.textContent = '58';
       if (counterInterval) clearInterval(counterInterval);
+      resetStepDetails();
+      const particles = document.querySelectorAll('.lr-particle');
+      particles.forEach(p => p.remove());
       setTimeout(startRepairAnimation, 300);
     }
 
@@ -5006,9 +5199,46 @@
       animationRunning = true;
       device.classList.add('repairing');
 
-      const stepDurations = [800, 1500, 1200, 2000, 1500];
+      const stepDurations = [900, 1600, 1400, 1000, 2200, 1800];
 
       function runStep(stepIndex) {
+        if (stepIndex >= steps.length) {
+          finishAnimation();
+          return;
+        }
+
+        const step = steps[stepIndex];
+        currentStep = stepIndex;
+
+        steps.forEach((s, i) => {
+          s.classList.remove('active', 'done');
+          if (i < stepIndex) s.classList.add('done');
+        });
+        step.classList.add('active');
+
+        // Show step detail
+        showStepDetail(stepIndex);
+
+        timelineProgress.style.width = ((stepIndex + 1) / steps.length) * 100 + '%';
+        addStatusMessages(statusMessages[stepIndex]);
+
+        if (stepIndex === 3) {
+          device.classList.add('repairing');
+        }
+        if (stepIndex === 4) {
+          crack.classList.add('repaired');
+          repaired.classList.add('show');
+        }
+        if (stepIndex === 5) {
+          device.classList.remove('repairing');
+          device.classList.add('done');
+          spawnParticles();
+        }
+
+        setTimeout(() => runStep(stepIndex + 1), stepDurations[stepIndex]);
+      }
+
+      setTimeout(() => runStep(0), 500);
         if (stepIndex >= steps.length) {
           finishAnimation();
           return;
@@ -5044,7 +5274,14 @@
         setTimeout(() => {
           const item = document.createElement('div');
           item.className = 'lr-status-item';
-          item.textContent = msg;
+          const icon = document.createElement('span');
+          icon.className = 'lr-status-icon';
+          icon.textContent = '→';
+          const text = document.createElement('span');
+          text.className = 'lr-status-text';
+          text.textContent = msg;
+          item.appendChild(icon);
+          item.appendChild(text);
           statusLog.appendChild(item);
           statusLog.scrollTop = statusLog.scrollHeight;
         }, index * 400);
@@ -6424,6 +6661,55 @@
           'Component-by-component testing and repair'
         ],
         highlight: ['logic', 'battery', 'display']
+      },
+      laptop: {
+        title: 'Laptop Repair',
+        subtitle: 'MacBook / Windows ultrabook keyboard + trackpad',
+        icon: '<svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="13" rx="2"/><path d="M1 17h22"/></svg>',
+        parts: [
+          { cls: 'anatomy-part-replaced', text: 'Keyboard assembly' },
+          { cls: 'anatomy-part-replaced', text: 'Top case / palm rest' },
+          { cls: 'anatomy-part-checked', text: 'Trackpad calibration' },
+          { cls: 'anatomy-part-checked', text: 'Keyboard flex connector' },
+          { cls: 'anatomy-part-checked', text: 'Battery health check' }
+        ],
+        steps: [
+          'Remove bottom case screws and carefully separate',
+          'Disconnect battery and trackpad flex cables',
+          'Remove keyboard mounting screws and top case clips',
+          'Install new keyboard/top case as a single unit',
+          'Reassemble, reset SMC, test every key and gesture'
+        ],
+        highlight: ['frame', 'battery'],
+        complexity: 'medium',
+        time: '60–90',
+        price: '$129',
+        warranty: '90'
+      },
+      tablet: {
+        title: 'Tablet Repair',
+        subtitle: 'iPad / Galaxy Tab screen replacement',
+        icon: '<svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"/><circle cx="12" cy="18" r="1"/></svg>',
+        parts: [
+          { cls: 'anatomy-part-replaced', text: 'Front glass + digitizer' },
+          { cls: 'anatomy-part-replaced', text: 'LCD display panel' },
+          { cls: 'anatomy-part-checked', text: 'Adhesive border reseat' },
+          { cls: 'anatomy-part-checked', text: 'Ambient light sensor' },
+          { cls: 'anatomy-part-checked', text: 'Front camera test' }
+        ],
+        steps: [
+          'Heat perimeter of broken glass to soften old adhesive',
+          'Use thin guitar pick to slice through adhesive evenly',
+          'Lift glass carefully without cracking the LCD underneath',
+          'Disconnect digitizer and display from main board',
+          'Bond new glass with precision adhesive, cure under UV',
+          'Test touch response, brightness, and True Tone matching'
+        ],
+        highlight: ['glass', 'display'],
+        complexity: 'medium',
+        time: '45–90',
+        price: '$99',
+        warranty: '90'
       }
     };
 
@@ -6431,10 +6717,27 @@
       var data = repairData[repairType];
       if (!data) return;
 
-      // Update
+      // Update title and subtitle
       anatomyInfoTitle.textContent = data.title;
       anatomyInfoSubtitle.textContent = data.subtitle;
       anatomyInfoIcon.innerHTML = data.icon;
+
+      // Update stats if present
+      var statTime = document.getElementById('anatomyStatTime');
+      var statPrice = document.getElementById('anatomyStatPrice');
+      var statWarranty = document.getElementById('anatomyStatWarranty');
+      var complexityFill = document.getElementById('anatomyComplexityFill');
+      var complexityValue = document.getElementById('anatomyComplexityValue');
+      if (statTime && data.time) statTime.textContent = data.time;
+      if (statPrice && data.price) statPrice.textContent = data.price;
+      if (statWarranty && data.warranty) statWarranty.textContent = data.warranty;
+      if (complexityFill && data.complexity) {
+        var pct = data.complexity === 'low' ? 25 : data.complexity === 'medium' ? 55 : 80;
+        complexityFill.style.width = pct + '%';
+      }
+      if (complexityValue && data.complexity) {
+        complexityValue.textContent = data.complexity.charAt(0).toUpperCase() + data.complexity.slice(1);
+      }
 
       // Set data attribute for layer highlighting
       anatomyView.setAttribute('data-repair', repairType);
@@ -6449,29 +6752,28 @@
         anatomyPartsList.appendChild(li);
       });
 
-      // Update steps
+      // Update steps with detailed sub-steps
       anatomyStepsList.innerHTML = '';
-      data.steps.forEach(function(step) {
+      data.steps.forEach(function(step, idx) {
         var li = document.createElement('li');
-        li.textContent = step;
+        var num = String(idx + 1).padStart(2, '0');
+        // step can be string or {title, detail}
+        if (typeof step === 'string') {
+          li.innerHTML = '<span class="anatomy-step-num">' + num + '</span>' + step;
+        } else {
+          li.innerHTML = '<span class="anatomy-step-num">' + num + '</span>' + step.title +
+            '<div class="anatomy-step-detail">' + step.detail + '</div>';
+        }
         anatomyStepsList.appendChild(li);
       });
 
-
-      // Highlight layers
+      // Highlight/dim layers
       anatomyLayers.forEach(function(layer) {
         var layerName = layer.getAttribute('data-layer');
-        if (data.highlight.indexOf(layerName) !== -1) {
-          layer.style.opacity = '1';
-          layer.style.filter = 'none';
-        } else {
-          if (!prefersReducedMotion) {
-            layer.style.opacity = '0.3';
-            layer.style.filter = 'grayscale(1)';
-          }
-        }
+        var isHighlighted = data.highlight.indexOf(layerName) !== -1;
+        layer.classList.toggle('highlighted', isHighlighted);
+        layer.classList.toggle('dimmed', !isHighlighted && !prefersReducedMotion);
       });
-
 
       // Show annotations for highlighted layers
       anatomyAnnotations.forEach(function(anno) {
@@ -6498,7 +6800,6 @@
         updateAnatomy(repairType);
       });
     });
-
 
     // Initialize with first tab
     updateAnatomy('screen');

@@ -1316,7 +1316,7 @@ a{color:inherit;text-decoration:none}
         <p class="section-sub" data-text-reveal>No mystery, no jargon. Pick a repair and watch the layers come apart — this is what I actually do under the glass.</p>
       </div>
 
-      <!-- Device type selector -->
+      <!-- Device type selector tabs - Premium pill navigation -->
       <div class="anatomy-selector" data-animate>
         <div class="anatomy-selector-track" role="tablist" aria-label="Select a repair type">
           <button class="anatomy-tab active" role="tab" aria-selected="true" data-repair="screen" id="anatomyTabScreen" aria-controls="anatomyView">
@@ -1325,7 +1325,8 @@ a{color:inherit;text-decoration:none}
                 <rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12" y2="18.01"/>
               </svg>
             </span>
-            <span class="anatomy-tab-label">Screen Repair</span>
+            <span class="anatomy-tab-label">Screen</span>
+            <span class="anatomy-tab-time" aria-hidden="true">45–60 min</span>
           </button>
           <button class="anatomy-tab" role="tab" aria-selected="false" data-repair="battery" id="anatomyTabBattery" aria-controls="anatomyView">
             <span class="anatomy-tab-icon" aria-hidden="true">
@@ -1333,7 +1334,8 @@ a{color:inherit;text-decoration:none}
                 <rect x="6" y="7" width="12" height="10" rx="1"/><line x1="14" y1="10" x2="14" y2="14"/><line x1="12" y1="12" x2="12" y2="12.01"/><rect x="9" y="4" width="6" height="3" rx="1"/>
               </svg>
             </span>
-            <span class="anatomy-tab-label">Battery Swap</span>
+            <span class="anatomy-tab-label">Battery</span>
+            <span class="anatomy-tab-time" aria-hidden="true">30–45 min</span>
           </button>
           <button class="anatomy-tab" role="tab" aria-selected="false" data-repair="charging" id="anatomyTabCharging" aria-controls="anatomyView">
             <span class="anatomy-tab-icon" aria-hidden="true">
@@ -1341,7 +1343,8 @@ a{color:inherit;text-decoration:none}
                 <path d="M12 21v-6M8 18h8M13 3L8 12h4l-1 5 5-9h-4l1-5"/>
               </svg>
             </span>
-            <span class="anatomy-tab-label">Charging Port</span>
+            <span class="anatomy-tab-label">Charging</span>
+            <span class="anatomy-tab-time" aria-hidden="true">40–60 min</span>
           </button>
           <button class="anatomy-tab" role="tab" aria-selected="false" data-repair="water" id="anatomyTabWater" aria-controls="anatomyView">
             <span class="anatomy-tab-icon" aria-hidden="true">
@@ -1349,8 +1352,35 @@ a{color:inherit;text-decoration:none}
                 <path d="M12 2C12 2 5 10 5 14a7 7 0 0014 0c0-4-7-12-7-12z"/>
               </svg>
             </span>
-            <span class="anatomy-tab-label">Water Damage</span>
+            <span class="anatomy-tab-label">Water</span>
+            <span class="anatomy-tab-time" aria-hidden="true">2–4 hrs</span>
           </button>
+          <button class="anatomy-tab" role="tab" aria-selected="false" data-repair="laptop" id="anatomyTabLaptop" aria-controls="anatomyView">
+            <span class="anatomy-tab-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="2" y="4" width="20" height="13" rx="2"/><path d="M1 17h22"/>
+              </svg>
+            </span>
+            <span class="anatomy-tab-label">Laptop</span>
+            <span class="anatomy-tab-time" aria-hidden="true">1–3 hrs</span>
+          </button>
+          <button class="anatomy-tab" role="tab" aria-selected="false" data-repair="tablet" id="anatomyTabTablet" aria-controls="anatomyView">
+            <span class="anatomy-tab-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="4" y="2" width="16" height="20" rx="2"/><circle cx="12" cy="18" r="1"/>
+              </svg>
+            </span>
+            <span class="anatomy-tab-label">Tablet</span>
+            <span class="anatomy-tab-time" aria-hidden="true">45–90 min</span>
+          </button>
+        </div>
+        <!-- Complexity meter -->
+        <div class="anatomy-complexity" id="anatomyComplexity" aria-label="Repair complexity">
+          <span class="anatomy-complexity-label">Complexity</span>
+          <div class="anatomy-complexity-bar">
+            <div class="anatomy-complexity-fill" id="anatomyComplexityFill"></div>
+          </div>
+          <span class="anatomy-complexity-value" id="anatomyComplexityValue">Medium</span>
         </div>
       </div>
 
@@ -1364,7 +1394,13 @@ a{color:inherit;text-decoration:none}
             <!-- Layer: Back glass -->
             <div class="anatomy-layer" data-layer="back" data-anatomy-order="6">
               <div class="anatomy-layer-visual">
-                <div class="anatomy-layer-part anatomy-part-back"></div>
+                <div class="anatomy-layer-part anatomy-part-back">
+                  <div class="anatomy-camera-bump">
+                    <div class="anatomy-camera-lens"></div>
+                    <div class="anatomy-camera-lens-small"></div>
+                    <div class="anatomy-camera-flash"></div>
+                  </div>
+                </div>
               </div>
               <div class="anatomy-layer-connector" aria-hidden="true"></div>
             </div>
@@ -1391,6 +1427,12 @@ a{color:inherit;text-decoration:none}
                     <span class="anatomy-battery-icon" aria-hidden="true">⚡</span>
                     <span class="anatomy-battery-text">Li‑Ion Cell</span>
                   </div>
+                  <div class="anatomy-battery-cells" aria-hidden="true">
+                    <div class="anatomy-battery-cell"></div>
+                    <div class="anatomy-battery-cell"></div>
+                    <div class="anatomy-battery-cell"></div>
+                  </div>
+                  <div class="anatomy-battery-nipple"></div>
                 </div>
               </div>
               <div class="anatomy-layer-connector" aria-hidden="true"></div>
@@ -1414,7 +1456,26 @@ a{color:inherit;text-decoration:none}
               <div class="anatomy-layer-visual">
                 <div class="anatomy-layer-part anatomy-part-display">
                   <div class="anatomy-display-screen">
+                    <div class="anatomy-display-statusbar">
+                      <span class="anatomy-display-time">9:41</span>
+                      <div class="anatomy-display-icons">
+                        <svg width="8" height="6" viewBox="0 0 10 8" fill="white" opacity="0.6"><rect width="10" height="4" rx="1"/><rect y="5" width="6" height="3" rx="0.5" opacity="0.5"/></svg>
+                        <svg width="10" height="6" viewBox="0 0 12 8" fill="white" opacity="0.6"><path d="M1 1C1 1 3 0 6 0s5 1 5 1v5c0 0-2-1-5-1s-5 1-5 1V1z"/></svg>
+                        <svg width="14" height="8" viewBox="0 0 16 10" fill="white" opacity="0.6"><rect x="0" y="2" width="16" height="6" rx="1"/><rect x="0" y="3" width="16" height="4" rx="1" fill="currentColor" opacity="0.3"/></svg>
+                      </div>
+                    </div>
                     <div class="anatomy-display-pixelgrid" aria-hidden="true"></div>
+                    <div class="anatomy-display-apps" aria-hidden="true">
+                      <div class="anatomy-app-icon" style="background: linear-gradient(135deg,#34d399,#059669);" data-label="Messages">Msg</div>
+                      <div class="anatomy-app-icon" style="background: linear-gradient(135deg,#60a5fa,#2563eb);" data-label="Safari">🌐</div>
+                      <div class="anatomy-app-icon" style="background: linear-gradient(135deg,#f472b6,#db2777);" data-label="Photos">📷</div>
+                      <div class="anatomy-app-icon" style="background: linear-gradient(135deg,#fbbf24,#d97706);" data-label="Maps">🗺</div>
+                      <div class="anatomy-app-icon" style="background: linear-gradient(135deg,#a78bfa,#7c3aed);" data-label="Mail">✉</div>
+                      <div class="anatomy-app-icon" style="background: linear-gradient(135deg,#fb923c,#ea580c);" data-label="Music">🎵</div>
+                      <div class="anatomy-app-icon" style="background: linear-gradient(135deg,#38bdf8,#0284c7);" data-label="Weather">☀</div>
+                      <div class="anatomy-app-icon" style="background: linear-gradient(135deg,#e879f9,#a21caf);" data-label="Notes">📝</div>
+                      <div class="anatomy-app-icon" style="background: linear-gradient(135deg,#94a3b8,#475569);" data-label="Settings">⚙</div>
+                    </div>
                   </div>
                   <div class="anatomy-display-earpiece"></div>
                   <div class="anatomy-display-home"></div>
@@ -1496,6 +1557,22 @@ a{color:inherit;text-decoration:none}
             </div>
           </div>
 
+          <!-- Repair stats -->
+          <div class="anatomy-stats" id="anatomyStats">
+            <div class="anatomy-stat">
+              <span class="anatomy-stat-value" id="anatomyStatTime">45–60</span>
+              <span class="anatomy-stat-label">minutes</span>
+            </div>
+            <div class="anatomy-stat">
+              <span class="anatomy-stat-value" id="anatomyStatPrice">$89</span>
+              <span class="anatomy-stat-label">starting at</span>
+            </div>
+            <div class="anatomy-stat">
+              <span class="anatomy-stat-value" id="anatomyStatWarranty">90</span>
+              <span class="anatomy-stat-label">day warranty</span>
+            </div>
+          </div>
+
           <!-- What gets replaced -->
           <div class="anatomy-info-block">
             <h4 class="anatomy-info-block-title">
@@ -1533,11 +1610,31 @@ a{color:inherit;text-decoration:none}
               The process
             </h4>
             <ol class="anatomy-steps-list" id="anatomyStepsList">
-              <li>Heat and soften the adhesive seal</li>
-              <li>Carefully separate glass from the frame</li>
-              <li>Disconnect display cables from logic board</li>
-              <li>Install new display assembly</li>
-              <li>Reconnect, calibrate, and test everything</li>
+              <li>
+                <span class="anatomy-step-num">01</span>
+                Heat and soften the adhesive seal
+                <div class="anatomy-step-detail">iOpener or heat gun at 70°C loosens the factory adhesive without damaging the display</div>
+              </li>
+              <li>
+                <span class="anatomy-step-num">02</span>
+                Carefully separate glass from the frame
+                <div class="anatomy-step-detail">Thin pry tool slides between glass and frame, releasing each clip along the edges</div>
+              </li>
+              <li>
+                <span class="anatomy-step-num">03</span>
+                Disconnect display cables from logic board
+                <div class="anatomy-step-detail">Metal shield removed, three ZIF connectors released with plastic spudger</div>
+              </li>
+              <li>
+                <span class="anatomy-step-num">04</span>
+                Install new display assembly
+                <div class="anatomy-step-detail">OEM or OEM-quality replacement display seated, connectors secured, shield replaced</div>
+              </li>
+              <li>
+                <span class="anatomy-step-num">05</span>
+                Reconnect, calibrate, and test everything
+                <div class="anatomy-step-detail">Multi-touch test, True Tone re-enrollment, ambient light sensor calibration, drop test</div>
+              </li>
             </ol>
           </div>
 
@@ -1690,19 +1787,62 @@ a{color:inherit;text-decoration:none}
       <div class="live-repair-stage" id="liveRepairStage" role="img" aria-label="Animated repair journey showing iPhone screen replacement">
         <div class="lr-grid" aria-hidden="true"></div>
         <div class="lr-scanline" aria-hidden="true"></div>
+        <div class="lr-particles" id="lrParticles" aria-hidden="true"></div>
 
         <div class="lr-device-wrap">
           <div class="lr-device" id="lrDevice">
             <div class="lr-device-frame">
               <div class="lr-device-screen">
-                <div class="lr-screen-content">
-                  <div class="lr-screen-crack" id="lrScreenCrack"></div>
-                  <div class="lr-screen-repaired" id="lrScreenRepaired"></div>
+                <!-- Status bar -->
+                <div class="lr-screen-statusbar">
+                  <span class="lr-statusbar-time">9:41</span>
+                  <div class="lr-statusbar-icons">
+                    <div class="lr-statusbar-icon lr-statusbar-signal">
+                      <div class="lr-signal-bar"></div>
+                      <div class="lr-signal-bar"></div>
+                      <div class="lr-signal-bar"></div>
+                      <div class="lr-signal-bar"></div>
+                    </div>
+                    <div class="lr-statusbar-icon lr-statusbar-wifi">
+                      <div class="lr-wifi-arc">
+                        <div class="lr-wifi-dot"></div>
+                      </div>
+                    </div>
+                    <div class="lr-statusbar-icon lr-statusbar-battery">
+                      <div class="lr-battery-body">
+                        <div class="lr-battery-fill"></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <!-- Main content -->
+                <div class="lr-screen-main">
+                  <div class="lr-screen-content">
+                    <div class="lr-screen-crack" id="lrScreenCrack"></div>
+                    <div class="lr-screen-repaired" id="lrScreenRepaired">
+                    <div class="lr-repaired-check"></div>
+                    <div class="lr-repaired-text">Screen Replaced</div>
+                    <div class="lr-repaired-time">11:02 AM — Done</div>
+                  </div>
+                    <div class="lr-screen-ripple" id="lrScreenRipple"></div>
+                  </div>
                 </div>
               </div>
               <div class="lr-device-notch"></div>
             </div>
             <div class="lr-device-glow" aria-hidden="true"></div>
+            <div class="lr-tools" aria-hidden="true">
+              <div class="lr-tool lr-tool--screwdriver" id="lrToolScrewdriver">
+                <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5">
+                  <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
+                </svg>
+              </div>
+              <div class="lr-tool lr-tool--spudger" id="lrToolSpudger">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5">
+                  <path d="M4 20L20 4M8 16l4 4"/>
+                </svg>
+              </div>
+            </div>
           </div>
           <div class="lr-device-shadow" aria-hidden="true"></div>
         </div>
@@ -1712,29 +1852,46 @@ a{color:inherit;text-decoration:none}
             <div class="lr-timeline-progress" id="lrTimelineProgress"></div>
           </div>
           <div class="lr-step" data-lr-step="1" id="lrStep1">
+            <span class="lr-step-number">01</span>
             <div class="lr-step-dot"><div class="lr-step-dot-inner"></div><div class="lr-step-dot-ring"></div></div>
             <div class="lr-step-label">Text Received</div>
             <div class="lr-step-time">9:04 AM</div>
+            <div class="lr-step-detail" id="lrStep1Detail"></div>
           </div>
           <div class="lr-step" data-lr-step="2" id="lrStep2">
+            <span class="lr-step-number">02</span>
             <div class="lr-step-dot"><div class="lr-step-dot-inner"></div><div class="lr-step-dot-ring"></div></div>
             <div class="lr-step-label">Diagnosis</div>
             <div class="lr-step-time">9:41 AM</div>
+            <div class="lr-step-detail" id="lrStep2Detail"></div>
           </div>
           <div class="lr-step" data-lr-step="3" id="lrStep3">
+            <span class="lr-step-number">03</span>
+            <div class="lr-step-dot"><div class="lr-step-dot-inner"></div><div class="lr-step-dot-ring"></div></div>
+            <div class="lr-step-label">Quoted</div>
+            <div class="lr-step-time">9:52 AM</div>
+            <div class="lr-step-detail" id="lrStep3Detail"></div>
+          </div>
+          <div class="lr-step" data-lr-step="4" id="lrStep4">
+            <span class="lr-step-number">04</span>
             <div class="lr-step-dot"><div class="lr-step-dot-inner"></div><div class="lr-step-dot-ring"></div></div>
             <div class="lr-step-label">Approved</div>
             <div class="lr-step-time">9:58 AM</div>
+            <div class="lr-step-detail" id="lrStep4Detail"></div>
           </div>
-          <div class="lr-step" data-lr-step="4" id="lrStep4">
+          <div class="lr-step" data-lr-step="5" id="lrStep5">
+            <span class="lr-step-number">05</span>
             <div class="lr-step-dot"><div class="lr-step-dot-inner"></div><div class="lr-step-dot-ring"></div></div>
             <div class="lr-step-label">In Repair</div>
             <div class="lr-step-time">10:15 AM</div>
+            <div class="lr-step-detail" id="lrStep5Detail"></div>
           </div>
-          <div class="lr-step lr-step--done" data-lr-step="5" id="lrStep5">
+          <div class="lr-step lr-step--done" data-lr-step="6" id="lrStep6">
+            <span class="lr-step-number">06</span>
             <div class="lr-step-dot"><div class="lr-step-dot-inner"></div><div class="lr-step-dot-ring"></div></div>
             <div class="lr-step-label">Complete</div>
             <div class="lr-step-time">11:02 AM</div>
+            <div class="lr-step-detail" id="lrStep6Detail"></div>
           </div>
         </div>
 
@@ -1758,15 +1915,15 @@ a{color:inherit;text-decoration:none}
             </div>
             <div class="lr-summary-divider" aria-hidden="true"></div>
             <div class="lr-summary-stat">
-              <span class="lr-summary-value">5</span>
+              <span class="lr-summary-value">6</span>
               <span class="lr-summary-unit">steps</span>
               <span class="lr-summary-label">to complete</span>
             </div>
             <div class="lr-summary-divider" aria-hidden="true"></div>
             <div class="lr-summary-stat">
-              <span class="lr-summary-value">1</span>
-              <span class="lr-summary-unit">device</span>
-              <span class="lr-summary-label">back to you</span>
+              <span class="lr-summary-value">12</span>
+              <span class="lr-summary-unit">parts</span>
+              <span class="lr-summary-label">tested & checked</span>
             </div>
           </div>
         </div>

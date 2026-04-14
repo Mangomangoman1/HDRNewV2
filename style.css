@@ -12893,3 +12893,42 @@ kbd:active {
     0 30px 80px rgba(0, 0, 0, 0.2),
     0 0 30px var(--accent-glow);
 }
+
+/* Celebration animation when repair completes */
+.lr-device.celebrating {
+  animation: lrCelebrate 0.6s ease-out;
+}
+
+@keyframes lrCelebrate {
+  0% { transform: scale(1) rotate(0deg); }
+  30% { transform: scale(1.1) rotate(-3deg); }
+  50% { transform: scale(1.15) rotate(3deg); }
+  70% { transform: scale(1.1) rotate(-2deg); }
+  100% { transform: scale(1) rotate(0deg); }
+}
+
+.lr-device.celebrating .lr-device-glow {
+  opacity: 1 !important;
+  animation: lrCelebrateGlow 1s ease-in-out infinite;
+}
+
+@keyframes lrCelebrateGlow {
+  0%, 100% { 
+    opacity: 0.5; 
+    transform: scale(1);
+  }
+  50% { 
+    opacity: 1; 
+    transform: scale(1.2);
+  }
+}
+
+.lr-summary-value {
+  animation: lrCountPop 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes lrCountPop {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.2); color: var(--color-green); }
+  100% { transform: scale(1); }
+}

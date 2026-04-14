@@ -6880,6 +6880,18 @@
       }
     };
 
+    // Animate stat value with brief fade
+    function animateStatValue(el, newValue) {
+      el.style.transition = 'opacity 0.2s, transform 0.3s var(--ease-spring)';
+      el.style.opacity = '0';
+      el.style.transform = 'translateY(-5px)';
+      setTimeout(function() {
+        el.textContent = newValue;
+        el.style.opacity = '1';
+        el.style.transform = 'translateY(0)';
+      }, 200);
+    }
+
     function updateAnatomy(repairType) {
       var data = repairData[repairType];
       if (!data) return;
@@ -6895,9 +6907,15 @@
       var statWarranty = document.getElementById('anatomyStatWarranty');
       var complexityFill = document.getElementById('anatomyComplexityFill');
       var complexityValue = document.getElementById('anatomyComplexityValue');
-      if (statTime && data.time) statTime.textContent = data.time;
-      if (statPrice && data.price) statPrice.textContent = data.price;
-      if (statWarranty && data.warranty) statWarranty.textContent = data.warranty;
+      if (statTime && data.time) {
+        animateStatValue(statTime, data.time);
+      }
+      if (statPrice && data.price) {
+        animateStatValue(statPrice, data.price);
+      }
+      if (statWarranty && data.warranty) {
+        animateStatValue(statWarranty, data.warranty + ' days');
+      }
       if (complexityFill && data.complexity) {
         var pct = data.complexity === 'low' ? 25 : data.complexity === 'medium' ? 55 : 80;
         complexityFill.style.width = pct + '%';

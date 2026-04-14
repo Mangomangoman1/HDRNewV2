@@ -20601,3 +20601,155 @@ body.panic-open {
   0% { transform: scale(1); opacity: 0.6; }
   100% { transform: scale(2); opacity: 0; }
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   ROUND 5 — Final micro-interactions and polish
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Info panel — sections animate in when switching repair type */
+.anatomy-info-block {
+  animation: infoBlockFadeIn 0.5s var(--ease-spring) both;
+}
+.anatomy-info-block:nth-child(1) { animation-delay: 0.05s; }
+.anatomy-info-block:nth-child(2) { animation-delay: 0.1s; }
+.anatomy-info-block:nth-child(3) { animation-delay: 0.15s; }
+@keyframes infoBlockFadeIn {
+  0% { opacity: 0.5; transform: translateY(5px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+/* Stats transition enhancement */
+.anatomy-stat-value {
+  transition: opacity 0.2s, transform 0.3s var(--ease-spring), color 0.3s, text-shadow 0.3s;
+  display: inline-block;
+  min-width: 40px;
+}
+.anatomy-stat {
+  transition: transform 0.3s var(--ease-spring);
+}
+
+/* Device type change — full section crossfade */
+.anatomy-view {
+  transition: opacity 0.3s ease;
+}
+.anatomy-view.transitioning {
+  opacity: 0.5;
+}
+
+/* Live repair — improved progress bar gradient */
+.lr-timeline-progress {
+  position: relative;
+}
+.lr-timeline-progress::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    var(--accent) 0%,
+    var(--color-cyan) 50%,
+    var(--color-green) 100%
+  );
+  animation: progressShimmer 2s ease-in-out infinite;
+  opacity: 0.5;
+  border-radius: inherit;
+}
+@keyframes progressShimmer {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 0.7; }
+}
+
+/* Live repair — step dot glow ring animation */
+.lr-step-dot-ring {
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  transition: all 0.4s var(--ease-spring);
+}
+.lr-step.active .lr-step-dot-ring {
+  border-color: var(--accent);
+  box-shadow: 0 0 10px var(--accent-glow);
+  animation: ringPulse 1.5s ease-in-out infinite;
+}
+@keyframes ringPulse {
+  0%, 100% { transform: scale(1); opacity: 0.5; }
+  50% { transform: scale(1.2); opacity: 1; }
+}
+.lr-step.done .lr-step-dot-ring {
+  border-color: var(--color-green);
+}
+
+/* Anatomy — tab active indicator bar */
+.anatomy-tab.active::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 20%;
+  width: 60%;
+  height: 2px;
+  background: var(--accent);
+  border-radius: 1px;
+  box-shadow: 0 0 8px var(--accent-glow);
+}
+
+/* Anatomy — tool item stagger animation */
+.anatomy-tool-item:nth-child(1) { animation: toolItemFade 0.3s var(--ease-spring) both; animation-delay: 0.05s; }
+.anatomy-tool-item:nth-child(2) { animation: toolItemFade 0.3s var(--ease-spring) both; animation-delay: 0.1s; }
+.anatomy-tool-item:nth-child(3) { animation: toolItemFade 0.3s var(--ease-spring) both; animation-delay: 0.15s; }
+.anatomy-tool-item:nth-child(4) { animation: toolItemFade 0.3s var(--ease-spring) both; animation-delay: 0.2s; }
+.anatomy-tool-item:nth-child(5) { animation: toolItemFade 0.3s var(--ease-spring) both; animation-delay: 0.25s; }
+.anatomy-tool-item:nth-child(6) { animation: toolItemFade 0.3s var(--ease-spring) both; animation-delay: 0.3s; }
+@keyframes toolItemFade {
+  0% { opacity: 0; transform: translateY(8px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+/* Parts list item stagger delay */
+.anatomy-part-item {
+  animation: partItemSlide 0.35s var(--ease-spring) both;
+}
+@keyframes partItemSlide {
+  0% { opacity: 0.5; transform: translateX(-8px); }
+  100% { opacity: 1; transform: translateX(0); }
+}
+
+/* Live repair — batch status animation stagger */
+.lr-status-item:nth-child(1) { animation-delay: 0s; }
+.lr-status-item:nth-child(2) { animation-delay: 0.05s; }
+.lr-status-item:nth-child(3) { animation-delay: 0.1s; }
+.lr-status-item:nth-child(4) { animation-delay: 0.15s; }
+.lr-status-item:nth-child(5) { animation-delay: 0.2s; }
+.lr-status-item:nth-child(6) { animation-delay: 0.25s; }
+
+/* Premium — prefers-reduced-motion override for all new animations */
+@media (prefers-reduced-motion: reduce) {
+  .anatomy-layer,
+  .anatomy-exploded,
+  .anatomy-glass-shine,
+  .anatomy-chip,
+  .anatomy-battery-cell::after,
+  .anatomy-camera-lens::after,
+  .anatomy-info,
+  .anatomy-annotation,
+  .anatomy-tool-item,
+  .anatomy-part-item,
+  .lr-screen-crack::before,
+  .lr-device.repairing,
+  .lr-status-item,
+  .lr-replay-btn,
+  .lr-magnetic-btn .lr-btn-shine,
+  .lr-timeline-progress::after,
+  .lr-step-dot-ring,
+  .anatomy-stat-value,
+  .anatomy-view,
+  .anatomy-section::before,
+  .live-repair-section::before,
+  .live-repair-section::after {
+    animation: none !important;
+    transition-duration: 0.01s !important;
+  }
+}

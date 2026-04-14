@@ -4481,34 +4481,37 @@
     const statusLog = document.getElementById('lrStatusLog');
     const totalTime = document.getElementById('lrTotalTime');
 
-    // Steps (6-stage repair journey)
+    // Steps (7-stage repair journey)
     const steps = [
       document.getElementById('lrStep1'),
       document.getElementById('lrStep2'),
       document.getElementById('lrStep3'),
       document.getElementById('lrStep4'),
       document.getElementById('lrStep5'),
-      document.getElementById('lrStep6')
+      document.getElementById('lrStep6'),
+      document.getElementById('lrStep7')
     ];
 
     // Step detail descriptions shown below timeline labels — rich, technical
     const stepDetails = [
-      '"Hey Samuel, iPhone 14 screen cracked on the corner." — Device model, color (Midnight, 256GB), and iOS version confirmed. Repair slot queued. Customer texted from Ketchum, asked about same-day turnaround — available.',
-      'Visual inspection at 10x magnification. Crack at ~9 o\'clock extending 42mm across glass. Backlight bleed confirmed at 3 of 7 LED zones. Face ID camera bracket intact. Battery: 84% health — no swap needed. Secondary damage check: zero.',
-      '$189 parts + labor. OEM display quoted (Apple-supplier grade). 40-day warranty. Customer asked aftermarket vs OEM — explained color accuracy, True Tone, and brightness differences. Opted OEM. Repair confirmed.',
-      'Quote approved via text. $50 deposit received via Venmo. Parts pulled from inventory shelf B-17, serial verified against quote. New display tested functional before assembly. Repair slot confirmed for 10:15 AM.',
-      'ESD workspace active. Heat gun at 70°C for 90 sec. Adhesive separator along left edge — 3M 468MP confirmed. ZIF connectors released with nylon spudger. New display seated, connectors secured. Metal shield replaced. Boot test: 0.3s Apple logo ✓',
-      'All 5-finger multi-touch ✓ True Tone re-enrolled via iOS settings ✓ Face ID: dot projector + IR camera functional ✓ Display uniform @ 100% brightness, 0 dead pixels ✓ Ambient light sensor calibrated ✓ Device polished, boxed, ready for pickup — customer notified at 11:02 AM.'
+      '"Hey Samuel, iPhone 14 screen cracked on the corner." — Device model, color (Midnight, 256GB), and iOS version confirmed. Repair slot queued. Customer from Ketchum asked about same-day turnaround.',
+      'Visual inspection at 10x magnification. Crack at ~9 o\'clock extending 42mm across glass. Backlight bleed confirmed at 3 of 7 LED zones. Face ID bracket intact. Battery: 84% health — no swap needed.',
+      '$189 parts + labor. OEM display quoted. 40-day warranty. Customer asked aftermarket vs OEM — explained color accuracy, True Tone, and brightness. Opted OEM.',
+      'Quote approved. $50 deposit via Venmo. Parts pulled from shelf B-17, serial verified. Display pre-tested. Repair slot confirmed.',
+      'Approved. $50 deposit received. Parts pre-tested ✓. ESD mat grounded. Heat gun at 70°C, 90 sec. 3M 468MP adhesive separator applied.',
+      'ESD workspace active. ZIF connectors released. New display seated + connected. Metal shield reinstalled. Boot test: 0.3s Apple logo ✓.',
+      'All tests passed. True Tone re-enrolled ✓. Face ID functional ✓. 0 dead pixels ✓. Device polished, boxed. Customer notified at 11:02 AM.'
     ];
 
     // Status messages — richer, more technical, per-step arrays
     const statusMessages = [
-      ['9:04 AM — Text received', '"iPhone 14, screen cracked on the corner"', 'Model: A2882 (US)', 'Storage: 256GB / Midnight', 'Customer drove from Ketchum'],
-      ['9:41 AM — Diagnosis complete', '✓ Cracked LCD at 9 o\'clock (42mm crack)', '✓ Backlight bleed — 3 of 7 zones', '✓ Face ID bracket: intact', '✓ Battery: 84% health — no swap', '✓ No water damage indicators'],
-      ['9:52 AM — Quote sent', '$189 parts + labor', 'OEM display — Apple-supplier grade', '40-day warranty included', 'Customer approved — asked OEM over aftermarket'],
-      ['9:58 AM — Approved', '$50 deposit received via Venmo', 'Display pulled from shelf B-17', 'Serial # verified against quote', 'Confirmed for 10:15 AM repair slot'],
-      ['10:15 AM — Repair started', 'ESD mat grounded ✓', 'Heat gun: 70°C, 90 sec on left edge', 'Adhesive separator applied (3M 468MP)', 'ZIF connectors released (nylon spudger)', 'New display seated + connectors secured', 'Metal shield reinstalled', 'Boot test: 0.3s Apple logo ✓', 'Running multi-point test suite...', '→ True Tone re-enrollment...', '→ Face ID calibration...', '→ Dead pixel scan...'],
-      ['11:02 AM — All tests passed ✓', '✓ True Tone re-enrolled', '✓ Face ID: dot projector functional', '✓ Face ID: IR camera functional', '✓ 5-finger multi-touch: all zones', '✓ Dead pixel scan: 0 defects', '✓ Display uniform: 100% brightness', '✓ Ambient light sensor: calibrated', '✓ Device polished + boxed', '📱 Ready for pickup — customer notified']
+      ['9:04 AM — Text received', '"iPhone 14, screen cracked"', 'Model: A2882 / 256GB / Midnight', 'Customer from Ketchum', 'Asked about same-day service'],
+      ['9:41 AM — Diagnosis complete', '✓ LCD crack 42mm at 9 o\'clock', '✓ Backlight bleed — 3/7 zones', '✓ Face ID bracket: intact', '✓ Battery: 84% health', '✓ Zero water damage indicators'],
+      ['9:52 AM — Quote sent', '$189 parts + labor', 'OEM display — Apple-supplier grade', '40-day warranty', 'Customer chose OEM over aftermarket'],
+      ['10:02 AM — Parts pulled', '$50 deposit via Venmo', 'Display from shelf B-17', 'Serial # verified', 'Pre-test: functional ✓'],
+      ['10:08 AM — Approved', 'Deposit confirmed ✓', 'Parts pre-tested ✓', 'ESD mat grounded', 'Confirmed: 10:15 AM slot'],
+      ['10:15 AM — Repair started', 'ESD mat: grounded ✓', 'Heat gun: 70°C, 90 sec', 'ZIF released (nylon spudger)', 'New display seated', 'Metal shield reinstalled', 'Boot: 0.3s Apple logo ✓', 'Running test suite...'],
+      ['11:02 AM — Tests passed', '✓ True Tone re-enrolled', '✓ Face ID: dot projector', '✓ Face ID: IR camera', '✓ 5-finger touch', '✓ Dead pixels: 0', '✓ Display: 100% brightness', '✓ Device polished + boxed', '📱 Customer notified']
     ];
 
     let currentStep = -1;
@@ -4638,7 +4641,7 @@
       statusLog.innerHTML = '';
 
       // Step timing (in ms) — cinematic pacing, longer for repair step with more detail
-      const stepDurations = [1400, 2000, 1800, 1400, 4500, 2500];
+      const stepDurations = [1400, 2000, 1800, 1400, 1200, 4500, 2500];
       
       let elapsed = 0;
 
@@ -4682,18 +4685,18 @@
           device.classList.add('repairing');
         }
         if (stepIndex === 3) {
-          // Approved — device glow starts
+          // Parts pulled — tools start to materialize
           device.classList.add('repairing');
         }
-        if (stepIndex === 4) {
-          // In repair — crack fades out with smooth transition
+        if (stepIndex === 5) {
+          // In Repair — crack fades out with smooth transition
           crack.classList.add('repaired');
           // Delay the repaired screen reveal slightly
           setTimeout(() => {
             repaired.classList.add('show');
           }, 800);
         }
-        if (stepIndex === 5) {
+        if (stepIndex === 6) {
           // Complete — spawn particles with staggered burst
           device.classList.remove('repairing');
           device.classList.add('done');
@@ -4715,9 +4718,9 @@
     }
 
     function addStatusMessages(messages, stepIndex) {
-      const icons = ['📩', '🔍', '💰', '✅', '🔧', '✓'];
+      const icons = ['📩', '🔍', '💰', '📦', '✅', '🔧', '✓'];
       const iconChar = icons[stepIndex] || '→';
-      const delay = stepIndex === 4 ? 280 : 320; // faster during repair step
+      const delay = stepIndex === 5 ? 220 : 300; // faster during active repair step (5)
       messages.forEach((msg, index) => {
         setTimeout(() => {
           const item = document.createElement('div');
@@ -4790,14 +4793,15 @@
     const statusLog = document.getElementById('lrStatusLog');
     const totalTime = document.getElementById('lrTotalTime');
 
-    // Steps (6-stage repair journey)
+    // Steps (7-stage repair journey)
     const steps = [
       document.getElementById('lrStep1'),
       document.getElementById('lrStep2'),
       document.getElementById('lrStep3'),
       document.getElementById('lrStep4'),
       document.getElementById('lrStep5'),
-      document.getElementById('lrStep6')
+      document.getElementById('lrStep6'),
+      document.getElementById('lrStep7')
     ];
 
     // Step detail descriptions shown below timeline labels

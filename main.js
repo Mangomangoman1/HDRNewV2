@@ -4494,7 +4494,7 @@
     // Step detail descriptions shown below timeline labels — rich, technical
     const stepDetails = [
       '"Hey Samuel, iPhone 14 screen cracked on the corner." Device model, color, storage confirmed. Repair slot queued.',
-      'Visual inspection at 10x magnification. Crack at ~9 o'clock. Backlight bleed confirmed. Secondary damage check complete.',
+      'Visual inspection at 10x magnification. Crack at ~9 o\'clock. Backlight bleed confirmed. Secondary damage check complete.',
       '$189 parts + labor. OEM display quoted. 40-day warranty. Customer asked about aftermarket vs OEM — answered.',
       'Quote approved via text. $50 deposit received. Parts pulled and verified. Repair confirmed for today.',
       'ESD workspace active. Heat gun at 70°C for 90 sec. Adhesive separator along left edge. ZIF released. New display seated.',
@@ -4793,7 +4793,7 @@
     // Step detail descriptions shown below timeline labels
     const stepDetails = [
       '"Hey Samuel, iPhone 14 screen cracked on the corner." Device model, color, storage confirmed. Repair slot queued.',
-      'Visual inspection at 10x magnification. Crack at ~9 o'clock. Backlight bleed confirmed. Secondary damage check complete.',
+      'Visual inspection at 10x magnification. Crack at ~9 o\'clock. Backlight bleed confirmed. Secondary damage check complete.',
       '$189 parts + labor. OEM display quoted. 40-day warranty. Customer asked about aftermarket vs OEM — answered.',
       'Quote approved via text. $50 deposit received. Parts pulled and verified. Repair confirmed for today.',
       'ESD workspace active. Heat gun at 70°C for 90 sec. Adhesive separator along left edge. ZIF released. New display seated.',
@@ -5265,11 +5265,10 @@
         });
         step.classList.add('active');
 
-        // Show step detail
         showStepDetail(stepIndex);
 
         timelineProgress.style.width = ((stepIndex + 1) / steps.length) * 100 + '%';
-        addStatusMessages(statusMessages[stepIndex], stepIndex);
+        addStatusMessages(statusMessages[stepIndex]);
 
         if (stepIndex === 3) {
           device.classList.add('repairing');
@@ -5282,34 +5281,6 @@
           device.classList.remove('repairing');
           device.classList.add('done');
           spawnParticles();
-        }
-
-        setTimeout(() => runStep(stepIndex + 1), stepDurations[stepIndex]);
-      }
-
-      setTimeout(() => runStep(0), 500);
-        if (stepIndex >= steps.length) {
-          finishAnimation();
-          return;
-        }
-
-        const step = steps[stepIndex];
-        currentStep = stepIndex;
-
-        steps.forEach((s, i) => {
-          s.classList.remove('active', 'done');
-          if (i < stepIndex) s.classList.add('done');
-        });
-        step.classList.add('active');
-
-        timelineProgress.style.width = ((stepIndex + 1) / steps.length) * 100 + '%';
-        addStatusMessages(statusMessages[stepIndex], stepIndex);
-
-        if (stepIndex === 3) {
-          crack.classList.add('repaired');
-          repaired.classList.add('show');
-          device.classList.remove('repairing');
-          device.classList.add('done');
         }
 
         setTimeout(() => runStep(stepIndex + 1), stepDurations[stepIndex]);

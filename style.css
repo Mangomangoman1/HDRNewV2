@@ -2510,18 +2510,25 @@ ul { list-style: none; }
   cursor: pointer;
 }
 
-.anatomy-layer[data-anatomy-order="1"] { --layer-y: 0px; --layer-opacity: 1; --layer-blur: 0px; }
-.anatomy-layer[data-anatomy-order="2"] { --layer-y: 50px; --layer-opacity: 0.96; --layer-blur: 0px; }
-.anatomy-layer[data-anatomy-order="3"] { --layer-y: 100px; --layer-opacity: 0.92; --layer-blur: 0.5px; }
-.anatomy-layer[data-anatomy-order="4"] { --layer-y: 150px; --layer-opacity: 0.87; --layer-blur: 0.8px; }
-.anatomy-layer[data-anatomy-order="5"] { --layer-y: 200px; --layer-opacity: 0.82; --layer-blur: 1px; }
-.anatomy-layer[data-anatomy-order="6"] { --layer-y: 250px; --layer-opacity: 0.77; --layer-blur: 1.5px; }
-
-.anatomy-layer {
-  transform: translateY(var(--layer-y)) translateZ(calc(var(--layer-y) * -0.3));
-  opacity: var(--layer-opacity);
-  filter: blur(var(--layer-blur));
+/* Ambient float for anatomy layers — continuous subtle motion */
+@keyframes anatomyFloat {
+  0%, 100% { transform: translateY(var(--layer-y)) translateZ(calc(var(--layer-y) * -0.3)) translateX(0px) rotateZ(0deg); }
+  33% { transform: translateY(var(--layer-y)) translateZ(calc(var(--layer-y) * -0.3)) translateX(4px) rotateZ(0.5deg); }
+  66% { transform: translateY(var(--layer-y)) translateZ(calc(var(--layer-y) * -0.3)) translateX(-4px) rotateZ(-0.5deg); }
 }
+
+.anatomy-layer[data-anatomy-order="1"] { --layer-y: 0px; --layer-opacity: 1; --layer-blur: 0px; animation: anatomyFloat 7s ease-in-out infinite; }
+.anatomy-layer[data-anatomy-order="2"] { --layer-y: 50px; --layer-opacity: 0.96; --layer-blur: 0px; animation: anatomyFloat 7s ease-in-out 1s infinite; }
+.anatomy-layer[data-anatomy-order="3"] { --layer-y: 100px; --layer-opacity: 0.92; --layer-blur: 0.5px; animation: anatomyFloat 7s ease-in-out 2s infinite; }
+.anatomy-layer[data-anatomy-order="4"] { --layer-y: 150px; --layer-opacity: 0.87; --layer-blur: 0.8px; animation: anatomyFloat 7s ease-in-out 3s infinite; }
+.anatomy-layer[data-anatomy-order="5"] { --layer-y: 200px; --layer-opacity: 0.82; --layer-blur: 1px; animation: anatomyFloat 7s ease-in-out 4s infinite; }
+.anatomy-layer[data-anatomy-order="6"] { --layer-y: 250px; --layer-opacity: 0.77; --layer-blur: 1.5px; animation: anatomyFloat 7s ease-in-out 5s infinite; }
+
+.anatomy-layer { transform: translateY(var(--layer-y)) translateZ(calc(var(--layer-y) * -0.3)); opacity: var(--layer-opacity); filter: blur(var(--layer-blur)); }
+
+/* Pause ambient float on hover */
+.anatomy-exploded:hover .anatomy-layer,
+.anatomy-layer:hover { animation-play-state: paused; }
 
 .anatomy-layer-visual {
   width: 220px;
@@ -2544,50 +2551,28 @@ ul { list-style: none; }
   transform-style: preserve-3d;
 }
 
+/* Enhanced hover with spring bounce */
 .anatomy-layer:hover .anatomy-layer-visual {
-  transform: translateZ(25px) scale(1.04);
+  transform: translateZ(30px) scale(1.08);
   box-shadow: 
-    0 15px 60px rgba(0, 0, 0, 0.6),
-    0 0 0 1px rgba(255, 255, 255, 0.1),
-    0 0 80px var(--accent-glow);
+    0 20px 70px rgba(0, 0, 0, 0.65),
+    0 0 0 1px rgba(255, 255, 255, 0.12),
+    0 0 120px var(--accent-glow);
 }
 
-.anatomy-layer:hover ~ .anatomy-layer-connector {
-  opacity: 0;
-  transform: translateX(-50%) scaleY(1.5);
-}
-
-.anatomy-layer.highlighted .anatomy-layer-visual {
+/* Active layer — highlighted state with glow ring */
+.anatomy-layer.active-layer .anatomy-layer-visual {
   box-shadow: 
     0 8px 30px rgba(0, 0, 0, 0.4),
-    0 0 40px var(--accent-glow),
-    inset 0 1px 0 rgba(255, 255, 255, 0.06);
-}
-
-.anatomy-layer.dimmed {
-  opacity: 0.2;
-  filter: grayscale(1) blur(2px);
-  transform: translateY(var(--layer-y)) translateZ(calc(var(--layer-y) * -0.3)) scale(0.95);
-}
-
-.anatomy-layer.dimmed .anatomy-layer-visual {
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
-}
-
-/* Pulsing glow on active layer */
-.anatomy-layer.active-layer .anatomy-layer-visual::after {
-  content: '';
-  position: absolute;
-  inset: -2px;
-  border-radius: 32px;
-  border: 2px solid var(--accent);
-  opacity: 0;
-  animation: layerPulse 2s ease-in-out infinite;
+    0 0 0 2px var(--accent),
+    0 0 50px var(--accent-glow),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06) !important;
+  transform: translateZ(35px) scale(1.08) !important;
 }
 
 @keyframes layerPulse {
   0%, 100% { opacity: 0; transform: scale(1); }
-  50% { opacity: 0.6; transform: scale(1.02); }
+  50% { opacity: 0.6; transform: scale(1.04); }
 }
 
 /* Layer connector lines */
@@ -3205,15 +3190,16 @@ ul { list-style: none; }
   content: '';
   position: absolute;
   top: 0; left: 0; right: 0;
-  height: 2px;
-  background: linear-gradient(90deg, transparent, var(--accent), var(--color-cyan), var(--accent), transparent);
-  opacity: 0.7;
-  animation: infoGlow 3s ease-in-out infinite;
+  height: 3px;
+  background: linear-gradient(90deg, var(--color-green), var(--accent), var(--color-cyan), var(--accent), var(--color-green));
+  background-size: 300% 100%;
+  opacity: 0.8;
+  animation: infoGlow 4s ease-in-out infinite;
 }
 
 @keyframes infoGlow {
-  0%, 100% { opacity: 0.5; }
-  50% { opacity: 1; }
+  0%, 100% { opacity: 0.6; background-position: 0% 50%; }
+  50% { opacity: 1; background-position: 100% 50%; }
 }
 
 .anatomy-info::after {
@@ -3841,6 +3827,31 @@ ul { list-style: none; }
 .anatomy-layer.dimmed {
   opacity: 0.25;
   filter: grayscale(0.8);
+}
+
+/* Enhanced anatomy layer states */
+.anatomy-layer.highlighted .anatomy-layer-visual {
+  box-shadow: 
+    0 8px 30px rgba(0, 0, 0, 0.4),
+    0 0 0 1px var(--accent),
+    0 0 50px var(--accent-glow),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+.anatomy-layer:hover ~ .anatomy-layer-connector {
+  opacity: 0;
+  transform: translateX(-50%) scaleY(1.5);
+}
+
+/* Pulsing glow on active layer */
+.anatomy-layer.active-layer .anatomy-layer-visual::after {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: 32px;
+  border: 2px solid var(--accent);
+  opacity: 0;
+  animation: layerPulse 2s ease-in-out infinite;
 }
 
 /* Tool icons that appear during repair */

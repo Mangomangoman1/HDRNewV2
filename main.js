@@ -6324,4 +6324,187 @@
     }
   }
 
+  // ═══════════════════════════════════════════════════════════
+  // REPAIR ANATOMY SECTION — Interactive exploded view
+  // ═══════════════════════════════════════════════════════════
+  (function() {
+    var anatomySection = document.getElementById('anatomy');
+    if (!anatomySection) return;
+
+    var anatomyTabs = document.querySelectorAll('.anatomy-tab');
+    var anatomyView = document.getElementById('anatomyView');
+    var anatomyPartsList = document.getElementById('anatomyPartsList');
+    var anatomyStepsList = document.getElementById('anatomyStepsList');
+    var anatomyInfoTitle = document.getElementById('anatomyInfoTitle');
+    var anatomyInfoSubtitle = document.getElementById('anatomyInfoSubtitle');
+    var anatomyInfoIcon = document.getElementById('anatomyInfoIcon');
+    var anatomyLayers = document.querySelectorAll('.anatomy-layer');
+    var anatomyAnnotations = document.querySelectorAll('.anatomy-annotation');
+
+    var prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    // Repair type data
+    var repairData = {
+      screen: {
+        title: 'Screen Repair',
+        subtitle: 'iPhone front glass + display',
+        icon: '<svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12" y2="18.01"/></svg>',
+        parts: [
+          { cls: 'anatomy-part-replaced', text: 'Front glass panel' },
+          { cls: 'anatomy-part-replaced', text: 'LCD/OLED display assembly' },
+          { cls: 'anatomy-part-checked', text: 'Digitizer calibration' },
+          { cls: 'anatomy-part-checked', text: 'Adhesive seal replacement' },
+          { cls: 'anatomy-part-checked', text: 'Earpiece speaker test' }
+        ],
+        steps: [
+          'Heat and soften the adhesive seal',
+          'Carefully separate glass from the frame',
+          'Disconnect display cables from logic board',
+          'Install new display assembly',
+          'Reconnect, calibrate, and test everything'
+        ],
+        highlight: ['glass', 'display']
+      },
+      battery: {
+        title: 'Battery Swap',
+        subtitle: 'iPhone lithium-ion replacement',
+        icon: '<svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="7" width="12" height="10" rx="1"/><line x1="14" y1="10" x2="14" y2="14"/><line x1="12" y1="12" x2="12" y2="12.01"/><rect x="9" y="4" width="6" height="3" rx="1"/></svg>',
+        parts: [
+          { cls: 'anatomy-part-replaced', text: 'Lithium-ion battery cell' },
+          { cls: 'anatomy-part-checked', text: 'Battery health diagnostic' },
+          { cls: 'anatomy-part-checked', text: 'Battery management system' },
+          { cls: 'anatomy-part-checked', text: 'Thermal interface check' },
+          { cls: 'anatomy-part-checked', text: 'Charging behavior test' }
+        ],
+        steps: [
+          'Power down device and verify battery level',
+          'Heat back glass to soften adhesive',
+          'Carefully remove battery with safety precautions',
+          'Install new OEM battery with fresh adhesive',
+          'VerifyBattery health and charging performance'
+        ],
+        highlight: ['battery']
+      },
+      charging: {
+        title: 'Charging Port Repair',
+        subtitle: 'Lightning/USB-C port cleaning or replacement',
+        icon: '<svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21v-6M8 18h8M13 3L8 12h4l-1 5 5-9h-4l1-5"/></svg>',
+        parts: [
+          { cls: 'anatomy-part-replaced', text: 'Charging port assembly' },
+          { cls: 'anatomy-part-checked', text: 'Logic board connector inspection' },
+          { cls: 'anatomy-part-checked', text: 'Cable compatibility test' },
+          { cls: 'anatomy-part-checked', text: 'Wireless charging coil check' },
+          { cls: 'anatomy-part-checked', text: 'Audio/lightning connector' }
+        ],
+        steps: [
+          'Diagnose port failure (no charge, loose, lint buildup)',
+          'Disassemble device to access port',
+          'Remove damaged port carefully',
+          'Clean and/or replace with new port',
+          'Test all charging methods and data sync'
+        ],
+        highlight: ['frame', 'battery', 'logic']
+      },
+      water: {
+        title: 'Water Damage Recovery',
+        subtitle: 'Gentle cleaning and component rescue',
+        icon: '<svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2C12 2 5 10 5 14a7 7 0 0014 0c0-4-7-12-7-12z"/></svg>',
+        parts: [
+          { cls: 'anatomy-part-checked', text: 'Full ultrasonic cleaning' },
+          { cls: 'anatomy-part-checked', text: 'Logic board corrosion treatment' },
+          { cls: 'anatomy-part-checked', text: 'Battery health assessment' },
+          { cls: 'anatomy-part-checked', text: 'Display bracket drying' },
+          { cls: 'anatomy-part-checked', text: 'Speaker/mic functionality test' }
+        ],
+        steps: [
+          'DO NOT power on — this causes short circuits',
+          'Immediate disassembly and alcohol cleaning',
+          'Ultrasonic bath for stubborn corrosion',
+          'Thorough drying (24-48 hours minimum)',
+          'Component-by-component testing and repair'
+        ],
+        highlight: ['logic', 'battery', 'display']
+      }
+    };
+
+    function updateAnatomy(repairType) {
+      var data = repairData[repairType];
+      if (!data) return;
+
+      // Update
+      anatomyInfoTitle.textContent = data.title;
+      anatomyInfoSubtitle.textContent = data.subtitle;
+      anatomyInfoIcon.innerHTML = data.icon;
+
+      // Set data attribute for layer highlighting
+      anatomyView.setAttribute('data-repair', repairType);
+
+      // Update parts list
+      anatomyPartsList.innerHTML = '';
+      data.parts.forEach(function(part) {
+        var li = document.createElement('li');
+        li.className = 'anatomy-part-item ' + part.cls;
+        li.setAttribute('data-part', part.text.toLowerCase().replace(/\s+/g, '-'));
+        li.innerHTML = '<span class="anatomy-part-indicator"></span>' + part.text;
+        anatomyPartsList.appendChild(li);
+      });
+
+      // Update steps
+      anatomyStepsList.innerHTML = '';
+      data.steps.forEach(function(step) {
+        var li = document.createElement('li');
+        li.textContent = step;
+        anatomyStepsList.appendChild(li);
+      });
+
+
+      // Highlight layers
+      anatomyLayers.forEach(function(layer) {
+        var layerName = layer.getAttribute('data-layer');
+        if (data.highlight.indexOf(layerName) !== -1) {
+          layer.style.opacity = '1';
+          layer.style.filter = 'none';
+        } else {
+          if (!prefersReducedMotion) {
+            layer.style.opacity = '0.3';
+            layer.style.filter = 'grayscale(1)';
+          }
+        }
+      });
+
+
+      // Show annotations for highlighted layers
+      anatomyAnnotations.forEach(function(anno) {
+        var annoName = anno.getAttribute('data-annotation');
+        if (data.highlight.indexOf(annoName) !== -1) {
+          anno.classList.add('visible');
+        } else {
+          anno.classList.remove('visible');
+        }
+      });
+
+      // Update tab states
+      anatomyTabs.forEach(function(tab) {
+        var isActive = tab.getAttribute('data-repair') === repairType;
+        tab.classList.toggle('active', isActive);
+        tab.setAttribute('aria-selected', isActive);
+      });
+    }
+
+    // Tab click handlers
+    anatomyTabs.forEach(function(tab) {
+      tab.addEventListener('click', function() {
+        var repairType = this.getAttribute('data-repair');
+        updateAnatomy(repairType);
+      });
+    });
+
+
+    // Initialize with first tab
+    updateAnatomy('screen');
+
+
+  })();
+
+
 })();

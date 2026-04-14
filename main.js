@@ -4139,3 +4139,321 @@
     updatePillPosition();
   })();
 })();
+
+/* ═══════════════════════════════════════════════════════════
+   INSTANT REPAIR ESTIMATOR — Interactive diagnostic tool
+   ═══════════════════════════════════════════════════════════ */
+
+(function() {
+  'use strict';
+
+  // Device & symptom data with estimates
+  var estimatorData = {
+    iphone: {
+      name: 'iPhone',
+      symptoms: [
+        { id: 'cracked-screen', label: 'Cracked screen', icon: 'phone_iphone', time: '30-90 min', cost: '$80-250', urgency: 85, causes: ['Impact damage', 'Drop onto hard surface', 'Pressure on display'] },
+        { id: 'dead-battery', label: 'Dead/bad battery', icon: 'battery_std', time: '20-45 min', cost: '$40-100', urgency: 60, causes: ['Battery degradation', 'Extreme temperatures', 'Charging port issue'] },
+        { id: 'no-charge', label: 'Won\'t charge', icon: 'charging', time: '30-60 min', cost: '$30-90', urgency: 70, causes: ['Dirty port', 'Bad cable/charger', 'Charging port damaged', 'Battery protector circuit'] },
+        { id: 'water-damage', label: 'Water damage', icon: 'water_drop', time: '45-120 min', cost: '$50-150', urgency: 95, causes: ['Liquid exposure', 'Humidity in port', 'Corrosion', 'Short circuit'] },
+        { id: 'slow-device', label: 'Slow/frozen', icon: 'slow_motion_video', time: '30-90 min', cost: '$30-80', urgency: 30, causes: ['iOS update issue', 'Storage full', 'Background processes', 'Hardware issue'] },
+        { id: 'bad-camera', label: 'Camera not working', icon: 'photo_camera', time: '30-60 min', cost: '$60-120', urgency: 40, causes: ['Software glitch', 'Camera module damage', 'Loose connection'] },
+        { id: 'no-speaker', label: 'Speaker/mic issue', icon: 'record_voice_over', time: '30-60 min', cost: '$40-100', urgency: 50, causes: ['Dirt blocking', 'Water damage', 'Speaker module'] },
+        { id: 'face-id', label: 'Face ID not working', icon: 'face', time: '45-90 min', cost: '$80-150', urgency: 55, causes: ['Sensor damage', 'Software issue', 'Face ID-module loose'] }
+      ]
+    },
+    android: {
+      name: 'Android',
+      symptoms: [
+        { id: 'cracked-screen', label: 'Cracked screen', icon: 'phone_android', time: '45-120 min', cost: '$70-220', urgency: 85, causes: ['Impact damage', 'Drop', 'Pressure on glass'] },
+        { id: 'dead-battery', label: 'Dead/bad battery', icon: 'battery_std', time: '25-50 min', cost: '$40-90', urgency: 60, causes: ['Battery wear', 'Charging issues', 'Temperature damage'] },
+        { id: 'no-charge', label: 'Won\'t charge', icon: 'charging', time: '30-60 min', cost: '$30-80', urgency: 70, causes: ['Port lint/damage', 'Cable issue', 'PMIC problem'] },
+        { id: 'water-damage', label: 'Water damage', icon: 'water_drop', time: '60-120 min', cost: '$50-130', urgency: 95, causes: ['Liquid exposure', 'Corrosion', 'Short'] },
+        { id: 'slow-device', label: 'Slow or frozen', icon: 'memory', time: '30-90 min', cost: '$30-70', urgency: 25, causes: ['Storage full', 'Malware', 'Update problem', 'RAM issues'] },
+        { id: 'bad-camera', label: 'Camera not working', icon: 'photo_camera', time: '30-60 min', cost: '$50-110', urgency: 40, causes: ['Module damage', 'Software', 'Connection'] },
+        { id: 'no-speaker', label: 'Speaker/mic issues', icon: 'volume_up', time: '30-45 min', cost: '$35-80', urgency: 50, causes: ['Debris', 'Water', 'Speaker failure'] },
+        { id: 'screen-flicker', label: 'Screen flickering', icon: 'tune', time: '45-90 min', cost: '$60-150', urgency: 65, causes: ['Loose connector', 'Display driver', 'Software', 'LCD damage'] }
+      ]
+    },
+    laptop: {
+      name: 'Laptop',
+      symptoms: [
+        { id: 'cracked-screen', label: 'Cracked/broken screen', icon: 'laptop', time: '45-90 min', cost: '$80-250', urgency: 90, causes: ['Drop impact', 'Pressure', 'Closed on object'] },
+        { id: 'dead-battery', label: 'Battery not holding charge', icon: 'battery_charging_full', time: '30-60 min', cost: '$60-150', urgency: 55, causes: ['Battery wear', 'Charging circuit', 'BIOS issue'] },
+        { id: 'no-power', label: 'Won\'t turn on', icon: 'power_off', time: '45-120 min', cost: '$40-120', urgency: 75, causes: ['Dead charger', 'DC jack', 'Motherboard', 'BIOS/Intel ME'] },
+        { id: 'slow-device', label: 'Very slow', icon: 'speed', time: '60-180 min', cost: '$30-100', urgency: 20, causes: ['Virus/malware', 'Storage full', 'Too many programs', 'HDD failing'] },
+        { id: 'overheating', label: 'Overheating/fan loud', icon: 'thermostat', time: '45-90 min', cost: '$40-90', urgency: 50, causes: ['Dust buildup', 'Thermal paste', 'Fan failure', 'Blocked vents'] },
+        { id: 'keyboard-bad', label: 'Keyboard not working', icon: 'keyboard', time: '45-120 min', cost: '$50-150', urgency: 60, causes: ['Liquid spill', 'Key damage', 'Ribbon cable', 'Keyboard controller'] },
+        { id: 'touchpad-bad', label: 'Touchpad unresponsive', icon: 'touch_app', time: '30-60 min', cost: '$40-100', urgency: 45, causes: ['Driver', 'Touchpad module', 'Liquid damage'] },
+        { id: 'no-wifi', label: 'WiFi not working', icon: 'wifi', time: '30-60 min', cost: '$30-70', urgency: 35, causes: ['Driver', 'WiFi card', 'Antenna', 'BIOS'] },
+        { id: 'noise', label: 'Strange noises', icon: 'speaker', time: '30-90 min', cost: '$40-100', urgency: 45, causes: ['Fan bearing', 'HDD failure', 'Loose part', 'Speaker blown'] },
+        { id: 'virus', label: 'Virus/malware', icon: 'security', time: '60-180 min', cost: '$50-120', urgency: 80, causes: ['Ransomware', 'Keylogger', 'Adware', 'Trojan'] }
+      ]
+    },
+    tablet: {
+      name: 'Tablet/iPad',
+      symptoms: [
+        { id: 'cracked-screen', label: 'Cracked screen', icon: 'tablet', time: '45-120 min', cost: '$80-220', urgency: 85, causes: ['Drop', 'Impact', 'Bend pressure'] },
+        { id: 'dead-battery', label: 'Battery issues', icon: 'battery_full', time: '30-60 min', cost: '$50-110', urgency: 60, causes: ['Age', 'Charging issues', 'Temperature'] },
+        { id: 'no-charge', label: 'Won\'t charge', icon: 'cable', time: '30-60 min', cost: '$35-80', urgency: 70, causes: ['Port damage', 'Cable', 'Charge IC'] },
+        { id: 'slow-device', label: 'Slow performance', icon: 'hourglass_empty', time: '40-90 min', cost: '$30-70', urgency: 25, causes: ['Storage full', 'iOS/update', 'Background', 'Hardware'] },
+        { id: 'water-damage', label: 'Water damage', icon: 'water', time: '60-120 min', cost: '$60-140', urgency: 95, causes: ['Liquid', 'Corrosion', 'Short'] },
+        { id: 'home-button', label: 'Home button stuck', icon: 'circle', time: '20-40 min', cost: '$30-60', urgency: 30, causes: ['Dirt', 'Wear', 'Cable'] }
+      ]
+    },
+    console: {
+      name: 'Game Console',
+      symptoms: [
+        { id: 'drift', label: 'Controller drift', icon: 'sports_esports', time: '30-60 min', cost: '$40-80', urgency: 65, causes: ['Joy-Con wear', 'Potentiometer dust', 'Analog drift'] },
+        { id: 'no-hdmi', label: 'No HDMI output', icon: 'hdmi', time: '60-120 min', cost: '$80-180', urgency: 90, causes: ['HDMI port damage', 'GPU/console chip', 'Cable'] },
+        { id: 'overheat', label: 'Overheating', icon: 'whatshot', time: '45-90 min', cost: '$50-120', urgency: 75, causes: ['Dust', 'Thermal paste', 'Fan', 'Block vents'] },
+        { id: 'disc-error', label: 'Disc not reading', icon: 'album', time: '30-60 min', cost: '$40-90', urgency: 60, causes: ['Laser drift', 'Dirty lens', 'Drive motor'] },
+        { id: 'no-power', label: 'Won\'t power on', icon: 'power', time: '45-90 min', cost: '$50-130', urgency: 80, causes: ['PSU', 'Power button', 'Mainboard'] },
+        { id: 'freeze', label: 'Freezing/crashing', icon: 'block', time: '45-120 min', cost: '$50-110', urgency: 55, causes: ['Software', 'Overheat', 'Hardware', 'Firmware'] },
+        { id: 'controller', label: 'Controller not pairing', icon: 'bluetooth', time: '20-40 min', cost: '$20-50', urgency: 40, causes: ['Bluetooth', 'Dead batteries', 'Controller chip'] }
+      ]
+    }
+  };
+
+  // ── DOM Elements ──
+  var widget = document.getElementById('estimatorWidget');
+  if (!widget) return;
+
+  var step1 = document.getElementById('estimatorStep1');
+  var step2 = document.getElementById('estimatorStep2');
+  var step3 = document.getElementById('estimatorStep3');
+  var deviceLabel = document.getElementById('estimatorDeviceLabel');
+  var symptomContainer = document.getElementById('estimatorSymptoms');
+  var nextBtn2 = document.getElementById('estimatorNext2');
+  var gaugeFill = document.getElementById('gaugeFill');
+  var gaugeNeedle = document.getElementById('gaugeNeedle');
+  var gaugeLabel = document.getElementById('gaugeLabel');
+  var gaugeSubLabel = document.getElementById('gaugeSubLabel');
+  var estTime = document.getElementById('estTime');
+  var estCost = document.getElementById('estCost');
+  var estUrgency = document.getElementById('estUrgency');
+  var breakdownList = document.getElementById('breakdownList');
+  var stepIndicators = document.querySelectorAll('.estimator-step-indicator');
+  var stepLines = document.querySelectorAll('.estimator-step-line');
+
+  // ── State ──
+  var selectedDevice = null;
+  var selectedSymptoms = [];
+
+  // ── Helper: Update step indicators ──
+  function updateStepIndicator(stepNum) {
+    stepIndicators.forEach(function(ind, i) {
+      var step = i + 1;
+      ind.classList.remove('active', 'completed');
+      if (step < stepNum) {
+        ind.classList.add('completed');
+      } else if (step === stepNum) {
+        ind.classList.add('active');
+      }
+    });
+    stepLines.forEach(function(line, i) {
+      line.classList.toggle('filled', i < stepNum - 1);
+    });
+  }
+
+  // ── Step 1: Device Selection ──
+  var deviceBtns = step1.querySelectorAll('.estimator-device-btn');
+  deviceBtns.forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var device = this.dataset.device;
+      if (selectedDevice === device) return;
+      selectedDevice = device;
+      // Update UI
+      deviceBtns.forEach(function(b) { b.setAttribute('aria-pressed', 'false'); });
+      btn.setAttribute('aria-pressed', 'true');
+      // Auto-advance after brief delay
+      setTimeout(function() {
+        goToStep2();
+      }, 350);
+    });
+  });
+
+  // Skip device selection
+  document.getElementById('skipDevice').addEventListener('click', function(e) {
+    e.preventDefault();
+    // Use default/any device data
+    selectedDevice = null;
+    goToStep2();
+  });
+
+  // ── Step 2: Symptom Selection ──
+  function goToStep2() {
+    step1.classList.remove('estimator-panel--active');
+    step2.classList.add('estimator-panel--active');
+    updateStepIndicator(2);
+    if (selectedDevice && estimatorData[selectedDevice]) {
+      deviceLabel.textContent = 'for your ' + estimatorData[selectedDevice].name;
+      renderSymptoms(selectedDevice);
+    } else {
+      deviceLabel.textContent = '';
+      renderSymptoms('iphone'); // Default fallback
+      selectedDevice = 'iphone';
+    }
+  }
+
+  function renderSymptoms(deviceKey) {
+    var data = estimatorData[deviceKey] || estimatorData.iphone;
+    symptomContainer.innerHTML = '';
+    data.symptoms.forEach(function(sym) {
+      var chip = document.createElement('button');
+      chip.className = 'estimator-symptom-chip';
+      chip.setAttribute('type', 'button');
+      chip.setAttribute('aria-pressed', 'false');
+      chip.dataset.symptomId = sym.id;
+      chip.innerHTML = '<span class="chip-icon material-symbols-outlined">' + sym.icon + '</span>' + sym.label;
+      chip.addEventListener('click', function() {
+        var isPressed = chip.getAttribute('aria-pressed') === 'true';
+        chip.setAttribute('aria-pressed', !isPressed);
+        updateSymptomSelection();
+      });
+      symptomContainer.appendChild(chip);
+    });
+    selectedSymptoms = [];
+    updateNextButton();
+  }
+
+  function updateSymptomSelection() {
+    var chips = symptomContainer.querySelectorAll('.estimator-symptom-chip[aria-pressed="true"]');
+    selectedSymptoms = Array.from(chips).map(function(c) { return c.dataset.symptomId; });
+    updateNextButton();
+  }
+
+  function updateNextButton() {
+    nextBtn2.disabled = selectedSymptoms.length === 0;
+  }
+
+  // Back from step 2
+  document.getElementById('estimatorBack1').addEventListener('click', function() {
+    step2.classList.remove('estimator-panel--active');
+    step1.classList.add('estimator-panel--active');
+    updateStepIndicator(1);
+    selectedDevice = null;
+    selectedSymptoms = [];
+    // Reset device selection UI
+    deviceBtns.forEach(function(b) { b.setAttribute('aria-pressed', 'false'); });
+  });
+
+  // Proceed to results
+  nextBtn2.addEventListener('click', function() {
+    if (selectedSymptoms.length === 0) return;
+    goToStep3();
+  });
+
+  // ── Step 3: Calculate & Show Results ──
+  function goToStep3() {
+    step2.classList.remove('estimator-panel--active');
+    step3.classList.add('estimator-panel--active');
+    updateStepIndicator(3);
+    calculateResults();
+  }
+
+  function calculateResults() {
+    var data = estimatorData[selectedDevice] || estimatorData.iphone;
+    // Collect all selected symptoms data
+    var selectedSyms = data.symptoms.filter(function(s) {
+      return selectedSymptoms.indexOf(s.id) !== -1;
+    });
+    if (selectedSyms.length === 0) {
+      // Fallback
+      selectedSyms = [data.symptoms[0]];
+    }
+
+    // Aggregate: average urgency, max time, combined cost range
+    var avgUrgency = selectedSyms.reduce(function(sum, s) { return sum + s.urgency; }, 0) / selectedSyms.length;
+    var allCauses = [];
+    selectedSyms.forEach(function(s) {
+      allCauses = allCauses.concat(s.causes);
+    });
+    // Dedupe causes
+    allCauses = allCauses.filter(function(v, i, a) { return a.indexOf(v) === i; });
+
+    // Determine urgency category
+    var urgencyCat = 'low';
+    var urgencyLabel = 'Low — Can wait';
+    if (avgUrgency >= 70) {
+      urgencyCat = 'high';
+      urgencyLabel = 'High — Fix soon!';
+    } else if (avgUrgency >= 45) {
+      urgencyCat = 'mid';
+      urgencyLabel = 'Medium — Within a week';
+    }
+
+    // Cost range: take min and max from selected
+    var costs = selectedSyms.map(function(s) {
+      var m = s.cost.match(/\$(\d+)/);
+      return m ? parseInt(m[1]) : 0;
+    });
+    var minCost = Math.min.apply(null, costs);
+    var maxCost = Math.max.apply(null, costs);
+
+    // Time: get the longest from selected
+    var maxTime = selectedSyms.reduce(function(best, s) {
+      var curr = parseInt(s.time.split('-')[0] || 0);
+      var bestCurr = parseInt(best.split('-')[0] || 0);
+      return curr > bestCurr ? s.time : best;
+    }, '0 min');
+
+    // ── Update UI ──
+    // Gauge animation
+    var dashOffset = 251 * (1 - avgUrgency / 100);
+    gaugeFill.style.strokeDashoffset = dashOffset;
+    gaugeFill.className = 'gauge-fill urgency-' + urgencyCat;
+
+    // Needle: -90deg (low) to +90deg (high)
+    var needleRot = -90 + (avgUrgency / 100 * 180);
+    gaugeNeedle.style.transform = 'rotate(' + needleRot + 'deg)';
+
+    // Labels
+    gaugeLabel.textContent = Math.round(avgUrgency) + '/100';
+    gaugeSubLabel.textContent = urgencyLabel + ' urgency';
+
+    estTime.textContent = maxTime;
+    estCost.textContent = '$' + minCost + '-' + maxCost;
+    estUrgency.textContent = urgencyLabel;
+
+    // Causes list
+    breakdownList.innerHTML = '';
+    allCauses.slice(0, 4).forEach(function(cause) {
+      var li = document.createElement('li');
+      li.innerHTML = '<span class="material-symbols-outlined">help_outline</span>' + cause;
+      breakdownList.appendChild(li);
+    });
+  }
+
+  // Back from step 3
+  document.getElementById('estimatorBack2').addEventListener('click', function() {
+    step3.classList.remove('estimator-panel--active');
+    step2.classList.add('estimator-panel--active');
+    updateStepIndicator(2);
+  });
+
+  // Reset
+  document.getElementById('estimatorReset').addEventListener('click', function() {
+    // Reset everything to step 1
+    step3.classList.remove('estimator-panel--active');
+    step2.classList.remove('estimator-panel--active');
+    step1.classList.add('estimator-panel--active');
+    updateStepIndicator(1);
+    selectedDevice = null;
+    selectedSymptoms = [];
+    deviceBtns.forEach(function(b) { b.setAttribute('aria-pressed', 'false'); });
+    symptomContainer.innerHTML = '';
+    gaugeFill.style.strokeDashoffset = 251;
+    gaugeNeedle.style.transform = 'rotate(-90deg)';
+    gaugeLabel.textContent = '—';
+    gaugeSubLabel.textContent = 'Select device & issue';
+    estTime.textContent = '—';
+    estCost.textContent = '—';
+    estUrgency.textContent = '—';
+    breakdownList.innerHTML = '';
+  });
+
+  // Initialize
+  updateStepIndicator(1);
+
+})();

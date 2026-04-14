@@ -729,9 +729,197 @@ a{color:inherit;text-decoration:none}
   </section>
 
   <!-- ═══════════════════════════════════════════
+       INSTANT REPAIR ESTIMATOR
+  ══════════════════════════════════════════════ -->
+  <section class="section estimator-section" id="estimator">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-eyebrow" data-animate>✨ New Tool</div>
+        <h2 class="section-title" data-text-scramble>Instant Repair Estimator</h2>
+        <p class="section-sub" data-text-reveal>Pick your device, tell me what's wrong — get an instant repair estimate. No forms, no waiting.</p>
+      </div>
+
+      <div class="estimator" id="estimatorWidget" aria-label="Interactive repair estimator">
+
+        <!-- Step indicator -->
+        <div class="estimator-steps" role="progressbar" aria-label="Estimator steps">
+          <div class="estimator-step-indicator active" data-step="1">
+            <div class="estimator-step-dot"><span>1</span></div>
+            <span>Device</span>
+          </div>
+          <div class="estimator-step-line" aria-hidden="true"></div>
+          <div class="estimator-step-indicator" data-step="2">
+            <div class="estimator-step-dot"><span>2</span></div>
+            <span>Symptoms</span>
+          </div>
+          <div class="estimator-step-line" aria-hidden="true"></div>
+          <div class="estimator-step-indicator" data-step="3">
+            <div class="estimator-step-dot"><span>3</span></div>
+            <span>Your Estimate</span>
+          </div>
+        </div>
+
+        <!-- STEP 1: Device Picker -->
+        <div class="estimator-panel estimator-panel--active" id="estimatorStep1" role="group" aria-labelledby="estep1">
+          <p class="estimator-prompt" id="estep1">What type of device needs fixing?</p>
+          <div class="estimator-devices">
+            <button class="estimator-device-btn" data-device="iphone" aria-pressed="false">
+              <div class="estimator-device-icon">
+                <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <rect x="12" y="5" width="24" height="38" rx="4" stroke="currentColor" stroke-width="2"/>
+                  <rect x="17" y="9" width="14" height="2" rx="1" fill="currentColor" opacity=".5"/>
+                  <line x1="24" y1="40" x2="24" y2="42" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+              </div>
+              <span>iPhone</span>
+            </button>
+            <button class="estimator-device-btn" data-device="android" aria-pressed="false">
+              <div class="estimator-device-icon">
+                <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <rect x="10" y="6" width="28" height="36" rx="4" stroke="currentColor" stroke-width="2"/>
+                  <rect x="15" y="10" width="18" height="2" rx="1" fill="currentColor" opacity=".5"/>
+                  <circle cx="24" cy="39" r="1.5" fill="currentColor"/>
+                </svg>
+              </div>
+              <span>Android</span>
+            </button>
+            <button class="estimator-device-btn" data-device="laptop" aria-pressed="false">
+              <div class="estimator-device-icon">
+                <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <rect x="6" y="8" width="36" height="26" rx="3" stroke="currentColor" stroke-width="2"/>
+                  <rect x="9" y="11" width="30" height="20" rx="1" fill="currentColor" opacity=".12"/>
+                  <path d="M3 36h42" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                  <path d="M14 36v4h20v-4" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+                </svg>
+              </div>
+              <span>Laptop</span>
+            </button>
+            <button class="estimator-device-btn" data-device="tablet" aria-pressed="false">
+              <div class="estimator-device-icon">
+                <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <rect x="8" y="5" width="32" height="38" rx="4" stroke="currentColor" stroke-width="2"/>
+                  <rect x="13" y="9" width="22" height="2" rx="1" fill="currentColor" opacity=".5"/>
+                  <rect x="18" y="39" width="12" height="1.5" rx=".75" fill="currentColor" opacity=".5"/>
+                </svg>
+              </div>
+              <span>Tablet / iPad</span>
+            </button>
+            <button class="estimator-device-btn" data-device="console" aria-pressed="false">
+              <div class="estimator-device-icon">
+                <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <rect x="4" y="14" width="40" height="20" rx="4" stroke="currentColor" stroke-width="2"/>
+                  <circle cx="16" cy="24" r="4" stroke="currentColor" stroke-width="1.5"/>
+                  <circle cx="16" cy="24" r="1.5" fill="currentColor"/>
+                  <rect x="26" y="20" width="12" height="8" rx="2" stroke="currentColor" stroke-width="1.5"/>
+                  <line x1="29" y1="23" x2="35" y2="23" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                  <line x1="29" y1="25" x2="33" y2="25" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                </svg>
+              </div>
+              <span>Game Console</span>
+            </button>
+          </div>
+          <p class="estimator-skip-hint">Not sure? <button class="estimator-skip-btn" id="skipDevice">Skip to symptoms →</button></p>
+        </div>
+
+        <!-- STEP 2: Symptom Picker -->
+        <div class="estimator-panel" id="estimatorStep2" role="group" aria-labelledby="estep2">
+          <button class="estimator-back-btn" id="estimatorBack1" aria-label="Go back to device selection">
+            <span class="material-symbols-outlined" aria-hidden="true">arrow_back</span>
+            Back
+          </button>
+          <p class="estimator-prompt" id="estep2">What's the problem? <span class="estimator-device-label" id="estimatorDeviceLabel"></span></p>
+          <div class="estimator-symptoms" id="estimatorSymptoms">
+            <!-- Symptoms injected by JS based on device selection -->
+          </div>
+          <div class="estimator-actions">
+            <button class="btn btn-primary btn-lg estimator-next-btn" id="estimatorNext2" disabled>
+              <span class="material-symbols-outlined" aria-hidden="true">auto_awesome</span>
+              Get My Estimate
+            </button>
+          </div>
+        </div>
+
+        <!-- STEP 3: Results -->
+        <div class="estimator-panel" id="estimatorStep3" role="group" aria-labelledby="estep3">
+          <button class="estimator-back-btn" id="estimatorBack2" aria-label="Go back to symptom selection">
+            <span class="material-symbols-outlined" aria-hidden="true">arrow_back</span>
+            Back
+          </button>
+          <p class="estimator-prompt" id="estep3">Here's what I'm seeing</p>
+
+          <div class="estimator-results" id="estimatorResults">
+            <!-- Urgency Gauge -->
+            <div class="estimator-gauge-wrap">
+              <div class="estimator-gauge" aria-label="Repair urgency gauge">
+                <svg class="estimator-gauge-svg" viewBox="0 0 200 120" xmlns="http://www.w3.org/2000/svg">
+                  <!-- Background arc -->
+                  <path class="gauge-track" d="M20 100 A80 80 0 0 1 180 100" fill="none" stroke-width="12" stroke-linecap="round"/>
+                  <!-- Color zones -->
+                  <path class="gauge-zone gauge-zone--low" d="M20 100 A80 80 0 0 1 65 35" fill="none" stroke-width="12" stroke-linecap="round"/>
+                  <path class="gauge-zone gauge-zone--mid" d="M65 35 A80 80 0 0 1 135 35" fill="none" stroke-width="12" stroke-linecap="round"/>
+                  <path class="gauge-zone gauge-zone--high" d="M135 35 A80 80 0 0 1 180 100" fill="none" stroke-width="12" stroke-linecap="round"/>
+                  <!-- Animated fill -->
+                  <path class="gauge-fill" id="gaugeFill" d="M20 100 A80 80 0 0 1 180 100" fill="none" stroke-width="12" stroke-linecap="round" stroke-dasharray="251" stroke-dashoffset="251"/>
+                  <!-- Needle -->
+                  <line class="gauge-needle" id="gaugeNeedle" x1="100" y1="100" x2="100" y2="30" stroke-width="3" stroke-linecap="round" transform="rotate(-90 100 100)"/>
+                  <circle class="gauge-center" cx="100" cy="100" r="6"/>
+                </svg>
+                <div class="estimator-gauge-label" id="gaugeLabel">—</div>
+                <div class="estimator-gauge-sublabel" id="gaugeSubLabel">Select a device & issue</div>
+              </div>
+            </div>
+
+            <!-- Result Stats -->
+            <div class="estimator-stats" id="estimatorStats">
+              <div class="estimator-stat">
+                <div class="estimator-stat-icon"><span class="material-symbols-outlined" aria-hidden="true">schedule</span></div>
+                <div class="estimator-stat-value" id="estTime">—</div>
+                <div class="estimator-stat-label">Typical Repair Time</div>
+              </div>
+              <div class="estimator-stat">
+                <div class="estimator-stat-icon"><span class="material-symbols-outlined" aria-hidden="true">build</span></div>
+                <div class="estimator-stat-value" id="estCost">—</div>
+                <div class="estimator-stat-label">Parts &amp; Labor Range</div>
+              </div>
+              <div class="estimator-stat">
+                <div class="estimator-stat-icon"><span class="material-symbols-outlined" aria-hidden="true">assignment</span></div>
+                <div class="estimator-stat-value" id="estUrgency">—</div>
+                <div class="estimator-stat-label">Urgency Level</div>
+              </div>
+            </div>
+
+            <!-- Diagnosis breakdown -->
+            <div class="estimator-breakdown" id="estimatorBreakdown">
+              <p class="estimator-breakdown-title">Most likely causes:</p>
+              <ul class="estimator-breakdown-list" id="breakdownList"></ul>
+            </div>
+
+            <!-- CTA -->
+            <div class="estimator-cta-block">
+              <p class="estimator-cta-note">This is an estimate. Exact diagnosis requires hands-on inspection — which is always <strong>free</strong>.</p>
+              <div class="estimator-cta-buttons">
+                <a href="sms:+12083666111" class="btn btn-primary btn-lg btn-sparkle">
+                  <span class="material-symbols-outlined" aria-hidden="true">sms</span>
+                  Text Samuel — (208) 366-6111
+                </a>
+                <button class="btn btn-outline estimator-reset-btn" id="estimatorReset">
+                  <span class="material-symbols-outlined" aria-hidden="true">refresh</span>
+                  Try Another Device
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <div class="wave-divider" aria-hidden="true"><svg viewBox="0 0 1440 48" preserveAspectRatio="none"><path class="wave-fill" d="M0,24 C360,48 720,0 1080,24 C1260,36 1380,48 1440,48 L1440,48 L0,48 Z"/></svg></div>
+
+  <!-- ═══════════════════════════════════════════
        PRICING
   ══════════════════════════════════════════════ -->
-  <div class="wave-divider" aria-hidden="true"><svg viewBox="0 0 1440 48" preserveAspectRatio="none"><path class="wave-fill" d="M0,24 C360,48 720,0 1080,24 C1260,36 1380,48 1440,48 L1440,48 L0,48 Z"/></svg></div>
 
   <section class="section section--alt" id="pricing">
     <div class="container pricing-container">

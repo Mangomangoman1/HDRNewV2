@@ -11587,3 +11587,582 @@ kbd:active {
   color: var(--text-muted);
   text-align: center;
 }
+
+/* ═══════════════════════════════════════════════════════════
+   INSTANT REPAIR ESTIMATOR
+   ═══════════════════════════════════════════════════════════ */
+
+.estimator-section {
+  background: var(--bg-primary);
+  position: relative;
+  overflow: hidden;
+}
+
+.estimator-section::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 60% 40% at 50% 0%, var(--accent-dim) 0%, transparent 70%),
+    radial-gradient(ellipse 40% 30% at 80% 80%, rgba(163, 113, 247, 0.06) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+.estimator {
+  position: relative;
+  max-width: 780px;
+  margin: 0 auto;
+  z-index: 1;
+}
+
+/* ── Step Indicator ── */
+.estimator-steps {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  margin-bottom: 3rem;
+}
+
+.estimator-step-indicator {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+  opacity: 0.35;
+  transition: opacity 0.4s var(--ease-out);
+}
+
+.estimator-step-indicator.active,
+.estimator-step-indicator.completed {
+  opacity: 1;
+}
+
+.estimator-step-dot {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--bg-elevated);
+  border: 2px solid var(--border-default);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  transition: all 0.4s var(--ease-out);
+}
+
+.estimator-step-indicator.active .estimator-step-dot {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+  box-shadow: 0 0 20px var(--accent-glow);
+}
+
+.estimator-step-indicator.completed .estimator-step-dot {
+  background: var(--color-green);
+  border-color: var(--color-green);
+  color: #fff;
+}
+
+.estimator-step-indicator span {
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+}
+
+.estimator-step-indicator.active span {
+  color: var(--accent);
+}
+
+.estimator-step-line {
+  flex: 1;
+  max-width: 80px;
+  height: 2px;
+  background: var(--border-default);
+  margin: 0 0.5rem;
+  margin-bottom: 1.2rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.estimator-step-line::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--color-green);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.4s var(--ease-out);
+}
+
+.estimator-step-line.filled::after {
+  transform: scaleX(1);
+}
+
+/* ── Panels ── */
+.estimator-panel {
+  display: none;
+  animation: estimatorPanelIn 0.4s var(--ease-out) both;
+}
+
+.estimator-panel--active {
+  display: block;
+}
+
+@keyframes estimatorPanelIn {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.estimator-prompt {
+  text-align: center;
+  font-family: var(--font-display);
+  font-size: clamp(1.1rem, 2.5vw, 1.4rem);
+  font-weight: 700;
+  margin-bottom: 1.75rem;
+  color: var(--text-primary);
+}
+
+.estimator-device-label {
+  color: var(--accent);
+  font-weight: 700;
+}
+
+/* ── Device Buttons ── */
+.estimator-devices {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+@media (max-width: 600px) {
+  .estimator-devices {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 380px) {
+  .estimator-devices {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.estimator-device-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 1.25rem 0.75rem;
+  background: var(--bg-card);
+  border: 2px solid var(--border-default);
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  transition: all 0.25s var(--ease-spring);
+  color: var(--text-secondary);
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  font-weight: 600;
+  position: relative;
+  overflow: hidden;
+}
+
+.estimator-device-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--accent-dim);
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.estimator-device-btn:hover {
+  border-color: var(--accent);
+  color: var(--text-primary);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.2), 0 0 0 1px var(--accent-glow);
+}
+
+.estimator-device-btn:hover::before {
+  opacity: 1;
+}
+
+.estimator-device-btn[aria-pressed="true"] {
+  border-color: var(--accent);
+  background: var(--accent-dim);
+  color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-glow), 0 4px 16px rgba(0,0,0,0.2);
+  transform: translateY(-2px);
+}
+
+.estimator-device-icon {
+  width: 48px;
+  height: 48px;
+  color: currentColor;
+}
+
+.estimator-device-icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+/* ── Skip hint ── */
+.estimator-skip-hint {
+  text-align: center;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-top: 0.5rem;
+}
+
+.estimator-skip-btn {
+  background: none;
+  border: none;
+  color: var(--accent);
+  cursor: pointer;
+  font-size: inherit;
+  font-family: inherit;
+  text-decoration: underline;
+  padding: 0;
+}
+
+/* ── Back button ── */
+.estimator-back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  margin-bottom: 1.25rem;
+  padding: 0.4rem 0;
+  transition: color 0.2s;
+}
+
+.estimator-back-btn:hover {
+  color: var(--text-secondary);
+}
+
+/* ── Symptom Chips ── */
+.estimator-symptoms {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  justify-content: center;
+  margin-bottom: 2rem;
+}
+
+.estimator-symptom-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.55rem 1rem;
+  background: var(--bg-card);
+  border: 2px solid var(--border-default);
+  border-radius: var(--radius-pill);
+  cursor: pointer;
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  transition: all 0.2s var(--ease-spring);
+  user-select: none;
+}
+
+.estimator-symptom-chip:hover {
+  border-color: var(--accent);
+  color: var(--text-primary);
+  background: var(--accent-dim);
+}
+
+.estimator-symptom-chip[aria-pressed="true"] {
+  border-color: var(--accent);
+  background: var(--accent-dim);
+  color: var(--accent);
+  box-shadow: 0 0 0 2px var(--accent-glow);
+}
+
+.estimator-symptom-chip .chip-icon {
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.estimator-actions {
+  display: flex;
+  justify-content: center;
+}
+
+.estimator-next-btn {
+  min-width: 200px;
+  opacity: 0.4;
+  pointer-events: none;
+  transition: opacity 0.3s, box-shadow 0.3s, transform 0.2s var(--ease-spring);
+}
+
+.estimator-next-btn:not(:disabled) {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.estimator-next-btn:not(:disabled):hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px var(--accent-glow);
+}
+
+/* ── Results ── */
+.estimator-results {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+/* ── Gauge ── */
+.estimator-gauge-wrap {
+  display: flex;
+  justify-content: center;
+  padding: 0.5rem 0;
+}
+
+.estimator-gauge {
+  position: relative;
+  width: 220px;
+  text-align: center;
+}
+
+.estimator-gauge-svg {
+  width: 100%;
+  overflow: visible;
+}
+
+.gauge-track {
+  stroke: var(--bg-elevated);
+}
+
+.gauge-zone--low { stroke: var(--color-green); opacity: 0.4; }
+.gauge-zone--mid { stroke: var(--color-orange); opacity: 0.4; }
+.gauge-zone--high { stroke: #ef4444; opacity: 0.4; }
+
+.gauge-fill {
+  stroke: var(--accent);
+  transition: stroke-dashoffset 1.2s var(--ease-out), stroke 0.5s;
+  filter: drop-shadow(0 0 6px var(--accent-glow));
+}
+
+.gauge-fill.urgency-low { stroke: var(--color-green); filter: drop-shadow(0 0 6px rgba(63, 185, 80, 0.4)); }
+.gauge-fill.urgency-mid { stroke: var(--color-orange); filter: drop-shadow(0 0 6px rgba(247, 129, 102, 0.4)); }
+.gauge-fill.urgency-high { stroke: #ef4444; filter: drop-shadow(0 0 6px rgba(239, 68, 68, 0.4)); }
+
+.gauge-needle {
+  stroke: var(--text-primary);
+  transition: transform 1.2s var(--ease-out);
+  transform-origin: 100px 100px;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.4));
+}
+
+.gauge-center {
+  fill: var(--bg-elevated);
+  stroke: var(--border-strong);
+  stroke-width: 2;
+}
+
+.estimator-gauge-label {
+  font-family: var(--font-display);
+  font-size: 2rem;
+  font-weight: 800;
+  margin-top: -0.5rem;
+  letter-spacing: -0.02em;
+  background: linear-gradient(135deg, var(--accent), var(--color-cyan));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.estimator-gauge-sublabel {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-weight: 600;
+  margin-top: 0.15rem;
+}
+
+/* ── Stats Grid ── */
+.estimator-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}
+
+@media (max-width: 540px) {
+  .estimator-stats {
+    grid-template-columns: 1fr;
+  }
+}
+
+.estimator-stat {
+  background: var(--bg-card);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-lg);
+  padding: 1.25rem 1rem;
+  text-align: center;
+  transition: border-color 0.3s, box-shadow 0.3s;
+  position: relative;
+  overflow: hidden;
+}
+
+.estimator-stat::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--accent);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.estimator-stat:hover::before {
+  opacity: 1;
+}
+
+.estimator-stat-icon {
+  font-size: 1.4rem;
+  color: var(--accent);
+  margin-bottom: 0.4rem;
+  display: flex;
+  justify-content: center;
+}
+
+.estimator-stat-value {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin-bottom: 0.2rem;
+}
+
+.estimator-stat-label {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-weight: 600;
+}
+
+/* ── Breakdown ── */
+.estimator-breakdown {
+  background: var(--bg-card);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-lg);
+  padding: 1.25rem 1.5rem;
+}
+
+.estimator-breakdown-title {
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--text-muted);
+  margin-bottom: 0.85rem;
+}
+
+.estimator-breakdown-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.estimator-breakdown-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+
+.estimator-breakdown-list li .material-symbols-outlined {
+  color: var(--accent);
+  font-size: 1rem;
+  flex-shrink: 0;
+  margin-top: 0.1rem;
+}
+
+/* ── CTA block ── */
+.estimator-cta-block {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-xl);
+  padding: 2rem;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.estimator-cta-block::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 80% 60% at 50% 0%, var(--accent-dim) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.estimator-cta-note {
+  font-size: 0.88rem;
+  color: var(--text-muted);
+  margin-bottom: 1.5rem;
+  position: relative;
+}
+
+.estimator-cta-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  align-items: center;
+  position: relative;
+}
+
+.estimator-reset-btn {
+  background: none;
+  border: 1px solid var(--border-default);
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+  padding: 0.5rem 1.25rem;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  font-family: var(--font-body);
+  transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.estimator-reset-btn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+/* ── Reduced motion ── */
+@media (prefers-reduced-motion: reduce) {
+  .estimator-panel,
+  .gauge-fill,
+  .gauge-needle,
+  .estimator-device-btn,
+  .estimator-symptom-chip {
+    animation: none !important;
+    transition: none !important;
+  }
+}

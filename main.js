@@ -4532,23 +4532,48 @@
       }
     }
 
-    // Create sparkle particles
+    // Tool visibility per step (0 = hidden, 1 = visible)
+    const toolVisibility = [
+      { screwdriver: 0, spudger: 0, heatgun: 0, suction: 0 },
+      { screwdriver: 0.5, spudger: 0.3, heatgun: 0, suction: 0 },
+      { screwdriver: 0, spudger: 0, heatgun: 0, suction: 0 },
+      { screwdriver: 0, spudger: 0, heatgun: 0, suction: 0 },
+      { screwdriver: 1, spudger: 1, heatgun: 0.8, suction: 0.7 },
+      { screwdriver: 0.3, spudger: 0.3, heatgun: 0, suction: 0 }
+    ];
+
+    function updateTools(stepIndex) {
+      const vis = toolVisibility[stepIndex] || toolVisibility[0];
+      const sd = document.getElementById('lrToolScrewdriver');
+      const sp = document.getElementById('lrToolSpudger');
+      const hg = document.getElementById('lrToolHeatgun');
+      const su = document.getElementById('lrToolSuction');
+      if (sd) sd.style.opacity = vis.screwdriver;
+      if (sp) sp.style.opacity = vis.spudger;
+      if (hg) hg.style.opacity = vis.heatgun;
+      if (su) su.style.opacity = vis.suction;
+    }
+
+    // Enhanced particle spawn with sparkle trails
     function spawnParticles() {
       const container = document.getElementById('lrParticles');
       if (!container) return;
-      for (let i = 0; i < 12; i++) {
+      for (let i = 0; i < 18; i++) {
         const p = document.createElement('div');
         p.className = 'lr-particle';
-        p.style.left = (30 + Math.random() * 40) + '%';
-        p.style.top = (20 + Math.random() * 60) + '%';
-        p.style.background = i % 2 === 0 ? 'var(--accent)' : 'var(--color-green)';
+        const colors = ['var(--accent)', 'var(--color-green)', 'var(--color-cyan)', 'var(--color-purple)'];
+        p.style.left = (25 + Math.random() * 50) + '%';
+        p.style.top = (15 + Math.random() * 70) + '%';
+        p.style.background = colors[i % colors.length];
+        p.style.width = (3 + Math.random() * 5) + 'px';
+        p.style.height = p.style.width;
         container.appendChild(p);
         setTimeout(() => {
-          p.style.transition = 'all ' + (0.8 + Math.random() * 0.6) + 's ease-out';
-          p.style.opacity = '0.8';
-          p.style.transform = 'translate(' + ((Math.random() - 0.5) * 80) + 'px, ' + ((Math.random() - 0.5) * 80) + 'px) scale(0)';
-        }, 50 + i * 60);
-        setTimeout(() => p.remove(), 2000);
+          p.style.transition = 'all ' + (1.0 + Math.random() * 0.8) + 's ease-out';
+          p.style.opacity = '0.9';
+          p.style.transform = 'translate(' + ((Math.random() - 0.5) * 120) + 'px, ' + ((Math.random() - 0.5) * 120) + 'px) scale(0)';
+        }, 30 + i * 70);
+        setTimeout(() => p.remove(), 2500);
       }
     }
 
@@ -4599,16 +4624,21 @@
       }
     }
 
-    // Repair animation sequence
+    // Repair animation sequence — enhanced cinematic timings
     function startRepairAnimation() {
       if (animationRunning) return;
       animationRunning = true;
 
-      // Add active class to device
+      // Reset and add active class to device
+      device.classList.remove('done');
       device.classList.add('repairing');
+      crack.classList.remove('repaired');
+      repaired.classList.remove('show');
+      timelineProgress.style.width = '0%';
+      statusLog.innerHTML = '';
 
-      // Step timing (in ms) — 6 steps now
-      const stepDurations = [900, 1600, 1400, 1000, 2200, 1800];
+      // Step timing (in ms) — cinematic pacing
+      const stepDurations = [1200, 1800, 1500, 1200, 2800, 2000];
       
       let elapsed = 0;
 
@@ -4636,22 +4666,40 @@
         const progressPercent = ((stepIndex + 1) / steps.length) * 100;
         timelineProgress.style.width = progressPercent + '%';
 
-        // Add status messages
-        addStatusMessages(statusMessages[stepIndex]);
+        // Update tool visibility for current phase
+        updateTools(stepIndex);
 
-        // Stage-specific effects
+        // Add status messages
+        addStatusMessages(statusMessages[stepIndex], stepIndex);
+
+        // Stage-specific cinematic effects
+        if (stepIndex === 0) {
+          // Text received — subtle device pulse
+          device.classList.add('repairing');
+        }
+        if (stepIndex === 1) {
+          // Diagnosis — device intensifies
+          device.classList.add('repairing');
+        }
         if (stepIndex === 3) {
           // Approved — device glow starts
           device.classList.add('repairing');
         }
         if (stepIndex === 4) {
-          // In repair — crack fades out
+          // In repair — crack fades out with smooth transition
           crack.classList.add('repaired');
-          repaired.classList.add('show');
+          // Delay the repaired screen reveal slightly
+          setTimeout(() => {
+            repaired.classList.add('show');
+          }, 800);
         }
         if (stepIndex === 5) {
-          // Complete — spawn particles
+          // Complete — spawn particles with staggered burst
           device.classList.remove('repairing');
+          device.classList.add('done');
+          spawnParticles();
+          // Second burst of particles for cinematic impact
+          setTimeout(() => spawnParticles(), 600);
           device.classList.add('done');
           spawnParticles();
         }
@@ -4666,14 +4714,16 @@
       setTimeout(() => runStep(0), 500);
     }
 
-    function addStatusMessages(messages) {
+    function addStatusMessages(messages, stepIndex) {
+      const icons = ['📩', '🔍', '💰', '✅', '🔧', '✓'];
+      const iconChar = icons[stepIndex] || '→';
       messages.forEach((msg, index) => {
         setTimeout(() => {
           const item = document.createElement('div');
           item.className = 'lr-status-item';
           const icon = document.createElement('span');
           icon.className = 'lr-status-icon';
-          icon.textContent = '→';
+          icon.textContent = index === 0 ? iconChar : '→';
           const text = document.createElement('span');
           text.className = 'lr-status-text';
           text.textContent = msg;
@@ -4683,7 +4733,7 @@
           
           // Auto-scroll to latest
           statusLog.scrollTop = statusLog.scrollHeight;
-        }, index * 400);
+        }, index * 350);
       });
     }
 
@@ -4913,7 +4963,7 @@
         timelineProgress.style.width = progressPercent + '%';
 
         // Add status messages
-        addStatusMessages(statusMessages[stepIndex]);
+        addStatusMessages(statusMessages[stepIndex], stepIndex);
 
         // Stage-specific effects
         if (stepIndex === 3) {
@@ -5219,7 +5269,7 @@
         showStepDetail(stepIndex);
 
         timelineProgress.style.width = ((stepIndex + 1) / steps.length) * 100 + '%';
-        addStatusMessages(statusMessages[stepIndex]);
+        addStatusMessages(statusMessages[stepIndex], stepIndex);
 
         if (stepIndex === 3) {
           device.classList.add('repairing');
@@ -5253,7 +5303,7 @@
         step.classList.add('active');
 
         timelineProgress.style.width = ((stepIndex + 1) / steps.length) * 100 + '%';
-        addStatusMessages(statusMessages[stepIndex]);
+        addStatusMessages(statusMessages[stepIndex], stepIndex);
 
         if (stepIndex === 3) {
           crack.classList.add('repaired');

@@ -20241,3 +20241,59 @@ body.panic-open {
 .lr-cta-hint:hover {
   color: var(--text-secondary);
 }
+
+/* Anatomy tools grid */
+.anatomy-tools-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-xs) var(--space-sm);
+  margin-top: var(--space-sm);
+}
+
+.anatomy-tool-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: var(--radius-md);
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-subtle);
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  transition: all 0.3s var(--ease-spring);
+  cursor: default;
+  position: relative;
+  overflow: hidden;
+}
+.anatomy-tool-item::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, var(--accent-glow), transparent);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.anatomy-tool-item:hover {
+  border-color: var(--accent);
+  transform: translateY(-2px);
+  color: var(--text-primary);
+  box-shadow: 0 4px 12px rgba(79,142,247,0.15);
+}
+.anatomy-tool-item:hover::before {
+  opacity: 0.06;
+}
+.anatomy-tool-icon-small {
+  font-size: 1rem;
+  flex-shrink: 0;
+  z-index: 1;
+}
+.anatomy-tool-item span:last-child {
+  z-index: 1;
+}
+
+/* Responsive: tools grid stacks on mobile */
+@media (max-width: 640px) {
+  .anatomy-tools-grid {
+    grid-template-columns: 1fr;
+  }
+}

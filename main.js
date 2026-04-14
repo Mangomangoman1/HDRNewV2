@@ -6653,6 +6653,7 @@
           'Install new display assembly',
           'Reconnect, calibrate, and test everything'
         ],
+        tools: ['iFixit Pro Kit', 'Heat Gun / iOpener', 'Suction Handle', 'Spudger', 'ESD Wrist Strap', '99% IPA'],
         highlight: ['glass', 'display']
       },
       battery: {
@@ -6677,6 +6678,7 @@
           'Install new OEM battery with fresh adhesive',
           'Verify battery health and charging performance'
         ],
+        tools: ['iFixit Pro Kit', 'iOpener', 'Plastic Spudger', 'Battery Pull Tab', 'ESD Wrist Strap', '99% IPA'],
         highlight: ['battery']
       },
       charging: {
@@ -6701,6 +6703,7 @@
           'Clean and/or replace with new port',
           'Test all charging methods and data sync'
         ],
+        tools: ['iFixit Pro Kit', 'Spudger', 'Soldering Iron', 'USB-C Tester', 'ESD Wrist Strap', 'Magnifying Loupe'],
         highlight: ['frame', 'battery', 'logic']
       },
       water: {
@@ -6725,6 +6728,7 @@
           'Thorough drying (24-48 hours minimum)',
           'Component-by-component testing and repair'
         ],
+        tools: ['Ultrasonic Cleaner', '99% IPA', 'ESD Wrist Strap', 'Toothbrush', 'Heat Gun', 'Silica Packets'],
         highlight: ['logic', 'battery', 'display']
       },
       laptop: {
@@ -6745,6 +6749,7 @@
           'Install new keyboard/top case as a single unit',
           'Reassemble, reset SMC, test every key and gesture'
         ],
+        tools: ['Pentalobe Driver Set', 'Spudger', 'Torx Bits', 'Heat Gun', 'ESD Wrist Strap', 'Trackpad Calibration Tool'],
         highlight: ['frame', 'battery'],
         complexity: 'medium',
         time: '60–90',
@@ -6770,6 +6775,7 @@
           'Bond new glass with precision adhesive, cure under UV',
           'Test touch response, brightness, and True Tone matching'
         ],
+        tools: ['Heat Gun', 'Guitar Picks', 'Suction Handle', 'iFixit Pro Kit', 'UV Light', 'Microfiber Cloth'],
         highlight: ['glass', 'display'],
         complexity: 'medium',
         time: '45–90',
@@ -6794,6 +6800,7 @@
           'Clean and reassemble with fresh thermal compound',
           'Calibration test and drift verification'
         ],
+        tools: ['Tri-point Screwdriver', 'Spudger', 'Soldering Iron', 'Contact Cleaner', 'ESD Wrist Strap', 'Calibration Tool'],
         highlight: ['frame', 'logic'],
         complexity: 'medium',
         time: '60–90',
@@ -6818,6 +6825,7 @@
           'Swap battery with fresh cell, verify connector seating',
           'Reseal with fresh adhesive, run hardware test suite'
         ],
+        tools: ['Precision Screwdriver Set', 'iOpener', 'Suction Handle', 'Spudger', 'ESD Wrist Strap', 'Pressure Tester'],
         highlight: ['glass', 'display', 'battery'],
         complexity: 'high',
         time: '30–60',
@@ -6842,6 +6850,7 @@
           'Reassemble housing, check mesh and seal integrity',
           'Run ANC test, frequency response, and mic quality check'
         ],
+        tools: ['Precision Screwdriver Set', 'Soldering Iron', 'Spudger', 'ESD Wrist Strap', 'Multimeter', 'Hot Air Station'],
         highlight: ['frame', 'battery', 'logic'],
         complexity: 'medium',
         time: '20–40',
@@ -6866,6 +6875,7 @@
           'Reassemble with fresh adhesive on ear pad ring',
           'Bluetooth pairing test, ANC measurement, frequency sweep'
         ],
+        tools: ['T6 Torx Set', 'Spudger', 'Soldering Iron', 'Multimeter', 'ANC Testing Rig', 'Foam Replacements'],
         highlight: ['frame', 'logic', 'battery'],
         complexity: 'medium',
         time: '30–90',
@@ -6890,6 +6900,7 @@
           'Reflow or replace charging port if loose or corroded',
           'Reassemble, run drift calibration, verify sleep/wake and USB-C video out'
         ],
+        tools: ['Tri-point/Y00 Drivers', 'Spudger', 'Hall Effect Sticks', 'Soldering Iron', 'ESD Wrist Strap', 'USB-C Tester'],
         highlight: ['display', 'battery', 'logic'],
         complexity: 'high',
         time: '60–180',
@@ -6970,6 +6981,19 @@
         }
       });
 
+      // Update tools grid
+      var toolsGrid = document.getElementById('anatomyToolsGrid');
+      if (toolsGrid && data.tools) {
+        var toolEmojis = ['🔧', '🌡️', '🔍', '⚡', '📡', '🧹', '🔬', '🛠️', '💡', '🎤', '🔌', '🧪'];
+        toolsGrid.innerHTML = '';
+        data.tools.forEach(function(tool, idx) {
+          var div = document.createElement('div');
+          div.className = 'anatomy-tool-item';
+          div.innerHTML = '<span class="anatomy-tool-icon-small" aria-hidden="true">' + (toolEmojis[idx % toolEmojis.length]) + '</span><span>' + tool + '</span>';
+          toolsGrid.appendChild(div);
+        });
+      }
+
       // Update tab states
       anatomyTabs.forEach(function(tab) {
         var isActive = tab.getAttribute('data-repair') === repairType;
@@ -6978,12 +7002,50 @@
       });
     }
 
-    // Tab click handlers
+    // Tab click handlers with smooth transitions
     anatomyTabs.forEach(function(tab) {
       tab.addEventListener('click', function() {
         var repairType = this.getAttribute('data-repair');
-        updateAnatomy(repairType);
+        // Animate the tab indicator
+        anatomyTabs.forEach(function(t) { t.classList.remove('active'); t.setAttribute('aria-selected', 'false'); });
+        this.classList.add('active');
+        this.setAttribute('aria-selected', 'true');
+        // Brief flash on the exploded view
+        var exploded = document.getElementById('anatomyExploded');
+        if (exploded) {
+          exploded.style.transition = 'transform 0.4s var(--ease-spring)';
+          exploded.style.transform = 'rotateY(-10deg) rotateX(6deg) scale(0.97)';
+          setTimeout(function() {
+            exploded.style.transform = '';
+            updateAnatomy(repairType);
+          }, 200);
+        } else {
+          updateAnatomy(repairType);
+        }
       });
+    });
+
+    // Interactive parts list — hover to highlight layer
+    anatomyPartsList.addEventListener('mouseover', function(e) {
+      var item = e.target.closest('.anatomy-part-item');
+      if (!item) return;
+      // Remove previous active
+      anatomyPartsList.querySelectorAll('.anatomy-part-item.active-part').forEach(function(p) { p.classList.remove('active-part'); });
+      item.classList.add('active-part');
+    });
+    anatomyPartsList.addEventListener('mouseout', function() {
+      anatomyPartsList.querySelectorAll('.anatomy-part-item.active-part').forEach(function(p) { p.classList.remove('active-part'); });
+    });
+
+    // Interactive steps list — hover to highlight step
+    anatomyStepsList.addEventListener('mouseover', function(e) {
+      var li = e.target.closest('li');
+      if (!li) return;
+      anatomyStepsList.querySelectorAll('li.active').forEach(function(l) { l.classList.remove('active'); });
+      li.classList.add('active');
+    });
+    anatomyStepsList.addEventListener('mouseout', function() {
+      anatomyStepsList.querySelectorAll('li.active').forEach(function(l) { l.classList.remove('active'); });
     });
 
     // Initialize with first tab

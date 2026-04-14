@@ -6507,4 +6507,194 @@
   })();
 
 
+  /* ═══════════════════════════════════════════
+     FIX METER — Interactive Repair Urgency Gauge
+  ═══════════════════════════════════════════ */
+  (function() {
+    if (!document.getElementById('fixmeter')) return;
+
+    var step1 = document.getElementById('fixmeterStep1');
+    var step2 = document.getElementById('fixmeterStep2');
+    var step3 = document.getElementById('fixmeterStep3');
+    var issueGrid = document.getElementById('fixmeterIssueGrid');
+    var backBtn1 = document.getElementById('fmBack1');
+    var backBtn2 = document.getElementById('fmBack2');
+    var resetBtn = document.getElementById('fmReset');
+    var section = document.getElementById('fixmeter');
+
+    var gaugeFill = document.getElementById('fmGaugeFill');
+    var needle = document.getElementById('fmNeedle');
+    var urgencyLabel = document.getElementById('fmUrgencyLabel');
+    var timeLabel = document.getElementById('fmTime');
+    var costLabel = document.getElementById('fmCost');
+    var difficultyLabel = document.getElementById('fmDifficulty');
+    var actionTitle = document.getElementById('fmActionTitle');
+    var actionDesc = document.getElementById('fmActionDesc');
+
+    var currentDevice = null;
+    var currentIssue = null;
+
+    // Issue data: device -> issues
+    var issueData = {
+      iphone: [
+        { id: 'cracked', name: 'Cracked Screen', hint: 'Glass shattered or display damaged', urgency: 'high', time: '45-60 min', cost: '$80-180', difficulty: 'Moderate', action: 'Come in today if possible. Glass only repairs are quick.' },
+        { id: 'battery', name: 'Battery Not Holding', hint: 'Drains fast or swells', urgency: 'medium', time: '30-45 min', cost: '$60-120', difficulty: 'Easy', action: 'Safe to schedule within a few days. Back up before coming.' },
+        { id: 'water', name: 'Water Damage', hint: 'Phone got wet', urgency: 'critical', time: '24-48 hrs', cost: '$80-200', urgencyScore: 100, difficulty: 'Hard', action: 'ACT NOW: Don\'t charge it. Rice won\'t help. Get here ASAP.' },
+        { id: 'charging', name: 'Not Charging', hint: 'Won\'t charge or slow charge', urgency: 'medium', time: '30-60 min', cost: '$60-150', difficulty: 'Easy', action: 'Bring the cable you use. Can usually fix same-day.' },
+        { id: 'speaker', name: 'Speaker / Mic', hint: 'Can\'t hear or be heard', urgency: 'low', time: '45-90 min', cost: '$70-150', difficulty: 'Moderate', action: 'Schedule when convenient. Software issues sometimes.' },
+        { id: 'button', name: 'Buttons Not Working', hint: 'Power or volume stuck', urgency: 'low', time: '30-60 min', cost: '$50-100', difficulty: 'Easy', action: 'Let me know which button. Usually quick fix.' }
+      ],
+      android: [
+        { id: 'cracked', name: 'Cracked Screen', hint: 'Glass shattered or display damaged', urgency: 'high', time: '60-90 min', cost: '$70-150', difficulty: 'Moderate', action: 'Come in today if possible. Many Androids same-day.' },
+        { id: 'battery', name: 'Battery Not Holding', hint: 'Drains fast or swells', urgency: 'medium', time: '30-45 min', cost: '$50-100', difficulty: 'Easy', action: 'Safe to schedule within a few days. Back up first.' },
+        { id: 'water', name: 'Water Damage', hint: 'Phone got wet', urgency: 'critical', time: '24-48 hrs', cost: '$70-180', difficulty: 'Hard', action: 'ACT NOW: Don\'t charge it. Power it off. Get here fast.' },
+        { id: 'charging', name: 'Not Charging', hint: 'Won\'t charge or loose', urgency: 'medium', time: '30-60 min', cost: '$50-120', difficulty: 'Easy', action: 'Bring your cable. Usually port cleaning or replacement.' },
+        { id: 'software', name: 'Software Issues', hint: 'Frozen or glitchy', urgency: 'low', time: '30-60 min', cost: '$40-80', difficulty: 'Easy', action: 'Try force restart first. I can wipe and set up if needed.' },
+        { id: 'screen', name: 'Display Issues', hint: 'Lines, blank, or flickering', urgency: 'high', time: '60-120 min', cost: '$80-200', difficulty: 'Hard', action: 'Could be screen or cable. Need to diagnose in person.' }
+      ],
+      laptop: [
+        { id: 'screen', name: 'Broken Screen', hint: 'Cracked or no display', urgency: 'high', time: '1-2 hrs', cost: '$100-300', difficulty: 'Moderate', action: 'Bring it in. Most laptop screens can be replaced same-day.' },
+        { id: 'battery', name: 'Dead Battery', hint: 'Won\'t hold charge', urgency: 'medium', time: '30-60 min', cost: '$80-200', difficulty: 'Easy', action: 'Works fine plugged in? I can replace the battery.' },
+        { id: 'keyboard', name: 'Keyboard Problems', hint: 'Keys stuck or not working', urgency: 'medium', time: '1-2 hrs', cost: '$80-180', difficulty: 'Moderate', action: 'Sometimes just cleaning, sometimes replacement needed.' },
+        { id: 'no-power', name: 'Won\'t Turn On', hint: 'No power at all', urgency: 'critical', time: '1-2 hrs', cost: '$80-150', difficulty: 'Hard', action: 'Bring the charger. Could be power jack or motherboard.' },
+        { id: 'slow', name: 'Running Slow', hint: 'Laggy or freezing', urgency: 'low', time: '1-2 hrs', cost: '$60-120', difficulty: 'Easy', action: 'Could be virus, RAM, or hard drive. Let me check it.' },
+        { id: 'overheating', name: 'Overheating', hint: 'Too hot or loud fan', urgency: 'medium', time: '1-2 hrs', cost: '$60-140', difficulty: 'Moderate', action: 'Needs cleaning or new thermal paste. Common fix.' }
+      ],
+      ipad: [
+        { id: 'cracked', name: 'Cracked Screen', hint: 'Glass or display damaged', urgency: 'high', time: '60-90 min', cost: '$100-250', difficulty: 'Moderate', action: 'iPad screens are trickier but I can handle most.' },
+        { id: 'battery', name: 'Battery Not Holding', hint: 'Drains fast', urgency: 'medium', time: '45-60 min', cost: '$80-150', difficulty: 'Easy', action: 'Schedule anytime. Bigger battery = higher cost.' },
+        { id: 'charging', name: 'Not Charging', hint: 'Won\'t charge', urgency: 'medium', time: '30-45 min', cost: '$60-120', difficulty: 'Easy', action: 'Usually the charging port. Can usually fix same-day.' },
+        { id: 'home', name: 'Home Button', hint: 'Not responding', urgency: 'low', time: '30-45 min', cost: '$50-100', difficulty: 'Easy', action: 'Some iPads have Touch ID issues. Let me check.' }
+      ],
+      console: [
+        { id: 'hdmi', name: 'No HDMI Output', hint: 'No picture on TV', urgency: 'high', time: '2-4 hrs', cost: '$120-250', difficulty: 'Hard', action: 'Probably HDMI port. Most common PS4/Xbox issue.' },
+        { id: 'disc', name: 'Disc Not Reading', hint: 'Can\'t load games', urgency: 'medium', time: '1-2 hrs', cost: '$80-150', difficulty: 'Moderate', action: 'Could be drive or lens. Let\'s take a look.' },
+        { id: 'power', name: 'Won\'t Power On', hint: 'No LED, no fan', urgency: 'critical', time: '2-3 hrs', cost: '$100-200', difficulty: 'Hard', action: 'Bring the power brick. Could be several things.' },
+        { id: 'controller', name: 'Controller Issues', hint: 'Drifting or not connecting', urgency: 'low', time: '30-60 min', cost: '$40-80', difficulty: 'Easy', action: 'Usually drift. Can fix analog sticks in most controllers.' },
+        { id: 'overheat', name: 'Shutting Down', hint: 'Turns off during play', urgency: 'medium', time: '1-2 hrs', cost: '$80-150', difficulty: 'Moderate', action: 'Thermal paste replacement helps most consoles.' }
+      ],
+      other: [
+        { id: 'unknown', name: 'Something Else', hint: 'Not listed', urgency: 'medium', time: '30-60 min', cost: '$50-100', difficulty: 'Easy', action: 'Tell me what\'s wrong in your text. I\'ll figure it out.' }
+      ]
+    };
+
+    // Urgency to rotation mapping (-90 = low, 0 = medium, 90 = critical)
+    var urgencyMap = {
+      low: { rotation: -70, label: 'Low', class: 'fm-urgency--low' },
+      medium: { rotation: 0, label: 'Medium', class: 'fm-urgency--medium' },
+      high: { rotation: 50, label: 'High', class: 'fm-urgency--high' },
+      critical: { rotation: 90, label: 'Critical', class: 'fm-urgency--critical' }
+    };
+
+    // Device cards click handler
+    var deviceCards = document.querySelectorAll('.fixmeter-device-card');
+    deviceCards.forEach(function(card) {
+      card.addEventListener('click', function() {
+        var device = this.getAttribute('data-fm-device');
+        selectDevice(device);
+      });
+    });
+
+    function selectDevice(device) {
+      currentDevice = device;
+      populateIssues(device);
+      showStep(2);
+    }
+
+    function populateIssues(device) {
+      var issues = issueData[device] || issueData['other'];
+      issueGrid.innerHTML = '';
+      issues.forEach(function(issue) {
+        var btn = document.createElement('button');
+        btn.className = 'fixmeter-issue-btn';
+        btn.setAttribute('data-fm-issue', issue.id);
+        btn.setAttribute('aria-label', issue.name + ': ' + issue.hint);
+        btn.innerHTML = '<div class="fixmeter-issue-icon"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg></div><div class="fixmeter-issue-text"><span class="fixmeter-issue-name">' + issue.name + '</span><span class="fixmeter-issue-hint">' + issue.hint + '</span></div>';
+        btn.addEventListener('click', function() {
+          selectIssue(issue);
+        });
+        issueGrid.appendChild(btn);
+      });
+    }
+
+    function selectIssue(issue) {
+      currentIssue = issue;
+      showStep(3);
+      displayResults(issue);
+    }
+
+    function displayResults(issue) {
+      var urgency = urgencyMap[issue.urgency];
+
+      // Remove all urgency classes
+      section.classList.remove('fm-urgency--low', 'fm-urgency--medium', 'fm-urgency--high', 'fm-urgency--critical');
+      section.classList.add(urgency.class);
+
+      // Animate needle (rotation in degrees)
+      needle.style.transform = 'rotate(' + urgency.rotation + 'deg)';
+
+      // Animate gauge fill (stroke-dashoffset: 0 = full, 314 = empty)
+      var dashOffset = 314 - (314 * (urgency.rotation + 90) / 180);
+      gaugeFill.style.strokeDashoffset = dashOffset;
+
+      // Update labels (with slight delay for effect)
+      setTimeout(function() {
+        urgencyLabel.textContent = urgency.label;
+      }, 200);
+
+      setTimeout(function() {
+        timeLabel.textContent = issue.time;
+        costLabel.textContent = issue.cost;
+        difficultyLabel.textContent = issue.difficulty;
+      }, 400);
+
+      setTimeout(function() {
+        actionTitle.textContent = 'What to do next';
+        actionDesc.textContent = issue.action;
+      }, 600);
+    }
+
+    function showStep(step) {
+      step1.classList.remove('fixmeter-step--active');
+      step2.classList.remove('fixmeter-step--active');
+      step3.classList.remove('fixmeter-step--active');
+
+      if (step === 1) step1.classList.add('fixmeter-step--active');
+      else if (step === 2) step2.classList.add('fixmeter-step--active');
+      else if (step === 3) step3.classList.add('fixmeter-step--active');
+    }
+
+    // Back buttons
+    backBtn1.addEventListener('click', function() {
+      currentDevice = null;
+      showStep(1);
+    });
+
+    backBtn2.addEventListener('click', function() {
+      currentIssue = null;
+      step3.classList.remove('fixmeter-step--active');
+      step2.classList.add('fixmeter-step--active');
+    });
+
+    // Reset button
+    resetBtn.addEventListener('click', function() {
+      currentDevice = null;
+      currentIssue = null;
+      section.classList.remove('fm-urgency--low', 'fm-urgency--medium', 'fm-urgency--high', 'fm-urgency--critical');
+      needle.style.transform = 'rotate(-90deg)';
+      gaugeFill.style.strokeDashoffset = 314;
+      urgencyLabel.textContent = '—';
+      timeLabel.textContent = '—';
+      costLabel.textContent = '—';
+      difficultyLabel.textContent = '—';
+      actionTitle.textContent = 'What to do next';
+      actionDesc.textContent = 'Select a device and issue to see your recommended next steps.';
+      showStep(1);
+    });
+
+    // Initialize with empty state
+    showStep(1);
+
+  })();
+
 })();

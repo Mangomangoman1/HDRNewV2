@@ -5761,3 +5761,219 @@
   });
 
 })();
+
+
+/* ═══════════════════════════════════════════
+   TRIAGE SECTION — Device ER (Urgency Triage)
+══════════════════════════════════════════ */
+(function() {
+  'use strict';
+
+  // Data: symptoms by device
+  const triageData = {
+    iphone: {
+      label: 'iPhone',
+      symptoms: [
+        { id: 'screen-cracked', label: 'Screen cracked/shattered', urgency: 7, danger: "Don't press on the glass or try to peel it off.", action: 'Text me a photo. If the screen is still working, we can usually fix same-day.', info: 'Cracked screens rarely get worse quickly, but the glass can cut.' },
+        { id: 'water-damaged', label: 'Water/liquid damage', urgency: 9, danger: "Don't turn it on. Don't put it in rice — that doesn't work.", action: 'Power off immediately if its not already. Text me now. Time is critical.', info: 'The sooner I see it, the better the chances of saving it.' },
+        { id: 'battery-swollen', label: 'Battery swollen', urgency: 10, danger: "STOP using it. Don't charge it. Swollen batteries are dangerous.", action: 'Text me NOW. This is urgent — swollen batteries can leak or worse.', info: 'Usually happens over time from age or charging damage.' },
+        { id: 'not-turning-on', label: 'Won’t turn on', urgency: 6, danger: "Don't keep trying to charge a device that wont respond.", action: "Try a different cable/charger for 10 min. If still nothing, text me.", info: 'Could be the charging port, battery, or logic board.' },
+        { id: 'overheating', label: 'Overheating', urgency: 5, danger: 'Stop using it. Don’t put it in a freezer or bag of ice.', action: 'Let it cool down for 15 min. If it happens again, text me.', info: 'Could be software, battery, or debris in the charging port.' },
+        { id: 'no-sound', label: 'No sound/Audio issues', urgency: 2, danger: "Don't blow into the speaker holes — it will push debris deeper.", action: "Check Settings > Sound. Try a restart. Let me know if it persists.", info: "Often just software — rarely a hardware problem." },
+        { id: 'camera-broken', label: 'Camera not working', urgency: 3, danger: "Don't keep using a cracked camera — shards can damage other parts.", action: "Try a restart. If still broken, text me for a quote.", info: 'Often just needs a software reset.' },
+        { id: 'face-id-broken', label: 'Face ID broken', urgency: 4, danger: "Don't try to fix Face ID yourself — you could make it worse.", action: 'Try a restart first. If still failing, text for diagnosis.', info: 'Sometimes the flex cable just needs reseating.' }
+      ]
+    },
+    android: {
+      label: 'Android',
+      symptoms: [
+        { id: 'screen-cracked', label: 'Screen cracked/shattered', urgency: 7, danger: "Don't press on broken glass or try to peel off loose pieces.", action: 'Send a photo. Most screen repairs are done same-day.', info: 'Glass-only cracks (still works) vs LCD damage (lines/no picture).' },
+        { id: 'water-damaged', label: 'Water/liquid damage', urgency: 9, danger: "Don't turn it on. Rice doesn't help — it's a myth.", action: 'Power off now. Text me ASAP. Every hour matters.', info: 'Idaho weather — snow, rain, rivers — causes a lot of this.' },
+        { id: 'battery-swollen', label: 'Battery swollen', urgency: 10, danger: 'STOP. Don’t charge or use it. Swollen batteries are fire risk.', action: 'Get it to me today. This is serious — handle with care.', info: 'Usually from age or heat exposure.' },
+        { id: 'not-turning-on', label: 'Won’t turn on', urgency: 6, danger: "Don't repeatedly try to turn on a dead phone.", action: 'Try a different charger for 10 min. Let me know what happens.', info: 'Could be port, battery, or mainboard.' },
+        { id: 'overheating', label: 'Overheating', urgency: 5, danger: "Don't use it while charging. Don't submerge to cool it.", action: 'Let it rest 15 min. Close apps. If still hot, text me.', info: 'Often software-related. Can be charging port debris.' },
+        { id: 'no-sound', label: 'No sound', urgency: 2, danger: "Don't blow into ports — you'll push dirt deeper.", action: 'Check Settings. Restart. Check if speaker is blocked.', info: "Usually software — rarely the speaker itself." },
+        { id: 'charging-port', label: 'Charging issues', urgency: 4, danger: "Don't use a metal object to clean the port.", action: 'Try a different cable first. Let me know if it charges slowly.', info: 'Lint buildup is the #1 cause. I can clean it in 5 min.' },
+        { id: 'battery-drain', label: 'Fast battery drain', urgency: 3, danger: "Don't install "battery saver" apps — they do more harm.", action: 'Try a restart. Check which app is using most battery.', info: 'Often software. Could also be a bad battery.' }
+      ]
+    },
+    laptop: {
+      label: 'Laptop',
+      symptoms: [
+        { id: 'screen-broken', label: 'Screen broken/cracked', urgency: 7, danger: "Don't keep using a cracked screen — it will worsen.", action: 'Send photo. I'll find a matching replacement panel.', info: 'Panel-only repairs usually $100-200 depending on model.' },
+        { id: 'water-damaged', label: 'Liquid spilled on it', urgency: 10, danger: "DON'T turn it on. Don't take apart unless you know what you're doing.", action: 'Unplug immediately. If you can, remove the battery. Get to me today.', info: 'Time is critical. The sooner I see it, the better.' },
+        { id: 'not-turning-on', label: 'Won’t turn on', urgency: 8, danger: 'Stop mashing the power button.', action: 'Unplug all peripherals. Try a hard reset (hold power 30 sec). Then text me.', info: 'Could be power IC, battery, or mainboard.' },
+        { id: 'no-power', label: 'Charging issues', urgency: 4, danger: "Don't use cheap third-party chargers — they can damage laptops.", action: 'Try a different charger. Check the charging port for debris.', info: 'Usually the port or power jack — fixable.' },
+        { id: 'overheating', label: 'Overheating/Fan loud', urgency: 5, danger: "Don't block the vents. Don't run laptops on pillows/blankets.", action: 'Clean vents if you can. Check my tips page for proper use.', info: 'Dust buildup is common — I can clean and repaste.' },
+        { id: 'keyboard-broken', label: 'Keyboard not working', urgency: 3, danger: "Don't spill more liquid on it trying to clean it.", action: 'Try an external keyboard to test. Let me know which keys.', info: 'Could be the keyboard or the mainboard.' },
+        { id: 'trackpad-broken', label: 'Trackpad not working', urgency: 2, danger: "Don't try to force the trackpad — you could break it more.", action: 'Try restarting. Connect a mouse temporarily.', info: 'Often just needs a driver reset or fix.' },
+        { id: 'slow-performance', label: 'Slow/Freezing', urgency: 2, danger: "Don't install "PC cleaner" or "optimizer" software.", action: 'Try a restart first. Text me if it keeps happening.', info: 'Usually software — rarely hardware.' }
+      ]
+    },
+    tablet: {
+      label: 'Tablet',
+      symptoms: [
+        { id: 'screen-cracked', label: 'Screen cracked', urgency: 7, danger: "Don't press on broken glass.", action: 'Photo helps. Most tablets done in 1-2 hours.', info: 'iPad screens are layered — may need just glass or full display.' },
+        { id: 'water-damaged', label: 'Water damage', urgency: 9, danger: "Don't turn on. Rice doesn't work.", action: 'Power off if you can. Text me immediately.', info: 'Same-day response critical.' },
+        { id: 'not-charging', label: 'Won’t charge', urgency: 4, danger: 'Check the cable first. Try a different one.', action: 'Try different cable/charger. Check port for lint.', info: 'Lint in the port is the usual culprit.' },
+        { id: 'slow', label: 'Running slow', urgency: 1, danger: "Don't load it with "cleanup" apps.", action: 'Restart it. Check storage. Text me if persists.', info: 'Usually needs a restore, not hardware.' },
+        { id: 'speakers-noisy', label: 'Speaker issues', urgency: 2, danger: "Don't blow into the speakers.", action: 'Restart. Check volume settings. Let me know.', info: 'Usually software.' }
+      ]
+    },
+    console: {
+      label: 'Console',
+      symptoms: [
+        { id: 'not-turning-on', label: 'Won’t turn on', urgency: 6, danger: "Don't keep pressing the button. You could fry something.", action: 'Unplug 30 sec, then try again. Check power cable.', info: 'Many "dead" consoles just need a hard reset.' },
+        { id: 'hdmi-no-signal', label: 'No HDMI signal', urgency: 5, danger: "Don't bang the console. HDMI ports are fragile.", action: 'Try a different cable. Try a different TV. Text me.', info: 'HDMI port or the connector on the board.' },
+        { id: 'disc-issues', label: 'Disc not reading', urgency: 4, danger: "Don't use scratched discs. Clean discs gently.", action: 'Try cleaning the disc. If still failing, it probably needs a new drive.', info: 'Disc drive lasers do wear out.' },
+        { id: 'overheating', label: 'Shutting down/Overheating', urgency: 7, danger: "Don't block vents. Don't use in a cabinet.", action: 'Let it cool. Ensure ventilation. Text me if it keeps happening.', info: 'Could need new thermal paste or a fan.' },
+        { id: 'controller-drift', label: 'Controller drift', urgency: 3, drift: "Don't open it yourself — you will void whatever warranty remains.", action: 'Try resetting the controller first.', info: 'Joystick modules can be replaced.' },
+        { id: 'laser-damage', label: 'Lens not reading discs', urgency: 4, danger: "Don't keep trying to force it.", action: 'Try different games. If all fail, the laser likely needs replacing.', info: 'Lasers weaken over time.' }
+      ]
+    }
+  };
+
+  // Urgency level mapping
+  const urgencyLevels = [
+    { max: 2, label: 'Can Wait', icon: '⏳', color: '#3fb950' },
+    { max: 4, label: 'Schedule Soon', icon: '📅', color: '#39c5cf' },
+    { max: 6, label: 'Get Seen This Week', icon: '⚡', color: '#f78166' },
+    { max: 8, label: 'Urgent', icon: '🚨', color: '#f85149' },
+    { max: 10, label: 'ER Now', icon: '🚑', color: '#f85149' }
+  ];
+
+  // DOM elements
+  const triageWidget = document.getElementById('triageWidget');
+  if (!triageWidget) return;
+
+  const stage1 = document.getElementById('triageStage1');
+  const stage2 = document.getElementById('triageStage2');
+  const stage3 = document.getElementById('triageStage3');
+  const deviceBtns = document.querySelectorAll('.triage-device-btn');
+  const symptomsContainer = document.getElementById('triageSymptoms');
+  const nextBtn2 = document.getElementById('triageNext2');
+  const backBtn1 = document.getElementById('triageBack1');
+  const backBtn2 = document.getElementById('triageBack2');
+  const resetBtn = document.getElementById('triageReset');
+  const deviceLabel = document.getElementById('triageDeviceLabel');
+
+  // Gauges & result
+  const gaugeFill = document.getElementById('triageGaugeFill');
+  const urgencyIcon = document.getElementById('triageUrgencyIcon');
+  const urgencyLabel = document.getElementById('triageUrgencyLabel');
+  const urgencyScore = document.getElementById('triageUrgencyScore');
+
+  // Result cards
+  const dangerTitle = document.getElementById('triageDangerTitle');
+  const dangerDesc = document.getElementById('triageDangerDesc');
+  const actionTitle = document.getElementById('triageActionTitle');
+  const actionDesc = document.getElementById('triageActionDesc');
+  const infoTitle = document.getElementById('triageInfoTitle');
+  const infoDesc = document.getElementById('triageInfoDesc');
+
+  let selectedDevice = null;
+  let selectedSymptom = null;
+
+  // Device selection
+  deviceBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      selectedDevice = btn.dataset.triageDevice;
+      deviceBtns.forEach(b => b.setAttribute('data-triage-device-selected', 'false'));
+      btn.setAttribute('data-triage-device-selected', 'true');
+
+      // Populate symptoms
+      const data = triageData[selectedDevice];
+      deviceLabel.textContent = `(${data.label})`;
+
+      symptomsContainer.innerHTML = '';
+      data.symptoms.forEach(s => {
+        const pill = document.createElement('button');
+        pill.className = 'triage-symptom-btn';
+        pill.setAttribute('data-triage-symptom', s.id);
+        pill.textContent = s.label;
+        pill.addEventListener('click', () => {
+          symptomsContainer.querySelectorAll('.triage-symptom-btn').forEach(p => {
+            p.setAttribute('data-triage-symptom-selected', 'false');
+          });
+          pill.setAttribute('data-triage-symptom-selected', 'true');
+          selectedSymptom = s;
+          nextBtn2.disabled = false;
+        });
+        symptomsContainer.appendChild(pill);
+      });
+
+      // Move to stage 2
+      stage1.classList.remove('triage-stage--active');
+      stage2.classList.add('triage-stage--active');
+    });
+  });
+
+  // Navigation
+  backBtn1.addEventListener('click', () => {
+    selectedDevice = null;
+    deviceBtns.forEach(b => b.setAttribute('data-triage-device-selected', 'false'));
+    stage2.classList.remove('triage-stage--active');
+    stage1.classList.add('triage-stage--active');
+  });
+
+  nextBtn2.addEventListener('click', () => {
+    if (!selectedSymptom) return;
+    showResult(selectedSymptom);
+    stage2.classList.remove('triage-stage--active');
+    stage3.classList.add('triage-stage--active');
+  });
+
+  backBtn2.addEventListener('click', () => {
+    selectedSymptom = null;
+    nextBtn2.disabled = true;
+    symptomsContainer.querySelectorAll('.triage-symptom-btn').forEach(p => {
+      p.setAttribute('data-triage-symptom-selected', 'false');
+    });
+    stage3.classList.remove('triage-stage--active');
+    stage2.classList.add('triage-stage--active');
+  });
+
+  resetBtn.addEventListener('click', () => {
+    selectedDevice = null;
+    selectedSymptom = null;
+    deviceBtns.forEach(b => b.setAttribute('data-triage-device-selected', 'false'));
+    symptomsContainer.innerHTML = '';
+    nextBtn2.disabled = true;
+    stage3.classList.remove('triage-stage--active');
+    stage1.classList.add('triage-stage--active');
+  });
+
+  // Show triage result
+  function showResult(symptom) {
+    const urgency = symptom.urgency;
+    const maxUrgency = 10;
+    const percent = urgency / maxUrgency;
+
+    // Determine urgency level
+    let level = urgencyLevels[0];
+    for (const l of urgencyLevels) {
+      if (urgency <= l.max) {
+        level = l;
+        break;
+      }
+    }
+
+    // Animate gauge
+    const dashOffset = 251 * (1 - percent);
+    gaugeFill.style.strokeDashoffset = dashOffset;
+
+    // Set urgency display
+    urgencyIcon.textContent = level.icon;
+    urgencyLabel.textContent = level.label;
+    urgencyScore.textContent = `${urgency}/10`;
+
+    // Cards
+    dangerTitle.textContent = "Don't Do This";
+    dangerDesc.textContent = symptom.danger;
+    actionTitle.textContent = "Do This Now";
+    actionDesc.textContent = symptom.action;
+    infoTitle.textContent = 'Good to Know';
+    infoDesc.textContent = symptom.info;
+  }
+
+})();

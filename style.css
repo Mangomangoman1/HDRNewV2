@@ -14532,11 +14532,11 @@ kbd:active {
 }
 
 .lr-step-label {
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   font-weight: 700;
   color: var(--text-primary);
   margin-bottom: 4px;
-  transition: color 0.3s;
+  transition: color 0.3s, text-shadow 0.3s;
   text-transform: uppercase;
   letter-spacing: 0.04em;
 }
@@ -14547,14 +14547,16 @@ kbd:active {
 }
 
 .lr-step-time {
-  font-size: 0.72rem;
+  font-size: 0.7rem;
   color: var(--text-muted);
+  font-weight: 500;
+  margin-bottom: 4px;
   transition: color 0.3s;
 }
 
 .lr-step.done .lr-step-label,
 .lr-step.done .lr-step-time {
-  color: var(--text-secondary);
+  color: var(--color-green);
 }
 
 .lr-step-number {
@@ -14565,11 +14567,30 @@ kbd:active {
   top: -18px;
   left: 50%;
   transform: translateX(-50%);
-  transition: color 0.3s;
+  background: var(--bg-elevated);
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.4s var(--ease-spring);
+  border: 1px solid var(--border-subtle);
 }
 
 .lr-step.active .lr-step-number {
-  color: var(--accent);
+  color: white;
+  background: var(--accent);
+  border-color: var(--accent);
+  box-shadow: 0 0 15px var(--accent-glow);
+  transform: translateX(-50%) scale(1.15) rotate(-5deg);
+}
+
+.lr-step.done .lr-step-number {
+  color: white;
+  background: var(--color-green);
+  border-color: var(--color-green);
+  transform: translateX(-50%) scale(1.05);
 }
 
 .lr-step.active .lr-step-dot {

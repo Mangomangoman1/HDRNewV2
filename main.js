@@ -6756,6 +6756,54 @@
         time: '45–90',
         price: '$99',
         warranty: '90'
+      },
+      console: {
+        title: 'Console Repair',
+        subtitle: 'PS5 / Xbox / Switch Joy-Con',
+        icon: '<svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"/><line x1="6" y1="10" x2="6" y2="10.01"/><line x1="4" y1="12" x2="4" y2="12.01"/><circle cx="17" cy="10" r="1.5"/><circle cx="17" cy="14" r="1.5"/></svg>',
+        parts: [
+          { cls: 'anatomy-part-replaced', text: 'Analog stick module' },
+          { cls: 'anatomy-part-replaced', text: 'Trigger button assembly' },
+          { cls: 'anatomy-part-checked', text: 'PCB inspection and reflow' },
+          { cls: 'anatomy-part-checked', text: 'D-pad contact cleaning' },
+          { cls: 'anatomy-part-checked', text: 'Battery replacement (if applicable)' }
+        ],
+        steps: [
+          'Disassemble controller housing carefully',
+          'Inspect PCB for corrosion, broken traces, or cold joints',
+          'Replace worn components (sticks, triggers, buttons)',
+          'Clean and reassemble with fresh thermal compound',
+          'Calibration test and drift verification'
+        ],
+        highlight: ['frame', 'logic'],
+        complexity: 'medium',
+        time: '60–90',
+        price: '$49',
+        warranty: '90'
+      },
+      watch: {
+        title: 'Smart Watch Repair',
+        subtitle: 'Apple Watch / Galaxy Watch screen & battery',
+        icon: '<svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2" width="12" height="20" rx="4"/><path d="M8 6h0M16 6h0M8 18h0M16 18h0M12 2v4M12 18v4"/></svg>',
+        parts: [
+          { cls: 'anatomy-part-replaced', text: 'AMOLED display assembly' },
+          { cls: 'anatomy-part-replaced', text: 'Battery cell' },
+          { cls: 'anatomy-part-checked', text: 'Taptic engine test' },
+          { cls: 'anatomy-part-checked', text: 'Crown/side button function' },
+          { cls: 'anatomy-part-checked', text: 'Water resistance reseal' }
+        ],
+        steps: [
+          'Power off and remove band carefully',
+          'Heat and separate sapphire crystal from chassis',
+          'Disconnect and replace display/digitizer stack',
+          'Swap battery with fresh cell, verify connector seating',
+          'Reseal with fresh adhesive, run hardware test suite'
+        ],
+        highlight: ['glass', 'display', 'battery'],
+        complexity: 'high',
+        time: '30–60',
+        price: '$79',
+        warranty: '90'
       }
     };
 

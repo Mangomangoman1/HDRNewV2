@@ -2948,6 +2948,300 @@ a{color:inherit;text-decoration:none}
   </section>
 
   <!-- ═══════════════════════════════════════════
+       REPAIR PIPELINE — Live Repair Floor Tracker
+  ══════════════════════════════════════════════ -->
+  <section class="section pipeline-section" id="pipeline" aria-labelledby="pipeline-title">
+    <canvas class="pipeline-canvas" id="pipelineCanvas" aria-hidden="true"></canvas>
+    <div class="pipeline-scanlines" aria-hidden="true"></div>
+    <div class="container">
+      <div class="section-header">
+        <div class="section-eyebrow pipeline-eyebrow" data-animate>
+          <span class="pipeline-live-dot" aria-hidden="true"></span>
+          Live Repair Floor
+        </div>
+        <h2 class="section-title" id="pipeline-title" data-text-scramble>Devices currently in the shop</h2>
+        <p class="section-sub" data-text-reveal>Watch repairs move through the pipeline in real time. This is what your device goes through — every stage, every check.</p>
+      </div>
+
+      <!-- Pipeline Stage Labels -->
+      <div class="pipeline-stages" aria-label="Repair stages">
+        <div class="pipeline-stage-label" data-stage="received">
+          <div class="pipeline-stage-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+            </svg>
+          </div>
+          <span>Received</span>
+          <div class="pipeline-stage-count" id="countReceived">0</div>
+        </div>
+        <div class="pipeline-stage-arrow" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+        </div>
+        <div class="pipeline-stage-label" data-stage="diagnosis">
+          <div class="pipeline-stage-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+            </svg>
+          </div>
+          <span>Diagnosis</span>
+          <div class="pipeline-stage-count" id="countDiagnosis">0</div>
+        </div>
+        <div class="pipeline-stage-arrow" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+        </div>
+        <div class="pipeline-stage-label" data-stage="repair">
+          <div class="pipeline-stage-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
+            </svg>
+          </div>
+          <span>In Repair</span>
+          <div class="pipeline-stage-count" id="countRepair">0</div>
+        </div>
+        <div class="pipeline-stage-arrow" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+        </div>
+        <div class="pipeline-stage-label" data-stage="testing">
+          <div class="pipeline-stage-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+            </svg>
+          </div>
+          <span>Testing</span>
+          <div class="pipeline-stage-count" id="countTesting">0</div>
+        </div>
+        <div class="pipeline-stage-arrow" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+        </div>
+        <div class="pipeline-stage-label pipeline-stage-label--ready" data-stage="ready">
+          <div class="pipeline-stage-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>
+            </svg>
+          </div>
+          <span>Ready</span>
+          <div class="pipeline-stage-count" id="countReady">0</div>
+        </div>
+      </div>
+
+      <!-- Pipeline Board -->
+      <div class="pipeline-board" id="pipelineBoard" role="list" aria-label="Devices in repair pipeline">
+        <!-- Devices injected by JS -->
+      </div>
+
+      <!-- Pipeline Footer -->
+      <div class="pipeline-footer" data-animate>
+        <div class="pipeline-legend">
+          <div class="pipeline-legend-item">
+            <span class="pipeline-legend-dot pipeline-legend-dot--phone" aria-hidden="true"></span>
+            <span>Phone</span>
+          </div>
+          <div class="pipeline-legend-item">
+            <span class="pipeline-legend-dot pipeline-legend-dot--laptop" aria-hidden="true"></span>
+            <span>Laptop</span>
+          </div>
+          <div class="pipeline-legend-item">
+            <span class="pipeline-legend-dot pipeline-legend-dot--tablet" aria-hidden="true"></span>
+            <span>Tablet</span>
+          </div>
+          <div class="pipeline-legend-item">
+            <span class="pipeline-legend-dot pipeline-legend-dot--console" aria-hidden="true"></span>
+            <span>Console</span>
+          </div>
+        </div>
+        <p class="pipeline-note">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          Demo data — your repair is private and personal
+        </p>
+      </div>
+
+      <!-- CTA -->
+      <div class="pipeline-cta" data-animate>
+        <p class="pipeline-cta-text">Want your device on this board?</p>
+        <a href="sms:+12083666111" class="btn btn-primary btn-lg btn-magnetic btn-sparkle" data-magnetic>
+          <span class="material-symbols-outlined" aria-hidden="true">sms</span>
+          Text Samuel — (208) 366-6111
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <div class="wave-divider wave-divider--flip" aria-hidden="true"><svg viewBox="0 0 1440 48" preserveAspectRatio="none"><path class="wave-fill" d="M0,24 C240,0 480,48 720,24 C960,0 1200,48 1440,24 L1440,48 L0,48 Z"/></svg></div>
+
+  <!-- ═══════════════════════════════════════════
+       FIX METER — Interactive Repair Urgency Gauge
+  ══════════════════════════════════════════════ -->
+  <section class="section fixmeter-section" id="fixmeter" aria-labelledby="fixmeter-title">
+    <div class="fixmeter-bg" aria-hidden="true">
+      <div class="fixmeter-grid-lines"></div>
+      <div class="fixmeter-glow-orb fixmeter-glow-orb--1"></div>
+      <div class="fixmeter-glow-orb fixmeter-glow-orb--2"></div>
+    </div>
+    <div class="container">
+      <div class="section-header">
+        <div class="section-eyebrow" data-animate>
+          <span class="fixmeter-eyebrow-icon" aria-hidden="true">⚡</span>
+          Fix Meter
+        </div>
+        <h2 class="section-title" id="fixmeter-title" data-text-scramble>How bad is it, really?</h2>
+        <p class="section-sub" data-text-reveal>Pick your device and what's wrong. I'll tell you how urgent it is, what it typically runs, and what to do next.</p>
+      </div>
+
+      <div class="fixmeter-layout" data-animate>
+        <!-- Step 1: Device Picker -->
+        <div class="fixmeter-step fixmeter-step--active" id="fixmeterStep1" role="group" aria-labelledby="fm-device-label">
+          <h3 class="fixmeter-step-label" id="fm-device-label">1. What device needs fixing?</h3>
+          <div class="fixmeter-device-grid" role="list">
+            <button class="fixmeter-device-card" data-fm-device="iphone" role="listitem" aria-label="iPhone">
+              <div class="fixmeter-device-card-glow" aria-hidden="true"></div>
+              <div class="fixmeter-device-icon" aria-hidden="true">
+                <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="14" y="4" width="20" height="40" rx="4"/><line x1="24" y1="40" x2="24" y2="40.01"/><line x1="20" y1="8" x2="28" y2="8"/></svg>
+              </div>
+              <span class="fixmeter-device-name">iPhone</span>
+            </button>
+            <button class="fixmeter-device-card" data-fm-device="android" role="listitem" aria-label="Android Phone">
+              <div class="fixmeter-device-card-glow" aria-hidden="true"></div>
+              <div class="fixmeter-device-icon" aria-hidden="true">
+                <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="14" y="6" width="20" height="36" rx="3"/><line x1="24" y1="38" x2="24" y2="38.01"/><path d="M20 2h8" stroke-width="1.5"/></svg>
+              </div>
+              <span class="fixmeter-device-name">Android</span>
+            </button>
+            <button class="fixmeter-device-card" data-fm-device="laptop" role="listitem" aria-label="Laptop">
+              <div class="fixmeter-device-card-glow" aria-hidden="true"></div>
+              <div class="fixmeter-device-icon" aria-hidden="true">
+                <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="8" width="36" height="24" rx="2"/><path d="M4 36h40"/><path d="M18 32v4"/><path d="M30 32v4"/></svg>
+              </div>
+              <span class="fixmeter-device-name">Laptop</span>
+            </button>
+            <button class="fixmeter-device-card" data-fm-device="ipad" role="listitem" aria-label="iPad / Tablet">
+              <div class="fixmeter-device-card-glow" aria-hidden="true"></div>
+              <div class="fixmeter-device-icon" aria-hidden="true">
+                <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="6" width="32" height="36" rx="3"/><circle cx="24" cy="38" r="1.5" fill="currentColor" stroke="none"/></svg>
+              </div>
+              <span class="fixmeter-device-name">Tablet</span>
+            </button>
+            <button class="fixmeter-device-card" data-fm-device="console" role="listitem" aria-label="Game Console">
+              <div class="fixmeter-device-card-glow" aria-hidden="true"></div>
+              <div class="fixmeter-device-icon" aria-hidden="true">
+                <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="16" width="40" height="20" rx="4"/><circle cx="14" cy="26" r="3"/><path d="M30 24h4M32 22v4"/><circle cx="36" cy="28" r="1"/><circle cx="36" cy="24" r="1"/></svg>
+              </div>
+              <span class="fixmeter-device-name">Console</span>
+            </button>
+            <button class="fixmeter-device-card" data-fm-device="other" role="listitem" aria-label="Other Device">
+              <div class="fixmeter-device-card-glow" aria-hidden="true"></div>
+              <div class="fixmeter-device-icon" aria-hidden="true">
+                <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="24" cy="24" r="6"/><path d="M24 4v4M24 40v4M4 24h4M40 24h4M10 10l3 3M35 35l3 3M10 38l3-3M35 13l3-3"/></svg>
+              </div>
+              <span class="fixmeter-device-name">Other</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Step 2: Issue Picker -->
+        <div class="fixmeter-step" id="fixmeterStep2" role="group" aria-labelledby="fm-issue-label">
+          <button class="fixmeter-back-btn" id="fmBack1" aria-label="Go back to device selection">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+            Back
+          </button>
+          <h3 class="fixmeter-step-label" id="fm-issue-label">2. What's going on with it?</h3>
+          <div class="fixmeter-issue-grid" id="fixmeterIssueGrid" role="list">
+            <!-- Populated by JS based on device -->
+          </div>
+        </div>
+
+        <!-- Step 3: Results -->
+        <div class="fixmeter-step" id="fixmeterStep3" role="group" aria-labelledby="fm-results-label">
+          <button class="fixmeter-back-btn" id="fmBack2" aria-label="Go back to issue selection">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+            Back
+          </button>
+          <h3 class="fixmeter-step-label" id="fm-results-label">Here's the readout</h3>
+
+          <div class="fixmeter-results">
+            <!-- Gauge -->
+            <div class="fixmeter-gauge-wrap">
+              <div class="fixmeter-gauge-container" aria-hidden="true">
+                <svg class="fixmeter-gauge-svg" viewBox="0 0 260 160">
+                  <!-- Gauge arc track -->
+                  <path class="fm-gauge-track" d="M30 140 A100 100 0 0 1 230 140" fill="none" stroke-width="18" stroke-linecap="round"/>
+                  <!-- Gauge arc fill -->
+                  <path class="fm-gauge-fill" id="fmGaugeFill" d="M30 140 A100 100 0 0 1 230 140" fill="none" stroke-width="18" stroke-linecap="round"/>
+                  <!-- Zone markers -->
+                  <line class="fm-gauge-marker" x1="30" y1="140" x2="40" y2="130" />
+                  <line class="fm-gauge-marker" x1="130" y1="40" x2="130" y2="54" />
+                  <line class="fm-gauge-marker" x1="230" y1="140" x2="220" y2="130" />
+                  <!-- Needle -->
+                  <line class="fm-gauge-needle" id="fmNeedle" x1="130" y1="140" x2="130" y2="52" stroke-width="3" stroke-linecap="round" transform="rotate(-90 130 140)"/>
+                  <circle class="fm-gauge-pivot" cx="130" cy="140" r="8"/>
+                  <!-- Zone labels -->
+                  <text class="fm-gauge-label fm-gauge-label--low" x="42" y="152" text-anchor="middle">Low</text>
+                  <text class="fm-gauge-label fm-gauge-label--mid" x="130" y="36" text-anchor="middle">Medium</text>
+                  <text class="fm-gauge-label fm-gauge-label--high" x="218" y="152" text-anchor="middle">Critical</text>
+                </svg>
+              </div>
+              <div class="fixmeter-gauge-center" id="fmGaugeCenter">
+                <span class="fixmeter-gauge-value" id="fmUrgencyLabel">—</span>
+                <span class="fixmeter-gauge-sublabel">Repair Urgency</span>
+              </div>
+            </div>
+
+            <!-- Stats Row -->
+            <div class="fixmeter-stats">
+              <div class="fixmeter-stat">
+                <div class="fixmeter-stat-icon" aria-hidden="true">
+                  <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="24" cy="24" r="18"/><polyline points="24,12 24,24 32,28"/></svg>
+                </div>
+                <div class="fixmeter-stat-content">
+                  <span class="fixmeter-stat-value" id="fmTime">—</span>
+                  <span class="fixmeter-stat-label">Typical Turnaround</span>
+                </div>
+              </div>
+              <div class="fixmeter-stat">
+                <div class="fixmeter-stat-icon" aria-hidden="true">
+                  <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M28 6H18a4 4 0 00-4 4v28a4 4 0 004 4h12a4 4 0 004-4V16l-6-10z"/><path d="M28 6v10h10"/><line x1="22" y1="32" x2="26" y2="32"/></svg>
+                </div>
+                <div class="fixmeter-stat-content">
+                  <span class="fixmeter-stat-value" id="fmCost">—</span>
+                  <span class="fixmeter-stat-label">Typical Cost Range</span>
+                </div>
+              </div>
+              <div class="fixmeter-stat">
+                <div class="fixmeter-stat-icon" aria-hidden="true">
+                  <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M24 4v4M24 40v4M4 24h4M40 24h4"/><circle cx="24" cy="24" r="8"/></svg>
+                </div>
+                <div class="fixmeter-stat-content">
+                  <span class="fixmeter-stat-value" id="fmDifficulty">—</span>
+                  <span class="fixmeter-stat-label">Difficulty Level</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Action Steps -->
+            <div class="fixmeter-action" id="fmAction">
+              <div class="fixmeter-action-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+              </div>
+              <div class="fixmeter-action-content">
+                <span class="fixmeter-action-title" id="fmActionTitle">What to do next</span>
+                <p class="fixmeter-action-desc" id="fmActionDesc">Select a device and issue to see your recommended next steps.</p>
+              </div>
+            </div>
+
+            <!-- CTA -->
+            <div class="fixmeter-cta">
+              <a href="sms:+12083666111" class="btn btn-primary btn-lg btn-magnetic" data-magnetic>
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+                Text Sam to get it fixed
+              </a>
+              <button class="btn btn-outline fixmeter-reset-btn" id="fmReset" type="button">Try another device</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════
        CONTACT / FOOTER
   ══════════════════════════════════════════════ -->
   <section class="section section--alt" id="contact">

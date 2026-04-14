@@ -4491,34 +4491,24 @@
       document.getElementById('lrStep6')
     ];
 
-    // Step detail descriptions shown below timeline labels
+    // Step detail descriptions shown below timeline labels — rich, technical
     const stepDetails = [
-      '"Hey Samuel, iPhone 14 screen cracked on the corner"',
-      'Full diagnostic: LCD, digitizer, face ID, battery',
-      '$189 parts + labor, 1-year warranty, OEM display',
-      'Approved via text — repair confirmed, started',
-      'Heatgun at 70°C, pry tool, spudger, static bracelet',
-      'All tests green — touch, True Tone, face ID'
+      '"Hey Samuel, iPhone 14 screen cracked on the corner." Device model, color, storage confirmed. Repair slot queued.',
+      'Visual inspection at 10x magnification. Crack at ~9 o'clock. Backlight bleed confirmed. Secondary damage check complete.',
+      '$189 parts + labor. OEM display quoted. 40-day warranty. Customer asked about aftermarket vs OEM — answered.',
+      'Quote approved via text. $50 deposit received. Parts pulled and verified. Repair confirmed for today.',
+      'ESD workspace active. Heat gun at 70°C for 90 sec. Adhesive separator along left edge. ZIF released. New display seated.',
+      'All 5-finger touch ✓ True Tone re-enrolled ✓ Face ID functional ✓ Display uniform ✓ Device polished and boxed.'
     ];
 
-    // Status messages for each step
+    // Status messages — richer, more technical, per-step arrays
     const statusMessages = [
-      ['Text received — "iPhone 14 screen cracked"'],
-      ['Diagnosis: cracked LCD, backlight bleeding visible'],
-      ['Quote sent: $189 parts + labor', 'Answered questions about OEM vs aftermarket'],
-      ['Quote approved — repair confirmed'],
-      ['Screen removed, adhesive cleared', 'New display seated, connectors secured', 'Running multi-touch and True Tone enrollment...'],
-      ['All tests passed ✓', 'Device ready for pickup — SMS sent']
-    ];
-    
-    // Enhanced step details with more technical detail
-    const stepDetails = [
-      'Customer texts about cracked screen. Note device model, color, storage size. Queue repair slot.',
-      'Visual inspection under 10x magnification. Document crack pattern. Check for secondary damage.',
-      'Research current part pricing. Factor in OEM quality, labor time, and 40-day warranty.',
-      'Customer reviews quote. Answer any questions. Confirm start when deposit received.',
-      'ESD-safe workspace. iOpener at 70°C. Pry tool separation. ZIF connector release. Full surface prep.',
-      'Multi-touch accuracy, True Tone calibration, ambient light sensor, Face ID functionality.'
+      ['9:04 AM — Text received', '"iPhone 14, screen cracked on the corner"'],
+      ['9:41 AM — Diagnosis complete', 'Cracked LCD confirmed. No Face ID or battery damage.', 'Backlight bleed visible through cracked glass.'],
+      ['9:52 AM — Quote sent', '$189 parts + labor', 'Answered OEM vs aftermarket questions'],
+      ['9:58 AM — Approved', 'Deposit received', 'Parts pulled and verified from inventory'],
+      ['10:15 AM — Repair started', 'Heat gun at 70°C, 90 seconds', 'Adhesive separator applied along left edge', 'ZIF connectors released — display free', 'New display seated and connected', 'Running multi-point test suite...'],
+      ['11:02 AM — All tests passed ✓', 'True Tone re-enrolled ✓', 'Face ID: fully functional ✓', 'Device polished, boxed, ready for pickup']
     ];
 
     let currentStep = -1;
@@ -4752,32 +4742,21 @@
 
     // Step detail descriptions shown below timeline labels
     const stepDetails = [
-      '"Hey Samuel, iPhone 14 screen cracked on the corner"',
-      'Full diagnostic: LCD, digitizer, face ID, battery',
-      '$189 parts + labor, 1-year warranty, OEM display',
-      'Approved via text — repair confirmed, started',
-      'Heatgun at 70°C, pry tool, spudger, static bracelet',
-      'All tests green — touch, True Tone, face ID'
+      '"Hey Samuel, iPhone 14 screen cracked on the corner." Device model, color, storage confirmed. Repair slot queued.',
+      'Visual inspection at 10x magnification. Crack at ~9 o'clock. Backlight bleed confirmed. Secondary damage check complete.',
+      '$189 parts + labor. OEM display quoted. 40-day warranty. Customer asked about aftermarket vs OEM — answered.',
+      'Quote approved via text. $50 deposit received. Parts pulled and verified. Repair confirmed for today.',
+      'ESD workspace active. Heat gun at 70°C for 90 sec. Adhesive separator along left edge. ZIF released. New display seated.',
+      'All 5-finger touch ✓ True Tone re-enrolled ✓ Face ID functional ✓ Display uniform ✓ Device polished and boxed.'
     ];
 
-    // Status messages for each step
     const statusMessages = [
-      ['Text received — "iPhone 14 screen cracked"'],
-      ['Diagnosis: cracked LCD, backlight bleeding visible'],
-      ['Quote sent: $189 parts + labor', 'Answered questions about OEM vs aftermarket'],
-      ['Quote approved — repair confirmed'],
-      ['Screen removed, adhesive cleared', 'New display seated, connectors secured', 'Running multi-touch and True Tone enrollment...'],
-      ['All tests passed ✓', 'Device ready for pickup — SMS sent']
-    ];
-    
-    // Enhanced step details with more technical detail
-    const stepDetails = [
-      'Customer texts about cracked screen. Note device model, color, storage size. Queue repair slot.',
-      'Visual inspection under 10x magnification. Document crack pattern. Check for secondary damage.',
-      'Research current part pricing. Factor in OEM quality, labor time, and 40-day warranty.',
-      'Customer reviews quote. Answer any questions. Confirm start when deposit received.',
-      'ESD-safe workspace. iOpener at 70°C. Pry tool separation. ZIF connector release. Full surface prep.',
-      'Multi-touch accuracy, True Tone calibration, ambient light sensor, Face ID functionality.'
+      ['9:04 AM — Text received', '"iPhone 14, screen cracked on the corner"'],
+      ['9:41 AM — Diagnosis complete', 'Cracked LCD confirmed. No Face ID or battery damage.', 'Backlight bleed visible through cracked glass.'],
+      ['9:52 AM — Quote sent', '$189 parts + labor', 'Answered OEM vs aftermarket questions'],
+      ['9:58 AM — Approved', 'Deposit received', 'Parts pulled and verified from inventory'],
+      ['10:15 AM — Repair started', 'Heat gun at 70°C, 90 seconds', 'Adhesive separator applied along left edge', 'ZIF connectors released — display free', 'New display seated and connected', 'Running multi-point test suite...'],
+      ['11:02 AM — All tests passed ✓', 'True Tone re-enrolled ✓', 'Face ID: fully functional ✓', 'Device polished, boxed, ready for pickup']
     ];
 
     let currentStep = -1;
@@ -5095,31 +5074,21 @@
 
     // Step detail descriptions shown below timeline labels
     const stepDetails = [
-      '"Hey Samuel, iPhone 14 screen cracked on the corner"',
-      'Full diagnostic: LCD, digitizer, face ID, battery',
-      '$189 parts + labor, 1-year warranty, OEM display',
-      'Approved via text — repair confirmed, started',
-      'Heatgun at 70°C, pry tool, spudger, static bracelet',
-      'All tests green — touch, True Tone, face ID'
+      '"Hey Samuel, iPhone 14 screen cracked on the corner." Device model, color, storage confirmed. Repair slot queued.',
+      'Visual inspection at 10x magnification. Crack at ~9 o\'clock. Backlight bleed confirmed. Secondary damage check complete.',
+      '$189 parts + labor. OEM display quoted. 40-day warranty. Customer asked about aftermarket vs OEM — answered.',
+      'Quote approved via text. $50 deposit received. Parts pulled and verified. Repair confirmed for today.',
+      'ESD workspace active. Heat gun at 70°C for 90 sec. Adhesive separator along left edge. ZIF released. New display seated.',
+      'All 5-finger touch ✓ True Tone re-enrolled ✓ Face ID functional ✓ Display uniform ✓ Device polished and boxed.'
     ];
 
     const statusMessages = [
-      ['Text received — "iPhone 14 screen cracked"'],
-      ['Diagnosis: cracked LCD, backlight bleeding visible'],
-      ['Quote sent: $189 parts + labor', 'Answered questions about OEM vs aftermarket'],
-      ['Quote approved — repair confirmed'],
-      ['Screen removed, adhesive cleared', 'New display seated, connectors secured', 'Running multi-touch and True Tone enrollment...'],
-      ['All tests passed ✓', 'Device ready for pickup — SMS sent']
-    ];
-    
-    // Enhanced step details with more technical detail
-    const stepDetails = [
-      'Customer texts about cracked screen. Note device model, color, storage size. Queue repair slot.',
-      'Visual inspection under 10x magnification. Document crack pattern. Check for secondary damage.',
-      'Research current part pricing. Factor in OEM quality, labor time, and 40-day warranty.',
-      'Customer reviews quote. Answer any questions. Confirm start when deposit received.',
-      'ESD-safe workspace. iOpener at 70°C. Pry tool separation. ZIF connector release. Full surface prep.',
-      'Multi-touch accuracy, True Tone calibration, ambient light sensor, Face ID functionality.'
+      ['9:04 AM — Text received', '"iPhone 14, screen cracked on the corner"'],
+      ['9:41 AM — Diagnosis complete', 'Cracked LCD confirmed. No Face ID or battery damage.', 'Backlight bleed visible through cracked glass.'],
+      ['9:52 AM — Quote sent', '$189 parts + labor', 'Answered OEM vs aftermarket questions'],
+      ['9:58 AM — Approved', 'Deposit received', 'Parts pulled and verified from inventory'],
+      ['10:15 AM — Repair started', 'Heat gun at 70°C, 90 seconds', 'Adhesive separator applied along left edge', 'ZIF connectors released — display free', 'New display seated and connected', 'Running multi-point test suite...'],
+      ['11:02 AM — All tests passed ✓', 'True Tone re-enrolled ✓', 'Face ID: fully functional ✓', 'Device polished, boxed, ready for pickup']
     ];
 
     let currentStep = -1;
@@ -6803,6 +6772,78 @@
         complexity: 'high',
         time: '30–60',
         price: '$79',
+        warranty: '90'
+      },
+      airpods: {
+        title: 'AirPods Repair',
+        subtitle: 'AirPods Pro / AirPods Max audio repair',
+        icon: '<svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3c0-2 2-3 4-3s4 1 4 3v2c2.2 0 4 1.8 4 4v4c0 2.2-1.8 4-4 4v1c0 1.1-.9 2-2 2H6c-1.1 0-2-.9-2-2v-1c-2.2 0-4-1.8-4-4V9c0-2.2 1.8-4 4-4V3z"/></svg>',
+        parts: [
+          { cls: 'anatomy-part-replaced', text: 'Speaker driver (woofer)' },
+          { cls: 'anatomy-part-replaced', text: 'Battery cell (case or earbud)' },
+          { cls: 'anatomy-part-checked', text: 'Microphone array test' },
+          { cls: 'anatomy-part-checked', text: 'Active noise cancellation calibration' },
+          { cls: 'anatomy-part-checked', text: 'Hinge / folding mechanism' }
+        ],
+        steps: [
+          {title: 'Open AirPods housing without damaging acoustic chamber', detail: 'Specialized snap-fit tools and precise heat application at 40°C to avoid cracking the shell.'},
+          'Desolder old speaker driver, inspect voice coil',
+          'Replace battery with OEM cell, re-solder connections',
+          'Reassemble housing, check mesh and seal integrity',
+          'Run ANC test, frequency response, and mic quality check'
+        ],
+        highlight: ['frame', 'battery', 'logic'],
+        complexity: 'medium',
+        time: '20–40',
+        price: '$49',
+        warranty: '90'
+      },
+      headphones: {
+        title: 'Headphones Repair',
+        subtitle: 'Over-ear cans — Sony, Bose, Sennheiser, Beats',
+        icon: '<svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/></svg>',
+        parts: [
+          { cls: 'anatomy-part-replaced', text: '50mm dynamic driver' },
+          { cls: 'anatomy-part-replaced', text: 'Headband cushion set' },
+          { cls: 'anatomy-part-checked', text: 'ANC board and microphones' },
+          { cls: 'anatomy-part-checked', text: 'Bluetooth module (PCB)' },
+          { cls: 'anatomy-part-checked', text: 'Volume/control flex cable' }
+        ],
+        steps: [
+          {title: 'Disassemble ear cups without cracking the plastic shell', detail: 'T6 Torx screws hidden under cushions. Plastic prying tool in seam, not the baffle.'},
+          'Inspect driver cone for tears or deformation',
+          'Replace foam damper and acoustic felt if degraded',
+          'Reassemble with fresh adhesive on ear pad ring',
+          'Bluetooth pairing test, ANC measurement, frequency sweep'
+        ],
+        highlight: ['frame', 'logic', 'battery'],
+        complexity: 'medium',
+        time: '30–90',
+        price: '$59',
+        warranty: '90'
+      },
+      gaming: {
+        title: 'Gaming Handheld Repair',
+        subtitle: 'Nintendo Switch, Steam Deck, ROG Ally charging',
+        icon: '<svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="3"/><line x1="6" y1="10" x2="6.01" y2="10"/><line x1="10" y1="10" x2="10.01" y2="10"/><circle cx="17" cy="10" r="1"/><circle cx="17" cy="14" r="1"/><path d="M7 14h4v2H7z"/></svg>',
+        parts: [
+          { cls: 'anatomy-part-replaced', text: 'Analog stick joystick module' },
+          { cls: 'anatomy-part-replaced', text: 'OLED / LCD panel (if applicable)' },
+          { cls: 'anatomy-part-checked', text: 'Charging port (USB-C daughterboard)' },
+          { cls: 'anatomy-part-checked', text: 'Joy-con rail connector' },
+          { cls: 'anatomy-part-checked', text: 'Battery health and power management IC' }
+        ],
+        steps: [
+          {title: 'Back up saves before any board-level work', detail: 'Joy-cons slide off Switch. Steam Deck requires EM shield removal for board access.'},
+          'Test each analog stick for drift under 5% dead zone',
+          'Replace stick modules with new OEM parts (Hall effect upgrade available)',
+          'Reflow or replace charging port if loose or corroded',
+          'Reassemble, run drift calibration, verify sleep/wake and USB-C video out'
+        ],
+        highlight: ['display', 'battery', 'logic'],
+        complexity: 'high',
+        time: '60–180',
+        price: '$69',
         warranty: '90'
       }
     };

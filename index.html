@@ -1391,6 +1391,34 @@ a{color:inherit;text-decoration:none}
             <span class="anatomy-tab-label">Watch</span>
             <span class="anatomy-tab-time" aria-hidden="true">30–60 min</span>
           </button>
+          <button class="anatomy-tab" role="tab" aria-selected="false" data-repair="airpods" id="anatomyTabAirpods" aria-controls="anatomyView">
+            <span class="anatomy-tab-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M8 3c0-2 2-3 4-3s4 1 4 3v2c2.2 0 4 1.8 4 4v4c0 2.2-1.8 4-4 4v1c0 1.1-.9 2-2 2H6c-1.1 0-2-.9-2-2v-1c-2.2 0-4-1.8-4-4V9c0-2.2 1.8-4 4-4V3z"/>
+                <line x1="8" y1="11" x2="8" y2="17"/><line x1="16" y1="11" x2="16" y2="17"/>
+              </svg>
+            </span>
+            <span class="anatomy-tab-label">AirPods</span>
+            <span class="anatomy-tab-time" aria-hidden="true">20–40 min</span>
+          </button>
+          <button class="anatomy-tab" role="tab" aria-selected="false" data-repair="headphones" id="anatomyTabHeadphones" aria-controls="anatomyView">
+            <span class="anatomy-tab-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/>
+              </svg>
+            </span>
+            <span class="anatomy-tab-label">Headphones</span>
+            <span class="anatomy-tab-time" aria-hidden="true">30–90 min</span>
+          </button>
+          <button class="anatomy-tab" role="tab" aria-selected="false" data-repair="gaming" id="anatomyTabGaming" aria-controls="anatomyView">
+            <span class="anatomy-tab-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="2" y="6" width="20" height="12" rx="3"/><line x1="6" y1="10" x2="6.01" y2="10"/><line x1="10" y1="10" x2="10.01" y2="10"/><circle cx="17" cy="10" r="1"/><circle cx="17" cy="14" r="1"/><path d="M7 14h4v2H7z"/>
+              </svg>
+            </span>
+            <span class="anatomy-tab-label">Gaming</span>
+            <span class="anatomy-tab-time" aria-hidden="true">1–3 hrs</span>
+          </button>
         </div>
         <!-- Complexity meter -->
         <div class="anatomy-complexity" id="anatomyComplexity" aria-label="Repair complexity">
@@ -1861,7 +1889,18 @@ a{color:inherit;text-decoration:none}
                   <path d="M4 20L20 4M8 16l4 4"/>
                 </svg>
               </div>
+              <div class="lr-tool lr-tool--heatgun" id="lrToolHeatgun">
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M8 4v10M6 8h4M4 14c0-2 2-4 4-4s4 2 4 4-2 4-4 4-4-2-4-4z"/><path d="M12 10v4M10 12h4"/>
+                </svg>
+              </div>
+              <div class="lr-tool lr-tool--suction" id="lrToolSuction">
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="8" r="5"/><path d="M12 13v3M8 21h8M10 18h4"/>
+                </svg>
+              </div>
             </div>
+            <div class="lr-crt-overlay" aria-hidden="true"></div>
           </div>
           <div class="lr-device-shadow" aria-hidden="true"></div>
         </div>

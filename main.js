@@ -5794,20 +5794,20 @@
         { id: 'overheating', label: 'Overheating', urgency: 5, danger: "Don't use it while charging. Don't submerge to cool it.", action: 'Let it rest 15 min. Close apps. If still hot, text me.', info: 'Often software-related. Can be charging port debris.' },
         { id: 'no-sound', label: 'No sound', urgency: 2, danger: "Don't blow into ports — you'll push dirt deeper.", action: 'Check Settings. Restart. Check if speaker is blocked.', info: "Usually software — rarely the speaker itself." },
         { id: 'charging-port', label: 'Charging issues', urgency: 4, danger: "Don't use a metal object to clean the port.", action: 'Try a different cable first. Let me know if it charges slowly.', info: 'Lint buildup is the #1 cause. I can clean it in 5 min.' },
-        { id: 'battery-drain', label: 'Fast battery drain', urgency: 3, danger: "Don't install "battery saver" apps — they do more harm.", action: 'Try a restart. Check which app is using most battery.', info: 'Often software. Could also be a bad battery.' }
+        { id: 'battery-drain', label: 'Fast battery drain', urgency: 3, danger: "Don't install 'battery saver' apps — they do more harm.", action: 'Try a restart. Check which app is using most battery.', info: 'Often software. Could also be a bad battery.' }
       ]
     },
     laptop: {
       label: 'Laptop',
       symptoms: [
-        { id: 'screen-broken', label: 'Screen broken/cracked', urgency: 7, danger: "Don't keep using a cracked screen — it will worsen.", action: 'Send photo. I'll find a matching replacement panel.', info: 'Panel-only repairs usually $100-200 depending on model.' },
+        { id: 'screen-broken', label: 'Screen broken/cracked', urgency: 7, danger: "Don't keep using a cracked screen — it will worsen.", action: "Send photo. I'll find a matching replacement panel.", info: 'Panel-only repairs usually $100-200 depending on model.' },
         { id: 'water-damaged', label: 'Liquid spilled on it', urgency: 10, danger: "DON'T turn it on. Don't take apart unless you know what you're doing.", action: 'Unplug immediately. If you can, remove the battery. Get to me today.', info: 'Time is critical. The sooner I see it, the better.' },
         { id: 'not-turning-on', label: 'Won’t turn on', urgency: 8, danger: 'Stop mashing the power button.', action: 'Unplug all peripherals. Try a hard reset (hold power 30 sec). Then text me.', info: 'Could be power IC, battery, or mainboard.' },
         { id: 'no-power', label: 'Charging issues', urgency: 4, danger: "Don't use cheap third-party chargers — they can damage laptops.", action: 'Try a different charger. Check the charging port for debris.', info: 'Usually the port or power jack — fixable.' },
         { id: 'overheating', label: 'Overheating/Fan loud', urgency: 5, danger: "Don't block the vents. Don't run laptops on pillows/blankets.", action: 'Clean vents if you can. Check my tips page for proper use.', info: 'Dust buildup is common — I can clean and repaste.' },
         { id: 'keyboard-broken', label: 'Keyboard not working', urgency: 3, danger: "Don't spill more liquid on it trying to clean it.", action: 'Try an external keyboard to test. Let me know which keys.', info: 'Could be the keyboard or the mainboard.' },
         { id: 'trackpad-broken', label: 'Trackpad not working', urgency: 2, danger: "Don't try to force the trackpad — you could break it more.", action: 'Try restarting. Connect a mouse temporarily.', info: 'Often just needs a driver reset or fix.' },
-        { id: 'slow-performance', label: 'Slow/Freezing', urgency: 2, danger: "Don't install "PC cleaner" or "optimizer" software.", action: 'Try a restart first. Text me if it keeps happening.', info: 'Usually software — rarely hardware.' }
+        { id: 'slow-performance', label: 'Slow/Freezing', urgency: 2, danger: "Don't install PC cleaner or optimizer software.", action: 'Try a restart first. Text me if it keeps happening.', info: 'Usually software — rarely hardware.' }
       ]
     },
     tablet: {
@@ -5816,7 +5816,7 @@
         { id: 'screen-cracked', label: 'Screen cracked', urgency: 7, danger: "Don't press on broken glass.", action: 'Photo helps. Most tablets done in 1-2 hours.', info: 'iPad screens are layered — may need just glass or full display.' },
         { id: 'water-damaged', label: 'Water damage', urgency: 9, danger: "Don't turn on. Rice doesn't work.", action: 'Power off if you can. Text me immediately.', info: 'Same-day response critical.' },
         { id: 'not-charging', label: 'Won’t charge', urgency: 4, danger: 'Check the cable first. Try a different one.', action: 'Try different cable/charger. Check port for lint.', info: 'Lint in the port is the usual culprit.' },
-        { id: 'slow', label: 'Running slow', urgency: 1, danger: "Don't load it with "cleanup" apps.", action: 'Restart it. Check storage. Text me if persists.', info: 'Usually needs a restore, not hardware.' },
+        { id: 'slow', label: 'Running slow', urgency: 1, danger: "Don't load it with cleanup apps.", action: 'Restart it. Check storage. Text me if persists.', info: 'Usually needs a restore, not hardware.' },
         { id: 'speakers-noisy', label: 'Speaker issues', urgency: 2, danger: "Don't blow into the speakers.", action: 'Restart. Check volume settings. Let me know.', info: 'Usually software.' }
       ]
     },

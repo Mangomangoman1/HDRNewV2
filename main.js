@@ -4510,6 +4510,16 @@
       ['Screen removed, adhesive cleared', 'New display seated, connectors secured', 'Running multi-touch and True Tone enrollment...'],
       ['All tests passed ✓', 'Device ready for pickup — SMS sent']
     ];
+    
+    // Enhanced step details with more technical detail
+    const stepDetails = [
+      'Customer texts about cracked screen. Note device model, color, storage size. Queue repair slot.',
+      'Visual inspection under 10x magnification. Document crack pattern. Check for secondary damage.',
+      'Research current part pricing. Factor in OEM quality, labor time, and 40-day warranty.',
+      'Customer reviews quote. Answer any questions. Confirm start when deposit received.',
+      'ESD-safe workspace. iOpener at 70°C. Pry tool separation. ZIF connector release. Full surface prep.',
+      'Multi-touch accuracy, True Tone calibration, ambient light sensor, Face ID functionality.'
+    ];
 
     let currentStep = -1;
     let animationRunning = false;
@@ -4758,6 +4768,16 @@
       ['Quote approved — repair confirmed'],
       ['Screen removed, adhesive cleared', 'New display seated, connectors secured', 'Running multi-touch and True Tone enrollment...'],
       ['All tests passed ✓', 'Device ready for pickup — SMS sent']
+    ];
+    
+    // Enhanced step details with more technical detail
+    const stepDetails = [
+      'Customer texts about cracked screen. Note device model, color, storage size. Queue repair slot.',
+      'Visual inspection under 10x magnification. Document crack pattern. Check for secondary damage.',
+      'Research current part pricing. Factor in OEM quality, labor time, and 40-day warranty.',
+      'Customer reviews quote. Answer any questions. Confirm start when deposit received.',
+      'ESD-safe workspace. iOpener at 70°C. Pry tool separation. ZIF connector release. Full surface prep.',
+      'Multi-touch accuracy, True Tone calibration, ambient light sensor, Face ID functionality.'
     ];
 
     let currentStep = -1;
@@ -5090,6 +5110,16 @@
       ['Quote approved — repair confirmed'],
       ['Screen removed, adhesive cleared', 'New display seated, connectors secured', 'Running multi-touch and True Tone enrollment...'],
       ['All tests passed ✓', 'Device ready for pickup — SMS sent']
+    ];
+    
+    // Enhanced step details with more technical detail
+    const stepDetails = [
+      'Customer texts about cracked screen. Note device model, color, storage size. Queue repair slot.',
+      'Visual inspection under 10x magnification. Document crack pattern. Check for secondary damage.',
+      'Research current part pricing. Factor in OEM quality, labor time, and 40-day warranty.',
+      'Customer reviews quote. Answer any questions. Confirm start when deposit received.',
+      'ESD-safe workspace. iOpener at 70°C. Pry tool separation. ZIF connector release. Full surface prep.',
+      'Multi-touch accuracy, True Tone calibration, ambient light sensor, Face ID functionality.'
     ];
 
     let currentStep = -1;

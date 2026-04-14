@@ -1240,6 +1240,113 @@ a{color:inherit;text-decoration:none}
 
 
   <!-- ═══════════════════════════════════════════
+       LIVE REPAIR JOURNEY — Scroll-animated showcase
+  ══════════════════════════════════════════════ -->
+  <section class="section live-repair-section" id="live-repair" aria-labelledby="live-repair-title">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-eyebrow" data-animate>✨ Live Demo</div>
+        <h2 class="section-title" id="live-repair-title" data-text-scramble>Watch a repair come together</h2>
+        <p class="section-sub" data-text-reveal>This is what your device goes through — step by step, with real updates along the way.</p>
+      </div>
+
+      <div class="live-repair-stage" id="liveRepairStage" role="img" aria-label="Animated repair journey showing iPhone screen replacement">
+        <div class="lr-grid" aria-hidden="true"></div>
+        <div class="lr-scanline" aria-hidden="true"></div>
+
+        <div class="lr-device-wrap">
+          <div class="lr-device" id="lrDevice">
+            <div class="lr-device-frame">
+              <div class="lr-device-screen">
+                <div class="lr-screen-content">
+                  <div class="lr-screen-crack" id="lrScreenCrack"></div>
+                  <div class="lr-screen-repaired" id="lrScreenRepaired"></div>
+                </div>
+              </div>
+              <div class="lr-device-notch"></div>
+            </div>
+            <div class="lr-device-glow" aria-hidden="true"></div>
+          </div>
+          <div class="lr-device-shadow" aria-hidden="true"></div>
+        </div>
+
+        <div class="lr-timeline-wrap" id="lrTimeline">
+          <div class="lr-timeline">
+            <div class="lr-timeline-progress" id="lrTimelineProgress"></div>
+          </div>
+          <div class="lr-step" data-lr-step="1" id="lrStep1">
+            <div class="lr-step-dot"><div class="lr-step-dot-inner"></div><div class="lr-step-dot-ring"></div></div>
+            <div class="lr-step-label">Text Received</div>
+            <div class="lr-step-time">9:04 AM</div>
+          </div>
+          <div class="lr-step" data-lr-step="2" id="lrStep2">
+            <div class="lr-step-dot"><div class="lr-step-dot-inner"></div><div class="lr-step-dot-ring"></div></div>
+            <div class="lr-step-label">Diagnosis</div>
+            <div class="lr-step-time">9:41 AM</div>
+          </div>
+          <div class="lr-step" data-lr-step="3" id="lrStep3">
+            <div class="lr-step-dot"><div class="lr-step-dot-inner"></div><div class="lr-step-dot-ring"></div></div>
+            <div class="lr-step-label">Approved</div>
+            <div class="lr-step-time">9:58 AM</div>
+          </div>
+          <div class="lr-step" data-lr-step="4" id="lrStep4">
+            <div class="lr-step-dot"><div class="lr-step-dot-inner"></div><div class="lr-step-dot-ring"></div></div>
+            <div class="lr-step-label">In Repair</div>
+            <div class="lr-step-time">10:15 AM</div>
+          </div>
+          <div class="lr-step lr-step--done" data-lr-step="5" id="lrStep5">
+            <div class="lr-step-dot"><div class="lr-step-dot-inner"></div><div class="lr-step-dot-ring"></div></div>
+            <div class="lr-step-label">Complete</div>
+            <div class="lr-step-time">11:02 AM</div>
+          </div>
+        </div>
+
+        <div class="lr-status-feed" id="lrStatusFeed" aria-live="polite">
+          <div class="lr-status-header">
+            <span class="lr-status-pulse" aria-hidden="true"></span>
+            <span>Live status updates</span>
+          </div>
+          <div class="lr-status-log" id="lrStatusLog"></div>
+        </div>
+
+        <div class="lr-summary" id="lrSummary">
+          <div class="lr-summary-inner">
+            <div class="lr-summary-stat">
+              <span class="lr-summary-value" id="lrTotalTime">58</span>
+              <span class="lr-summary-unit">min</span>
+              <span class="lr-summary-label">total time</span>
+            </div>
+            <div class="lr-summary-divider" aria-hidden="true"></div>
+            <div class="lr-summary-stat">
+              <span class="lr-summary-value">5</span>
+              <span class="lr-summary-unit">steps</span>
+              <span class="lr-summary-label">to complete</span>
+            </div>
+            <div class="lr-summary-divider" aria-hidden="true"></div>
+            <div class="lr-summary-stat">
+              <span class="lr-summary-value">1</span>
+              <span class="lr-summary-unit">device</span>
+              <span class="lr-summary-label">back to you</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="live-repair-cta" data-animate>
+        <button class="lr-magnetic-btn" id="lrMagneticBtn" type="button">
+          <span class="lr-btn-content">
+            <span class="material-symbols-outlined lr-btn-icon" aria-hidden="true">bolt</span>
+            Start Your Repair
+          </span>
+          <div class="lr-btn-shine" aria-hidden="true"></div>
+          <div class="lr-btn-ripple" aria-hidden="true"></div>
+        </button>
+        <p class="lr-cta-hint">Text or email — I respond in under 2 hours.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════
        SERVICE AREA MAP
   ══════════════════════════════════════════════ -->
   <section class="section" id="area">

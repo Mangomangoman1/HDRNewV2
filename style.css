@@ -22544,3 +22544,548 @@ body.panic-open {
 .lr-steps-row .lr-step.done .lr-step-dot {
   transform: scale(0.9);
 }
+
+/* ═══════════════════════════════════════════
+   WATCH THE REPAIR — Animated Repair Demo
+   ═══════════════════════════════════════════ */
+
+.watch-repair-section {
+  background: var(--bg-primary);
+  padding: 5rem 0 6rem;
+  overflow: hidden;
+  position: relative;
+}
+
+/* ── Stage & Progress ── */
+.watch-repair-stage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  max-width: 420px;
+  margin: 0 auto;
+}
+
+.wr-progress {
+  width: 100%;
+  max-width: 360px;
+  height: 3px;
+  background: var(--border-subtle, rgba(255,255,255,0.1));
+  border-radius: 2px;
+  overflow: hidden;
+  margin-bottom: 0.5rem;
+}
+
+.wr-progress-bar {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, var(--accent), var(--color-cyan));
+  border-radius: 2px;
+  transition: width 0.4s ease;
+}
+
+/* When animation is running, progress bar fills */
+.watch-repair-stage.wr-playing .wr-progress-bar {
+  animation: wrProgressFill 30s linear infinite;
+}
+
+@keyframes wrProgressFill {
+  0%   { width: 0%; }
+  100% { width: 100%; }
+}
+
+/* ── Animation Container ── */
+.wr-animation {
+  position: relative;
+  width: 280px;
+  height: 440px;
+  margin: 0 auto;
+}
+
+/* ── Phone Body ── */
+.wr-phone-body {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 220px;
+  height: 380px;
+  border-radius: 28px;
+  background: var(--bg-secondary, #1a1a2e);
+  border: 2px solid var(--border-color, rgba(255,255,255,0.12));
+  overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+  z-index: 2;
+}
+
+.wr-phone-frame {
+  position: absolute;
+  inset: 0;
+  border-radius: 28px;
+  border: 2px solid var(--border-color, rgba(255,255,255,0.15));
+  pointer-events: none;
+  z-index: 10;
+}
+
+/* ── Internal Components ── */
+.wr-internals {
+  position: absolute;
+  inset: 0;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  opacity: 0;
+  transition: opacity 0.6s ease;
+  z-index: 1;
+}
+
+.wr-battery {
+  width: 100%;
+  height: 70px;
+  background: var(--border-subtle, rgba(255,255,255,0.06));
+  border: 1px solid var(--border-color, rgba(255,255,255,0.1));
+  border-radius: 8px;
+  position: relative;
+  overflow: hidden;
+}
+.wr-battery::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: -4px;
+  transform: translateY(-50%);
+  width: 6px;
+  height: 20px;
+  background: var(--border-color, rgba(255,255,255,0.15));
+  border-radius: 0 3px 3px 0;
+}
+
+.wr-board {
+  height: 50px;
+  background: var(--border-subtle, rgba(255,255,255,0.06));
+  border: 1px solid var(--border-color, rgba(255,255,255,0.1));
+  border-radius: 6px;
+}
+.wr-board--main {
+  width: 80%;
+  margin-left: auto;
+  margin-right: auto;
+}
+.wr-board--sub {
+  width: 55%;
+  margin-left: auto;
+  margin-right: auto;
+  height: 30px;
+}
+
+.wr-flex-cable {
+  width: 40%;
+  height: 12px;
+  margin: 0 auto;
+  background: var(--accent-dim, rgba(79,142,247,0.12));
+  border: 1px solid var(--accent, rgba(79,142,247,0.3));
+  border-radius: 4px;
+}
+
+/* ── Screen ── */
+.wr-screen {
+  position: absolute;
+  inset: 0;
+  border-radius: 26px;
+  background: var(--bg-tertiary, #0d0d1a);
+  overflow: hidden;
+  z-index: 5;
+  transition: transform 1s cubic-bezier(0.34, 1.56, 0.64, 1),
+              opacity 0.6s ease,
+              filter 0.6s ease;
+  will-change: transform;
+}
+
+.wr-screen-content {
+  position: absolute;
+  top: 12px;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-between;
+  padding: 0 16px;
+  font-size: 11px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.7);
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  z-index: 3;
+}
+
+.wr-time {
+  font-variant-numeric: tabular-nums;
+}
+
+.wr-bars {
+  letter-spacing: 2px;
+  font-size: 10px;
+}
+
+/* ── Screen Cracks ── */
+.wr-screen-crack {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 2;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+.wr-crack-1 {
+  background: linear-gradient(
+    135deg,
+    transparent 0%,
+    transparent 42%,
+    rgba(255,255,255,0.15) 42%,
+    rgba(255,255,255,0.15) 42.5%,
+    transparent 42.5%,
+    transparent 58%,
+    rgba(255,255,255,0.12) 58%,
+    rgba(255,255,255,0.12) 58.5%,
+    transparent 58.5%
+  );
+}
+.wr-crack-2 {
+  background: linear-gradient(
+    45deg,
+    transparent 0%,
+    transparent 35%,
+    rgba(255,255,255,0.1) 35%,
+    rgba(255,255,255,0.1) 35.4%,
+    transparent 35.4%,
+    transparent 70%,
+    rgba(255,255,255,0.08) 70%,
+    rgba(255,255,255,0.08) 70.4%,
+    transparent 70.4%
+  );
+}
+.wr-crack-3 {
+  background: linear-gradient(
+    160deg,
+    transparent 0%,
+    transparent 55%,
+    rgba(255,255,255,0.1) 55%,
+    rgba(255,255,255,0.1) 55.3%,
+    transparent 55.3%
+  );
+}
+
+/* Glitch effect on broken screen */
+.wr-screen-glitch {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  pointer-events: none;
+  opacity: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(255,255,255,0.03) 2px,
+    rgba(255,255,255,0.03) 4px
+  );
+}
+
+/* ── Tool ── */
+.wr-tool {
+  position: absolute;
+  top: 50%;
+  left: -80px;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 6;
+  opacity: 0;
+  transition: opacity 0.5s ease,
+              transform 1s cubic-bezier(0.34, 1.56, 0.64, 1);
+  will-change: transform, opacity;
+}
+
+.wr-tool-handle {
+  width: 8px;
+  height: 60px;
+  background: var(--text-muted, #8a8a9a);
+  border-radius: 4px 4px 0 0;
+}
+
+.wr-tool-tip {
+  width: 4px;
+  height: 24px;
+  background: var(--color-cyan, #39c5cf);
+  border-radius: 0 0 2px 2px;
+  box-shadow: 0 4px 12px var(--accent-glow, rgba(79,142,247,0.25));
+}
+
+/* ── New Screen ── */
+.wr-new-screen {
+  position: absolute;
+  top: -100px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 220px;
+  height: 280px;
+  border-radius: 26px;
+  background: var(--bg-tertiary, #0d0d1a);
+  border: 2px solid var(--color-cyan, #39c5cf);
+  box-shadow: 0 10px 40px rgba(57,197,207,0.2);
+  overflow: hidden;
+  opacity: 0;
+  transition: opacity 0.5s ease,
+              transform 1s cubic-bezier(0.34, 1.56, 0.64, 1);
+  z-index: 7;
+  will-change: transform, opacity;
+}
+
+.wr-new-screen-glass {
+  position: absolute;
+  inset: 0;
+  border-radius: 24px;
+  background: linear-gradient(
+    135deg,
+    rgba(57,197,207,0.05) 0%,
+    rgba(57,197,207,0.02) 100%
+  );
+}
+
+.wr-new-screen-content {
+  position: absolute;
+  top: 12px;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-between;
+  padding: 0 16px;
+  font-size: 11px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.7);
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  z-index: 3;
+}
+
+/* ── Adhesive Glow ── */
+.wr-adhesive-glow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 230px;
+  height: 388px;
+  border-radius: 30px;
+  box-shadow: 0 0 40px rgba(57,197,207,0),
+              inset 0 0 20px rgba(57,197,207,0);
+  z-index: 8;
+  pointer-events: none;
+  opacity: 0;
+  transition: box-shadow 1s ease,
+              opacity 0.5s ease;
+}
+
+/* ── Step Labels ── */
+.wr-steps {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 360px;
+  gap: 4px;
+}
+
+.wr-step-label {
+  font-size: 0.6rem;
+  font-weight: 600;
+  color: var(--text-muted, #8a8a9a);
+  text-align: center;
+  flex: 1;
+  transition: color 0.4s ease, transform 0.3s ease;
+  line-height: 1.2;
+  padding: 4px 2px;
+  border-radius: 6px;
+}
+
+.wr-step-label.wr-active {
+  color: var(--color-cyan, #39c5cf);
+  background: var(--accent-dim, rgba(79,142,247,0.12));
+  transform: scale(1.05);
+}
+
+/* ── Info Bar ── */
+.wr-info {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  margin-top: 2rem;
+  flex-wrap: wrap;
+}
+
+.wr-info-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.wr-info-icon {
+  font-size: 1.1rem;
+}
+
+.wr-info-label {
+  font-size: 0.85rem;
+  color: var(--text-muted, #8a8a9a);
+}
+
+.wr-info-value {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text-primary, #fff);
+}
+
+/* ═══════════════════════════════════════════
+   ANIMATION STAGES
+   Stage timing: 30s total, 7 stages ~4.3s each
+   ═══════════════════════════════════════════ */
+
+/* Stage 1: Broken screen (0s - 4.3s) */
+.watch-repair-stage.wr-stage-1 .wr-screen-crack { opacity: 1; }
+.watch-repair-stage.wr-stage-1 .wr-screen-glitch {
+  opacity: 1;
+  animation: wrGlitch 0.8s steps(3) infinite;
+}
+
+@keyframes wrGlitch {
+  0%, 100% { transform: translate(0, 0); }
+  20% { transform: translate(-2px, 1px); }
+  40% { transform: translate(2px, -1px); }
+  60% { transform: translate(-1px, 2px); }
+  80% { transform: translate(1px, -2px); }
+}
+
+/* Stage 2: Tool slides in (4.3s - 8.6s) */
+.watch-repair-stage.wr-stage-2 .wr-screen-crack { opacity: 1; }
+.watch-repair-stage.wr-stage-2 .wr-screen-glitch {
+  opacity: 1;
+  animation: wrGlitch 0.8s steps(3) infinite;
+}
+.watch-repair-stage.wr-stage-2 .wr-tool {
+  opacity: 1;
+  left: 10px;
+}
+
+/* Stage 3: Screen lifts (8.6s - 12.9s) */
+.watch-repair-stage.wr-stage-3 .wr-screen-crack { opacity: 1; }
+.watch-repair-stage.wr-stage-3 .wr-screen {
+  transform: translateY(-60px) rotateZ(-8deg);
+  border-radius: 26px 26px 16px 16px;
+}
+
+/* Stage 4: Open state - internals visible (12.9s - 17.1s) */
+.watch-repair-stage.wr-stage-4 .wr-screen {
+  transform: translateY(-100px) rotateZ(-12deg);
+  opacity: 0.5;
+}
+.watch-repair-stage.wr-stage-4 .wr-internals { opacity: 1; }
+.watch-repair-stage.wr-stage-4 .wr-tool { opacity: 0; }
+
+/* Stage 5: New screen appears (17.1s - 21.4s) */
+.watch-repair-stage.wr-stage-5 .wr-screen { opacity: 0; }
+.watch-repair-stage.wr-stage-5 .wr-internals { opacity: 0.5; }
+.watch-repair-stage.wr-stage-5 .wr-new-screen {
+  opacity: 1;
+  transform: translateX(-50%) translateY(40px);
+}
+.watch-repair-stage.wr-stage-5 .wr-new-screen-content { opacity: 0; }
+
+/* Stage 6: Press & seal (21.4s - 25.7s) */
+.watch-repair-stage.wr-stage-6 .wr-internals { opacity: 0; }
+.watch-repair-stage.wr-stage-6 .wr-new-screen {
+  opacity: 1;
+  transform: translateX(-50%) translateY(130px);
+}
+.watch-repair-stage.wr-stage-6 .wr-adhesive-glow {
+  opacity: 1;
+  box-shadow: 0 0 40px rgba(57,197,207,0.3),
+              inset 0 0 20px rgba(57,197,207,0.15);
+}
+
+/* Stage 7: Power on (25.7s - 30s) */
+.watch-repair-stage.wr-stage-7 .wr-new-screen {
+  opacity: 1;
+  transform: translateX(-50%) translateY(130px);
+  border-color: transparent;
+  border-radius: 26px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+  height: 380px;
+  top: 0;
+}
+.watch-repair-stage.wr-stage-7 .wr-new-screen-glass {
+  background: linear-gradient(
+    135deg,
+    rgba(57,197,207,0.03) 0%,
+    rgba(57,197,207,0.01) 100%
+  );
+}
+.watch-repair-stage.wr-stage-7 .wr-new-screen-content {
+  opacity: 1;
+}
+.watch-repair-stage.wr-stage-7 .wr-phone-body {
+  box-shadow: 0 20px 60px rgba(57,197,207,0.1);
+}
+
+/* ── Reduced Motion ── */
+@media (prefers-reduced-motion: reduce) {
+  .watch-repair-stage.wr-playing .wr-progress-bar {
+    animation: none;
+  }
+  .wr-screen,
+  .wr-tool,
+  .wr-new-screen,
+  .wr-adhesive-glow {
+    transition-duration: 0.01s !important;
+  }
+  .watch-repair-stage.wr-stage-1 .wr-screen-glitch {
+    animation: wrFadeOnly 2s ease infinite;
+  }
+}
+
+@keyframes wrFadeOnly {
+  0%, 100% { opacity: 0.5; }
+  50%      { opacity: 0.8; }
+}
+
+/* ── Mobile Responsive ── */
+@media (max-width: 480px) {
+  .wr-animation {
+    width: 240px;
+    height: 380px;
+  }
+  .wr-phone-body,
+  .wr-new-screen {
+    width: 180px;
+    height: 310px;
+  }
+  .watch-repair-stage.wr-stage-7 .wr-new-screen {
+    height: 310px;
+  }
+  .wr-step-label {
+    font-size: 0.5rem;
+  }
+  .wr-info {
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+  }
+}
+
+@media (max-width: 360px) {
+  .wr-animation {
+    transform: scale(0.85);
+  }
+}

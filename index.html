@@ -4040,5 +4040,103 @@ a{color:inherit;text-decoration:none}
     });
   })();
   </script>
+
+  <!-- ═══════════════════════════════════════════
+       WATCH THE REPAIR — Animated Repair Demo
+  ══════════════════════════════════════════════ -->
+  <section class="section watch-repair-section" id="watch-repair" aria-labelledby="watch-repair-title">
+    <div class="container">
+      <div class="section-header" data-animate>
+        <div class="section-eyebrow">
+          <span aria-hidden="true">🔧</span> How We Fix It
+        </div>
+        <h2 class="section-title" id="watch-repair-title">Watch the repair come together</h2>
+        <p class="section-sub">Every screen replacement follows the same meticulous process. Here's what 45 minutes of careful work looks like.</p>
+      </div>
+
+      <div class="watch-repair-stage" aria-label="iPhone screen repair animation">
+        <!-- Progress indicators -->
+        <div class="wr-progress" aria-hidden="true">
+          <div class="wr-progress-bar"></div>
+        </div>
+
+        <!-- Main animation container -->
+        <div class="wr-animation" data-animate>
+          <!-- Phone body (base) -->
+          <div class="wr-phone-body">
+            <!-- Internal components (visible when open) -->
+            <div class="wr-internals">
+              <div class="wr-battery"></div>
+              <div class="wr-board wr-board--main"></div>
+              <div class="wr-board wr-board--sub"></div>
+              <div class="wr-flex-cable"></div>
+            </div>
+            <!-- Frame edge -->
+            <div class="wr-phone-frame"></div>
+            <!-- Screen (this gets lifted) -->
+            <div class="wr-screen">
+              <div class="wr-screen-crack wr-crack-1"></div>
+              <div class="wr-screen-crack wr-crack-2"></div>
+              <div class="wr-screen-crack wr-crack-3"></div>
+              <div class="wr-screen-glitch"></div>
+              <div class="wr-screen-content">
+                <div class="wr-time">9:41</div>
+                <div class="wr-bars">▮▮▮▮</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tool (slides in from side) -->
+          <div class="wr-tool" aria-hidden="true">
+            <div class="wr-tool-handle"></div>
+            <div class="wr-tool-tip"></div>
+          </div>
+
+          <!-- New screen (floats in from above) -->
+          <div class="wr-new-screen" aria-hidden="true">
+            <div class="wr-new-screen-glass"></div>
+            <div class="wr-new-screen-content">
+              <div class="wr-time">9:41</div>
+              <div class="wr-bars">▮▮▮▮</div>
+            </div>
+          </div>
+
+          <!-- Adhesive glow effect -->
+          <div class="wr-adhesive-glow" aria-hidden="true"></div>
+        </div>
+
+        <!-- Step labels -->
+        <div class="wr-steps" aria-hidden="true">
+          <div class="wr-step-label" data-stage="1">Broken screen</div>
+          <div class="wr-step-label" data-stage="2">Tool ready</div>
+          <div class="wr-step-label" data-stage="3">Screen lifted</div>
+          <div class="wr-step-label" data-stage="4">Internals clear</div>
+          <div class="wr-step-label" data-stage="5">New screen ready</div>
+          <div class="wr-step-label" data-stage="6">Pressed & sealed</div>
+          <div class="wr-step-label" data-stage="7">Good as new</div>
+        </div>
+      </div>
+
+      <!-- Repair info -->
+      <div class="wr-info" data-animate>
+        <div class="wr-info-item">
+          <span class="wr-info-icon" aria-hidden="true">📱</span>
+          <span class="wr-info-label">Screen replacement</span>
+          <span class="wr-info-value">45 minutes</span>
+        </div>
+        <div class="wr-info-item">
+          <span class="wr-info-icon" aria-hidden="true">🛡️</span>
+          <span class="wr-info-label">Warranty</span>
+          <span class="wr-info-value">90 days</span>
+        </div>
+        <div class="wr-info-item">
+          <span class="wr-info-icon" aria-hidden="true">✨</span>
+          <span class="wr-info-label">Parts used</span>
+          <span class="wr-info-value">OEM-quality</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
 </body>
 </html>

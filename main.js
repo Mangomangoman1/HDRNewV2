@@ -7353,3 +7353,85 @@
   })();
 
 })();
+
+/* ═══════════════════════════════════════════
+   WATCH THE REPAIR — Animation Controller
+   ═══════════════════════════════════════════ */
+(function() {
+  var section = document.getElementById('watch-repair');
+  if (!section) return;
+
+  var stage = section.querySelector('.watch-repair-stage');
+  if (!stage) return;
+
+  var stepLabels = stage.querySelectorAll('.wr-step-label');
+  var STAGE_COUNT = 7;
+  var STAGE_DURATION = 4300; // ms per stage — ~30s total loop
+  var currentStage = 0;
+  var timer = null;
+  var isPlaying = false;
+
+  function clearStage() {
+    for (var i = 1; i <= STAGE_COUNT; i++) {
+      stage.classList.remove('wr-stage-' + i);
+    }
+    stepLabels.forEach(function(el) { el.classList.remove('wr-active'); });
+  }
+
+  function setStage(num) {
+    clearStage();
+    currentStage = num;
+    stage.classList.add('wr-stage-' + num);
+    // Highlight current step
+    stepLabels.forEach(function(el) {
+      var s = parseInt(el.getAttribute('data-stage'), 10);
+      if (s === num) el.classList.add('wr-active');
+    });
+  }
+
+  function nextStage() {
+    var next = currentStage >= STAGE_COUNT ? 1 : currentStage + 1;
+    setStage(next);
+  }
+
+  function startAnimation() {
+    if (isPlaying) return;
+    isPlaying = true;
+    stage.classList.add('wr-playing');
+    setStage(1);
+    timer = setInterval(nextStage, STAGE_DURATION);
+  }
+
+  function stopAnimation() {
+    isPlaying = false;
+    stage.classList.remove('wr-playing');
+    if (timer) { clearInterval(timer); timer = null; }
+    clearStage();
+  }
+
+  // Respect reduced motion
+  var prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)');
+  if (prefersReduced.matches) {
+    // Show final state only (powered on)
+    setStage(7);
+    return;
+  }
+
+  // IntersectionObserver — start when visible, pause when not
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting) {
+          startAnimation();
+        } else {
+          stopAnimation();
+        }
+      });
+    }, { threshold: 0.2 });
+
+    observer.observe(section);
+  } else {
+    // Fallback: just start
+    startAnimation();
+  }
+})();

@@ -1987,55 +1987,60 @@ a{color:inherit;text-decoration:none}
         <div class="lr-timeline-wrap" id="lrTimeline">
           <div class="lr-timeline">
             <div class="lr-timeline-progress" id="lrTimelineProgress"></div>
+            <div class="lr-timeline-scrubber" id="lrTimelineScrubber">
+              <div class="lr-timeline-thumb" id="lrTimelineThumb"></div>
+            </div>
           </div>
-          <div class="lr-step" data-lr-step="1" id="lrStep1">
-            <span class="lr-step-number">01</span>
-            <div class="lr-step-dot"><div class="lr-step-dot-inner"></div><div class="lr-step-dot-ring"></div></div>
-            <div class="lr-step-label">Text Received</div>
-            <div class="lr-step-time">9:04 AM</div>
-            <div class="lr-step-detail" id="lrStep1Detail"></div>
-          </div>
-          <div class="lr-step" data-lr-step="2" id="lrStep2">
-            <span class="lr-step-number">02</span>
-            <div class="lr-step-dot"><div class="lr-step-dot-inner"></div><div class="lr-step-dot-ring"></div></div>
-            <div class="lr-step-label">Diagnosis</div>
-            <div class="lr-step-time">9:41 AM</div>
-            <div class="lr-step-detail" id="lrStep2Detail"></div>
-          </div>
-          <div class="lr-step" data-lr-step="3" id="lrStep3">
-            <span class="lr-step-number">03</span>
-            <div class="lr-step-dot"><div class="lr-step-dot-inner"></div><div class="lr-step-dot-ring"></div></div>
-            <div class="lr-step-label">Quoted</div>
-            <div class="lr-step-time">9:52 AM</div>
-            <div class="lr-step-detail" id="lrStep3Detail"></div>
-          </div>
-          <div class="lr-step" data-lr-step="4" id="lrStep4">
-            <span class="lr-step-number">04</span>
-            <div class="lr-step-dot"><div class="lr-step-dot-inner"></div><div class="lr-step-dot-ring"></div></div>
-            <div class="lr-step-label">Parts Pulled</div>
-            <div class="lr-step-time">10:02 AM</div>
-            <div class="lr-step-detail" id="lrStep4Detail"></div>
-          </div>
-          <div class="lr-step" data-lr-step="5" id="lrStep5">
-            <span class="lr-step-number">05</span>
-            <div class="lr-step-dot"><div class="lr-step-dot-inner"></div><div class="lr-step-dot-ring"></div></div>
-            <div class="lr-step-label">Approved</div>
-            <div class="lr-step-time">10:08 AM</div>
-            <div class="lr-step-detail" id="lrStep5Detail"></div>
-          </div>
-          <div class="lr-step" data-lr-step="6" id="lrStep6">
-            <span class="lr-step-number">06</span>
-            <div class="lr-step-dot"><div class="lr-step-dot-inner"></div><div class="lr-step-dot-ring"></div></div>
-            <div class="lr-step-label">In Repair</div>
-            <div class="lr-step-time">10:15 AM</div>
-            <div class="lr-step-detail" id="lrStep6Detail"></div>
-          </div>
-          <div class="lr-step lr-step--done" data-lr-step="7" id="lrStep7">
-            <span class="lr-step-number">07</span>
-            <div class="lr-step-dot"><div class="lr-step-dot-inner"></div><div class="lr-step-dot-ring"></div></div>
-            <div class="lr-step-label">Complete</div>
-            <div class="lr-step-time">11:02 AM</div>
-            <div class="lr-step-detail" id="lrStep7Detail"></div>
+          <div class="lr-steps-row" id="lrStepsRow">
+            <button class="lr-step" data-lr-step="1" id="lrStep1" type="button" aria-label="Step 1: Text Received">
+              <span class="lr-step-number">01</span>
+              <div class="lr-step-dot"><div class="lr-step-dot-inner"></div><div class="lr-step-dot-ring"></div></div>
+              <div class="lr-step-label">Text Received</div>
+              <div class="lr-step-time">9:04 AM</div>
+              <div class="lr-step-detail" id="lrStep1Detail"></div>
+            </button>
+            <button class="lr-step" data-lr-step="2" id="lrStep2" type="button" aria-label="Step 2: Diagnosis">
+              <span class="lr-step-number">02</span>
+              <div class="lr-step-dot"><div class="lr-step-dot-inner"></div><div class="lr-step-dot-ring"></div></div>
+              <div class="lr-step-label">Diagnosis</div>
+              <div class="lr-step-time">9:41 AM</div>
+              <div class="lr-step-detail" id="lrStep2Detail"></div>
+            </button>
+            <button class="lr-step" data-lr-step="3" id="lrStep3" type="button" aria-label="Step 3: Quoted">
+              <span class="lr-step-number">03</span>
+              <div class="lr-step-dot"><div class="lr-step-dot-inner"></div><div class="lr-step-dot-ring"></div></div>
+              <div class="lr-step-label">Quoted</div>
+              <div class="lr-step-time">9:52 AM</div>
+              <div class="lr-step-detail" id="lrStep3Detail"></div>
+            </button>
+            <button class="lr-step" data-lr-step="4" id="lrStep4" type="button" aria-label="Step 4: Parts Pulled">
+              <span class="lr-step-number">04</span>
+              <div class="lr-step-dot"><div class="lr-step-dot-inner"></div><div class="lr-step-dot-ring"></div></div>
+              <div class="lr-step-label">Parts Pulled</div>
+              <div class="lr-step-time">10:02 AM</div>
+              <div class="lr-step-detail" id="lrStep4Detail"></div>
+            </button>
+            <button class="lr-step" data-lr-step="5" id="lrStep5" type="button" aria-label="Step 5: Approved">
+              <span class="lr-step-number">05</span>
+              <div class="lr-step-dot"><div class="lr-step-dot-inner"></div><div class="lr-step-dot-ring"></div></div>
+              <div class="lr-step-label">Approved</div>
+              <div class="lr-step-time">10:08 AM</div>
+              <div class="lr-step-detail" id="lrStep5Detail"></div>
+            </button>
+            <button class="lr-step" data-lr-step="6" id="lrStep6" type="button" aria-label="Step 6: In Repair">
+              <span class="lr-step-number">06</span>
+              <div class="lr-step-dot"><div class="lr-step-dot-inner"></div><div class="lr-step-dot-ring"></div></div>
+              <div class="lr-step-label">In Repair</div>
+              <div class="lr-step-time">10:15 AM</div>
+              <div class="lr-step-detail" id="lrStep6Detail"></div>
+            </button>
+            <button class="lr-step lr-step--done" data-lr-step="7" id="lrStep7" type="button" aria-label="Step 7: Complete">
+              <span class="lr-step-number">07</span>
+              <div class="lr-step-dot"><div class="lr-step-dot-inner"></div><div class="lr-step-dot-ring"></div></div>
+              <div class="lr-step-label">Complete</div>
+              <div class="lr-step-time">11:02 AM</div>
+              <div class="lr-step-detail" id="lrStep7Detail"></div>
+            </button>
           </div>
         </div>
 

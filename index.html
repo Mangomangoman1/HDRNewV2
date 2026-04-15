@@ -4064,21 +4064,41 @@ a{color:inherit;text-decoration:none}
         <div class="wr-animation" data-animate>
           <!-- Phone body (base) -->
           <div class="wr-phone-body">
+            <!-- Ambient device shadow (moves subtly) -->
+            <div class="wr-device-shadow" aria-hidden="true"></div>
             <!-- Internal components (visible when open) -->
             <div class="wr-internals">
-              <div class="wr-battery"></div>
-              <div class="wr-board wr-board--main"></div>
-              <div class="wr-board wr-board--sub"></div>
-              <div class="wr-flex-cable"></div>
+              <div class="wr-battery">
+                <div class="wr-battery-pulse" aria-hidden="true"></div>
+                <span class="wr-callout" data-label="Battery">Battery</span>
+              </div>
+              <div class="wr-board wr-board--main">
+                <span class="wr-callout" data-label="Logic Board">Logic Board</span>
+              </div>
+              <div class="wr-board wr-board--sub">
+                <span class="wr-callout" data-label="Substrate">Substrate</span>
+              </div>
+              <div class="wr-flex-cable">
+                <span class="wr-callout" data-label="Flex Cable">Flex</span>
+              </div>
             </div>
             <!-- Frame edge -->
             <div class="wr-phone-frame"></div>
             <!-- Screen (this gets lifted) -->
             <div class="wr-screen">
+              <!-- Light bleed glow behind cracks -->
+              <div class="wr-crack-glow" aria-hidden="true"></div>
+              <!-- Multiple individual crack lines -->
+              <div class="wr-crack-line wr-crack-line--1" aria-hidden="true"></div>
+              <div class="wr-crack-line wr-crack-line--2" aria-hidden="true"></div>
+              <div class="wr-crack-line wr-crack-line--3" aria-hidden="true"></div>
+              <div class="wr-crack-line wr-crack-line--4" aria-hidden="true"></div>
+              <div class="wr-crack-line wr-crack-line--5" aria-hidden="true"></div>
               <div class="wr-screen-crack wr-crack-1"></div>
               <div class="wr-screen-crack wr-crack-2"></div>
               <div class="wr-screen-crack wr-crack-3"></div>
               <div class="wr-screen-glitch"></div>
+              <div class="wr-screen-flicker" aria-hidden="true"></div>
               <div class="wr-screen-content">
                 <div class="wr-time">9:41</div>
                 <div class="wr-bars">▮▮▮▮</div>
@@ -4088,21 +4108,50 @@ a{color:inherit;text-decoration:none}
 
           <!-- Tool (slides in from side) -->
           <div class="wr-tool" aria-hidden="true">
+            <div class="wr-tool-trail" aria-hidden="true"></div>
+            <div class="wr-tool-shaft"></div>
             <div class="wr-tool-handle"></div>
             <div class="wr-tool-tip"></div>
+            <div class="wr-tool-specular" aria-hidden="true"></div>
           </div>
 
           <!-- New screen (floats in from above) -->
           <div class="wr-new-screen" aria-hidden="true">
             <div class="wr-new-screen-glass"></div>
+            <div class="wr-new-screen-specular" aria-hidden="true"></div>
             <div class="wr-new-screen-content">
               <div class="wr-time">9:41</div>
               <div class="wr-bars">▮▮▮▮</div>
             </div>
           </div>
 
+          <!-- Adhesive stretch lines (visible during screen lift) -->
+          <div class="wr-adhesive-lines" aria-hidden="true">
+            <div class="wr-adhesive-line wr-al-1"></div>
+            <div class="wr-adhesive-line wr-al-2"></div>
+            <div class="wr-adhesive-line wr-al-3"></div>
+            <div class="wr-adhesive-line wr-al-4"></div>
+            <div class="wr-adhesive-line wr-al-5"></div>
+          </div>
+          <!-- Impact ripple (when tool contacts phone) -->
+          <div class="wr-impact-ripple" aria-hidden="true"></div>
           <!-- Adhesive glow effect -->
           <div class="wr-adhesive-glow" aria-hidden="true"></div>
+          <!-- New screen specular highlight -->
+          <div class="wr-specular" aria-hidden="true"></div>
+          <!-- Power-on warm glow -->
+          <div class="wr-power-glow" aria-hidden="true"></div>
+          <!-- Dust particles (ambient, always floating) -->
+          <div class="wr-dust" aria-hidden="true">
+            <div class="wr-dust-particle wr-dust-1"></div>
+            <div class="wr-dust-particle wr-dust-2"></div>
+            <div class="wr-dust-particle wr-dust-3"></div>
+            <div class="wr-dust-particle wr-dust-4"></div>
+            <div class="wr-dust-particle wr-dust-5"></div>
+            <div class="wr-dust-particle wr-dust-6"></div>
+            <div class="wr-dust-particle wr-dust-7"></div>
+            <div class="wr-dust-particle wr-dust-8"></div>
+          </div>
         </div>
 
         <!-- Step labels -->

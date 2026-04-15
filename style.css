@@ -22546,7 +22546,9 @@ body.panic-open {
 }
 
 /* ═══════════════════════════════════════════
+/* ═══════════════════════════════════════════
    WATCH THE REPAIR — Animated Repair Demo
+   Enhanced 7-stage cinematic iPhone screen repair
    ═══════════════════════════════════════════ */
 
 .watch-repair-section {
@@ -22584,9 +22586,9 @@ body.panic-open {
   transition: width 0.4s ease;
 }
 
-/* When animation is running, progress bar fills */
+/* When animation is running, progress bar fills — 35s total loop */
 .watch-repair-stage.wr-playing .wr-progress-bar {
-  animation: wrProgressFill 30s linear infinite;
+  animation: wrProgressFill 35s linear infinite;
 }
 
 @keyframes wrProgressFill {
@@ -22602,6 +22604,26 @@ body.panic-open {
   margin: 0 auto;
 }
 
+/* ── Device Shadow — ambient depth beneath phone ── */
+.wr-device-shadow {
+  position: absolute;
+  bottom: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 200px;
+  height: 30px;
+  background: radial-gradient(ellipse, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.15) 40%, transparent 70%);
+  border-radius: 50%;
+  z-index: 1;
+  filter: blur(4px);
+  animation: wrShadowBreathe 4s ease-in-out infinite;
+}
+
+@keyframes wrShadowBreathe {
+  0%, 100% { transform: translateX(-50%) scale(1); opacity: 0.8; }
+  50%       { transform: translateX(-50%) scale(1.05); opacity: 1; }
+}
+
 /* ── Phone Body ── */
 .wr-phone-body {
   position: absolute;
@@ -22614,8 +22636,12 @@ body.panic-open {
   background: var(--bg-secondary, #1a1a2e);
   border: 2px solid var(--border-color, rgba(255,255,255,0.12));
   overflow: hidden;
-  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+  box-shadow:
+    0 25px 60px rgba(0,0,0,0.35),
+    0 10px 25px rgba(0,0,0,0.2),
+    inset 0 1px 0 rgba(255,255,255,0.05);
   z-index: 2;
+  transition: box-shadow 0.8s ease;
 }
 
 .wr-phone-frame {
@@ -22661,11 +22687,63 @@ body.panic-open {
   border-radius: 0 3px 3px 0;
 }
 
+/* Battery pulse — energy animation */
+.wr-battery-pulse {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(57,197,207,0.15), transparent);
+  animation: wrBatteryPulse 2s ease-in-out infinite;
+  opacity: 0;
+}
+
+@keyframes wrBatteryPulse {
+  0%   { transform: translateX(-100%); opacity: 0; }
+  50%  { opacity: 1; }
+  100% { transform: translateX(100%); opacity: 0; }
+}
+
+/* Component callout labels */
+.wr-callout {
+  position: absolute;
+  font-size: 0.45rem;
+  font-weight: 600;
+  color: var(--color-cyan, #39c5cf);
+  background: rgba(0,0,0,0.7);
+  padding: 1px 4px;
+  border-radius: 3px;
+  white-space: nowrap;
+  opacity: 0;
+  transform: translateY(4px);
+  transition: opacity 0.4s ease 0.3s, transform 0.4s ease 0.3s;
+  pointer-events: none;
+  z-index: 20;
+}
+
+/* Callout positioning relative to each component */
+.wr-battery .wr-callout   { top: -14px; left: 4px; }
+.wr-board--main .wr-callout { top: -14px; left: 50%; transform: translateX(-50%) translateY(4px); }
+.wr-board--sub .wr-callout  { top: -14px; right: 4px; transform: translateY(4px); }
+.wr-flex-cable .wr-callout  { bottom: -14px; left: 50%; transform: translateX(-50%) translateY(4px); }
+
+/* Callouts visible in stage 4 */
+.wr-stage-4 .wr-callout {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+.wr-stage-4 .wr-battery .wr-callout,
+.wr-stage-4 .wr-flex-cable .wr-callout {
+  transform: translateX(-50%) translateY(0);
+}
+.wr-stage-4 .wr-board--sub .wr-callout {
+  transform: translateY(0);
+}
+
 .wr-board {
   height: 50px;
   background: var(--border-subtle, rgba(255,255,255,0.06));
   border: 1px solid var(--border-color, rgba(255,255,255,0.1));
   border-radius: 6px;
+  position: relative;
 }
 .wr-board--main {
   width: 80%;
@@ -22686,6 +22764,7 @@ body.panic-open {
   background: var(--accent-dim, rgba(79,142,247,0.12));
   border: 1px solid var(--accent, rgba(79,142,247,0.3));
   border-radius: 4px;
+  position: relative;
 }
 
 /* ── Screen ── */
@@ -22696,38 +22775,92 @@ body.panic-open {
   background: var(--bg-tertiary, #0d0d1a);
   overflow: hidden;
   z-index: 5;
-  transition: transform 1s cubic-bezier(0.34, 1.56, 0.64, 1),
-              opacity 0.6s ease,
-              filter 0.6s ease;
+  transition:
+    transform 1.2s cubic-bezier(0.34, 1.56, 0.64, 1),
+    opacity 0.6s ease,
+    filter 0.6s ease;
   will-change: transform;
 }
 
-.wr-screen-content {
+/* Light bleed glow behind cracks — teal from screen underneath */
+.wr-crack-glow {
   position: absolute;
-  top: 12px;
-  left: 0;
-  right: 0;
-  display: flex;
-  justify-content: space-between;
-  padding: 0 16px;
-  font-size: 11px;
-  font-weight: 600;
-  color: rgba(255,255,255,0.7);
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0;
+  background:
+    radial-gradient(ellipse 60% 40% at 35% 30%, rgba(57,197,207,0.18) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 50% at 65% 55%, rgba(57,197,207,0.12) 0%, transparent 55%),
+    radial-gradient(ellipse 70% 30% at 50% 75%, rgba(57,197,207,0.1) 0%, transparent 50%);
+  transition: opacity 0.5s ease;
+}
+
+/* Individual crack lines — each has its own path and depth */
+.wr-crack-line {
+  position: absolute;
+  z-index: 3;
+  pointer-events: none;
   opacity: 0;
   transition: opacity 0.5s ease;
-  z-index: 3;
 }
 
-.wr-time {
-  font-variant-numeric: tabular-nums;
+/* Crack 1 — main diagonal from top-left area */
+.wr-crack-line--1 {
+  top: 15%;
+  left: 20%;
+  width: 2px;
+  height: 35%;
+  background: linear-gradient(135deg, rgba(255,255,255,0.6), rgba(255,255,255,0.1));
+  transform: rotate(25deg);
+  transform-origin: top left;
+  box-shadow: 0 0 4px rgba(57,197,207,0.3);
 }
 
-.wr-bars {
-  letter-spacing: 2px;
-  font-size: 10px;
+/* Crack 2 — secondary diagonal crossing */
+.wr-crack-line--2 {
+  top: 25%;
+  left: 45%;
+  width: 1.5px;
+  height: 40%;
+  background: linear-gradient(160deg, rgba(255,255,255,0.5), rgba(255,255,255,0.08));
+  transform: rotate(-35deg);
+  box-shadow: 0 0 3px rgba(57,197,207,0.25);
 }
 
-/* ── Screen Cracks ── */
+/* Crack 3 — shorter branch */
+.wr-crack-line--3 {
+  top: 40%;
+  left: 55%;
+  width: 1.5px;
+  height: 20%;
+  background: linear-gradient(120deg, rgba(255,255,255,0.4), transparent);
+  transform: rotate(50deg);
+}
+
+/* Crack 4 — bottom left */
+.wr-crack-line--4 {
+  top: 60%;
+  left: 25%;
+  width: 1px;
+  height: 25%;
+  background: linear-gradient(145deg, rgba(255,255,255,0.35), rgba(255,255,255,0.05));
+  transform: rotate(-20deg);
+}
+
+/* Crack 5 — small chip near center */
+.wr-crack-line--5 {
+  top: 50%;
+  left: 48%;
+  width: 20px;
+  height: 20px;
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 50%;
+  transform: none;
+}
+
+/* Legacy crack gradients (kept for fallback/additional depth) */
 .wr-screen-crack {
   position: absolute;
   top: 0;
@@ -22743,43 +22876,33 @@ body.panic-open {
 .wr-crack-1 {
   background: linear-gradient(
     135deg,
-    transparent 0%,
-    transparent 42%,
-    rgba(255,255,255,0.15) 42%,
-    rgba(255,255,255,0.15) 42.5%,
-    transparent 42.5%,
-    transparent 58%,
-    rgba(255,255,255,0.12) 58%,
-    rgba(255,255,255,0.12) 58.5%,
+    transparent 0%, transparent 42%,
+    rgba(255,255,255,0.15) 42%, rgba(255,255,255,0.15) 42.5%,
+    transparent 42.5%, transparent 58%,
+    rgba(255,255,255,0.12) 58%, rgba(255,255,255,0.12) 58.5%,
     transparent 58.5%
   );
 }
 .wr-crack-2 {
   background: linear-gradient(
     45deg,
-    transparent 0%,
-    transparent 35%,
-    rgba(255,255,255,0.1) 35%,
-    rgba(255,255,255,0.1) 35.4%,
-    transparent 35.4%,
-    transparent 70%,
-    rgba(255,255,255,0.08) 70%,
-    rgba(255,255,255,0.08) 70.4%,
+    transparent 0%, transparent 35%,
+    rgba(255,255,255,0.1) 35%, rgba(255,255,255,0.1) 35.4%,
+    transparent 35.4%, transparent 70%,
+    rgba(255,255,255,0.08) 70%, rgba(255,255,255,0.08) 70.4%,
     transparent 70.4%
   );
 }
 .wr-crack-3 {
   background: linear-gradient(
     160deg,
-    transparent 0%,
-    transparent 55%,
-    rgba(255,255,255,0.1) 55%,
-    rgba(255,255,255,0.1) 55.3%,
+    transparent 0%, transparent 55%,
+    rgba(255,255,255,0.1) 55%, rgba(255,255,255,0.1) 55.3%,
     transparent 55.3%
   );
 }
 
-/* Glitch effect on broken screen */
+/* Screen glitch — subtle scan lines on broken screen */
 .wr-screen-glitch {
   position: absolute;
   inset: 0;
@@ -22795,6 +22918,41 @@ body.panic-open {
   );
 }
 
+/* Screen flicker — occasional brightness pulse on broken screen */
+.wr-screen-flicker {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  pointer-events: none;
+  opacity: 0;
+  background: rgba(255,255,255,0.02);
+}
+
+.wr-screen-content {
+  position: absolute;
+  top: 12px;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-between;
+  padding: 0 16px;
+  font-size: 11px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.7);
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  z-index: 6;
+}
+
+.wr-time {
+  font-variant-numeric: tabular-nums;
+}
+
+.wr-bars {
+  letter-spacing: 2px;
+  font-size: 10px;
+}
+
 /* ── Tool ── */
 .wr-tool {
   position: absolute;
@@ -22806,24 +22964,100 @@ body.panic-open {
   align-items: center;
   z-index: 6;
   opacity: 0;
-  transition: opacity 0.5s ease,
-              transform 1s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transition:
+    opacity 0.5s ease,
+    transform 1.2s cubic-bezier(0.34, 1.56, 0.64, 1);
   will-change: transform, opacity;
+}
+
+.wr-tool-shaft {
+  width: 5px;
+  height: 36px;
+  background: linear-gradient(180deg, var(--text-muted, #8a8a9a), rgba(255,255,255,0.15));
+  border-radius: 2px;
 }
 
 .wr-tool-handle {
   width: 8px;
   height: 60px;
-  background: var(--text-muted, #8a8a9a);
+  background: linear-gradient(180deg, var(--text-muted, #8a8a9a) 0%, rgba(255,255,255,0.1) 100%);
   border-radius: 4px 4px 0 0;
 }
 
 .wr-tool-tip {
   width: 4px;
   height: 24px;
-  background: var(--color-cyan, #39c5cf);
+  background: linear-gradient(180deg, var(--color-cyan, #39c5cf), rgba(57,197,207,0.7));
   border-radius: 0 0 2px 2px;
-  box-shadow: 0 4px 12px var(--accent-glow, rgba(79,142,247,0.25));
+  box-shadow:
+    0 4px 12px rgba(57,197,207,0.4),
+    0 0 20px rgba(57,197,207,0.2);
+}
+
+/* Tool trail — cyan glow left behind as tool enters */
+.wr-tool-trail {
+  position: absolute;
+  top: 50%;
+  left: -140px;
+  width: 80px;
+  height: 20px;
+  transform: translateY(-50%);
+  background: linear-gradient(90deg, rgba(57,197,207,0), rgba(57,197,207,0.5), rgba(57,197,207,0.1));
+  border-radius: 10px;
+  filter: blur(8px);
+  pointer-events: none;
+  z-index: -1;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+/* Tool specular highlight */
+.wr-tool-specular {
+  position: absolute;
+  inset: 0;
+  border-radius: 4px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.2) 0%, transparent 50%);
+  pointer-events: none;
+  opacity: 0;
+}
+
+/* ── Adhesive Stretch Lines ── */
+.wr-adhesive-lines {
+  position: absolute;
+  inset: 0;
+  z-index: 9;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.wr-adhesive-line {
+  position: absolute;
+  background: linear-gradient(90deg, var(--color-cyan), rgba(57,197,207,0.3));
+  height: 1px;
+  opacity: 0.6;
+  transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s ease;
+}
+
+.wr-al-1 { top: 50px; left: 10px; width: 40px; transform: scaleX(1); }
+.wr-al-2 { top: 80px; right: 10px; width: 35px; transform: scaleX(1); }
+.wr-al-3 { top: 130px; left: 10px; width: 50px; transform: scaleX(1); }
+.wr-al-4 { top: 200px; right: 10px; width: 30px; transform: scaleX(1); }
+.wr-al-5 { bottom: 60px; left: 10px; width: 45px; transform: scaleX(1); }
+
+/* ── Impact Ripple ── */
+.wr-impact-ripple {
+  position: absolute;
+  top: 50%;
+  left: 10px;
+  width: 40px;
+  height: 40px;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  border: 2px solid var(--color-cyan, #39c5cf);
+  opacity: 0;
+  z-index: 15;
+  pointer-events: none;
 }
 
 /* ── New Screen ── */
@@ -22837,11 +23071,14 @@ body.panic-open {
   border-radius: 26px;
   background: var(--bg-tertiary, #0d0d1a);
   border: 2px solid var(--color-cyan, #39c5cf);
-  box-shadow: 0 10px 40px rgba(57,197,207,0.2);
+  box-shadow:
+    0 10px 40px rgba(57,197,207,0.2),
+    0 0 1px rgba(57,197,207,0.3);
   overflow: hidden;
   opacity: 0;
-  transition: opacity 0.5s ease,
-              transform 1s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transition:
+    opacity 0.5s ease,
+    transform 1.2s cubic-bezier(0.34, 1.56, 0.64, 1);
   z-index: 7;
   will-change: transform, opacity;
 }
@@ -22852,9 +23089,28 @@ body.panic-open {
   border-radius: 24px;
   background: linear-gradient(
     135deg,
-    rgba(57,197,207,0.05) 0%,
-    rgba(57,197,207,0.02) 100%
+    rgba(57,197,207,0.06) 0%,
+    rgba(57,197,207,0.02) 50%,
+    transparent 100%
   );
+}
+
+/* Specular highlight that travels down the new screen surface */
+.wr-new-screen-specular {
+  position: absolute;
+  top: -100%;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    180deg,
+    rgba(255,255,255,0.12) 0%,
+    rgba(255,255,255,0.04) 30%,
+    transparent 60%
+  );
+  border-radius: 24px;
+  pointer-events: none;
+  opacity: 0;
 }
 
 .wr-new-screen-content {
@@ -22882,13 +23138,95 @@ body.panic-open {
   width: 230px;
   height: 388px;
   border-radius: 30px;
-  box-shadow: 0 0 40px rgba(57,197,207,0),
-              inset 0 0 20px rgba(57,197,207,0);
+  box-shadow:
+    0 0 50px rgba(57,197,207,0),
+    inset 0 0 30px rgba(57,197,207,0);
   z-index: 8;
   pointer-events: none;
   opacity: 0;
-  transition: box-shadow 1s ease,
-              opacity 0.5s ease;
+  transition:
+    box-shadow 1s ease,
+    opacity 0.5s ease;
+}
+
+/* ── Specular (scene-wide) ── */
+.wr-specular {
+  position: absolute;
+  top: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 300px;
+  height: 480px;
+  background: linear-gradient(
+    180deg,
+    rgba(255,255,255,0.04) 0%,
+    transparent 30%
+  );
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 20;
+  opacity: 0;
+}
+
+/* ── Power-On Warm Glow ── */
+.wr-power-glow {
+  position: absolute;
+  inset: 0;
+  border-radius: 26px;
+  background: radial-gradient(
+    ellipse 80% 80% at 50% 50%,
+    rgba(255,250,240,0.9) 0%,
+    rgba(255,245,230,0.7) 20%,
+    rgba(57,197,207,0.3) 50%,
+    transparent 75%
+  );
+  opacity: 0;
+  z-index: 8;
+  pointer-events: none;
+  mix-blend-mode: screen;
+}
+
+/* ── Dust Particles ── */
+.wr-dust {
+  position: absolute;
+  inset: 0;
+  z-index: 15;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.wr-dust-particle {
+  position: absolute;
+  width: 2px;
+  height: 2px;
+  background: rgba(255,255,255,0.3);
+  border-radius: 50%;
+  opacity: 0;
+}
+
+/* Dust particle positions and float animations */
+.wr-dust-1 { top: 20%; left: 10%; animation: wrDustFloat 18s ease-in-out infinite 0s; }
+.wr-dust-2 { top: 60%; left: 85%; animation: wrDustFloat 22s ease-in-out infinite 3s; }
+.wr-dust-3 { top: 35%; left: 5%;  animation: wrDustFloat 20s ease-in-out infinite 6s; }
+.wr-dust-4 { top: 75%; left: 92%; animation: wrDustFloat 25s ease-in-out infinite 9s; }
+.wr-dust-5 { top: 15%; left: 75%; animation: wrDustFloat 19s ease-in-out infinite 12s; }
+.wr-dust-6 { top: 85%; left: 15%; animation: wrDustFloat 23s ease-in-out infinite 2s; }
+.wr-dust-7 { top: 45%; left: 90%; animation: wrDustFloat 21s ease-in-out infinite 7s; }
+.wr-dust-8 { top: 50%; left: 8%;  animation: wrDustFloat 17s ease-in-out infinite 14s; }
+
+@keyframes wrDustFloat {
+  0%   { transform: translate(0, 0); opacity: 0; }
+  10%  { opacity: 0.5; }
+  50%  { transform: translate(15px, -25px); opacity: 0.3; }
+  90%  { opacity: 0.5; }
+  100% { transform: translate(5px, -10px); opacity: 0; }
+}
+
+/* Dust more visible in stages 3-5 (open device, light entering) */
+.wr-stage-3 .wr-dust-particle,
+.wr-stage-4 .wr-dust-particle,
+.wr-stage-5 .wr-dust-particle {
+  opacity: 0.7;
 }
 
 /* ── Step Labels ── */
@@ -22949,81 +23287,193 @@ body.panic-open {
 }
 
 /* ═══════════════════════════════════════════
-   ANIMATION STAGES
-   Stage timing: 30s total, 7 stages ~4.3s each
+   ANIMATION STAGES — 7-Stage Cinematic Repair
+   Total loop: 35s | Each stage: ~5s
    ═══════════════════════════════════════════ */
 
-/* Stage 1: Broken screen (0s - 4.3s) */
-.watch-repair-stage.wr-stage-1 .wr-screen-crack { opacity: 1; }
+/* ── Stage 1: Broken Screen (0s - 5s) ── */
+.watch-repair-stage.wr-stage-1 .wr-crack-glow      { opacity: 1; }
+.watch-repair-stage.wr-stage-1 .wr-crack-line     { opacity: 1; animation: wrCrackAppear 0.3s ease forwards; }
+.watch-repair-stage.wr-stage-1 .wr-crack-line--1  { animation-delay: 0.1s; }
+.watch-repair-stage.wr-stage-1 .wr-crack-line--2 { animation-delay: 0.2s; }
+.watch-repair-stage.wr-stage-1 .wr-crack-line--3  { animation-delay: 0.35s; }
+.watch-repair-stage.wr-stage-1 .wr-crack-line--4  { animation-delay: 0.45s; }
+.watch-repair-stage.wr-stage-1 .wr-crack-line--5  { animation-delay: 0.55s; }
+.watch-repair-stage.wr-stage-1 .wr-screen-crack  { opacity: 1; }
 .watch-repair-stage.wr-stage-1 .wr-screen-glitch {
   opacity: 1;
-  animation: wrGlitch 0.8s steps(3) infinite;
+  animation: wrGlitch 0.6s steps(4) infinite;
 }
-
-@keyframes wrGlitch {
-  0%, 100% { transform: translate(0, 0); }
-  20% { transform: translate(-2px, 1px); }
-  40% { transform: translate(2px, -1px); }
-  60% { transform: translate(-1px, 2px); }
-  80% { transform: translate(1px, -2px); }
-}
-
-/* Stage 2: Tool slides in (4.3s - 8.6s) */
-.watch-repair-stage.wr-stage-2 .wr-screen-crack { opacity: 1; }
-.watch-repair-stage.wr-stage-2 .wr-screen-glitch {
+.watch-repair-stage.wr-stage-1 .wr-screen-flicker {
   opacity: 1;
-  animation: wrGlitch 0.8s steps(3) infinite;
+  animation: wrScreenFlicker 3s ease-in-out infinite;
+}
+.watch-repair-stage.wr-stage-1 .wr-dust-particle  { opacity: 0.4; }
+.watch-repair-stage.wr-stage-1 .wr-device-shadow  { animation: wrShadowBreathe 4s ease-in-out infinite; }
+
+/* ── Stage 2: Tool Enters (5s - 10s) ── */
+.watch-repair-stage.wr-stage-2 .wr-crack-glow      { opacity: 1; }
+.watch-repair-stage.wr-stage-2 .wr-crack-line     { opacity: 1; }
+.watch-repair-stage.wr-stage-2 .wr-screen-crack    { opacity: 1; }
+.watch-repair-stage.wr-stage-2 .wr-screen-glitch   {
+  opacity: 1;
+  animation: wrGlitch 0.6s steps(4) infinite;
+}
+.watch-repair-stage.wr-stage-2 .wr-screen-flicker  {
+  opacity: 1;
+  animation: wrScreenFlicker 3s ease-in-out infinite;
 }
 .watch-repair-stage.wr-stage-2 .wr-tool {
   opacity: 1;
   left: 10px;
 }
+.watch-repair-stage.wr-stage-2 .wr-tool-trail {
+  opacity: 0.7;
+  animation: wrToolTrail 1.5s ease-in-out infinite;
+}
+.watch-repair-stage.wr-stage-2 .wr-tool-specular { opacity: 1; }
+.watch-repair-stage.wr-stage-2 .wr-impact-ripple {
+  animation: wrRipple 1s ease-out forwards;
+  animation-delay: 0.8s;
+}
+.watch-repair-stage.wr-stage-2 .wr-dust-particle { opacity: 0.5; }
 
-/* Stage 3: Screen lifts (8.6s - 12.9s) */
-.watch-repair-stage.wr-stage-3 .wr-screen-crack { opacity: 1; }
+/* ── Stage 3: Screen Lifts (10s - 15s) ── */
+.watch-repair-stage.wr-stage-3 .wr-crack-glow     { opacity: 0.5; transition: opacity 0.8s ease; }
+.watch-repair-stage.wr-stage-3 .wr-crack-line    { opacity: 0.7; }
+.watch-repair-stage.wr-stage-3 .wr-screen-crack  { opacity: 0.8; }
+.watch-repair-stage.wr-stage-3 .wr-screen-glitch { opacity: 0; }
+.watch-repair-stage.wr-stage-3 .wr-screen-flicker { opacity: 0; }
 .watch-repair-stage.wr-stage-3 .wr-screen {
-  transform: translateY(-60px) rotateZ(-8deg);
-  border-radius: 26px 26px 16px 16px;
+  transform: translateY(-55px) rotateZ(-6deg);
+  border-radius: 26px 26px 18px 18px;
+  box-shadow: 0 30px 60px rgba(0,0,0,0.25);
+}
+.watch-repair-stage.wr-stage-3 .wr-adhesive-lines {
+  opacity: 1;
+}
+.watch-repair-stage.wr-stage-3 .wr-al-1 { transform: scaleX(2.5); opacity: 0.4; }
+.watch-repair-stage.wr-stage-3 .wr-al-2 { transform: scaleX(2.8); opacity: 0.4; transition-delay: 0.1s; }
+.watch-repair-stage.wr-stage-3 .wr-al-3 { transform: scaleX(3.2); opacity: 0.5; transition-delay: 0.2s; }
+.watch-repair-stage.wr-stage-3 .wr-al-4 { transform: scaleX(2.2); opacity: 0.4; transition-delay: 0.15s; }
+.watch-repair-stage.wr-stage-3 .wr-al-5 { transform: scaleX(2.6); opacity: 0.5; transition-delay: 0.25s; }
+.watch-repair-stage.wr-stage-3 .wr-tool {
+  opacity: 1;
+  left: 10px;
+}
+.watch-repair-stage.wr-stage-3 .wr-tool-trail { opacity: 0.4; }
+.watch-repair-stage.wr-stage-3 .wr-dust-particle { opacity: 0.8; }
+.watch-repair-stage.wr-stage-3 .wr-device-shadow {
+  transform: translateX(-50%) translateY(10px) scale(0.9);
+  opacity: 0.6;
 }
 
-/* Stage 4: Open state - internals visible (12.9s - 17.1s) */
+/* Adhesive snap — lines disappear sharply */
+.watch-repair-stage.wr-stage-4 .wr-adhesive-line {
+  transform: scaleX(0) !important;
+  opacity: 0 !important;
+  transition: transform 0.15s ease-out, opacity 0.1s ease-out !important;
+}
+
+/* ── Stage 4: Open State — Internals Visible (15s - 20s) ── */
 .watch-repair-stage.wr-stage-4 .wr-screen {
-  transform: translateY(-100px) rotateZ(-12deg);
+  transform: translateY(-95px) rotateZ(-10deg);
+  opacity: 0.35;
+  filter: brightness(0.7);
+}
+.watch-repair-stage.wr-stage-4 .wr-internals       { opacity: 1; }
+.watch-repair-stage.wr-stage-4 .wr-battery-pulse   { opacity: 1; }
+.watch-repair-stage.wr-stage-4 .wr-tool           { opacity: 0; left: -80px; transition: opacity 0.4s ease, left 0.8s ease; }
+.watch-repair-stage.wr-stage-4 .wr-dust-particle  { opacity: 0.9; }
+.watch-repair-stage.wr-stage-4 .wr-device-shadow   {
+  transform: translateX(-50%) translateY(15px) scale(0.85);
   opacity: 0.5;
 }
-.watch-repair-stage.wr-stage-4 .wr-internals { opacity: 1; }
-.watch-repair-stage.wr-stage-4 .wr-tool { opacity: 0; }
+.watch-repair-stage.wr-stage-4 .wr-phone-body {
+  box-shadow:
+    0 25px 60px rgba(0,0,0,0.35),
+    0 10px 25px rgba(0,0,0,0.2),
+    inset 0 1px 0 rgba(255,255,255,0.05);
+}
 
-/* Stage 5: New screen appears (17.1s - 21.4s) */
-.watch-repair-stage.wr-stage-5 .wr-screen { opacity: 0; }
-.watch-repair-stage.wr-stage-5 .wr-internals { opacity: 0.5; }
+/* ── Stage 5: New Screen Ready (20s - 25s) ── */
+.watch-repair-stage.wr-stage-5 .wr-screen          { opacity: 0; }
+.watch-repair-stage.wr-stage-5 .wr-internals       { opacity: 0.4; }
+.watch-repair-stage.wr-stage-5 .wr-battery-pulse  { opacity: 0.5; }
+.watch-repair-stage.wr-stage-5 .wr-dust-particle  { opacity: 0.6; }
+.watch-repair-stage.wr-stage-5 .wr-device-shadow   {
+  transform: translateX(-50%) scale(1);
+  opacity: 0.7;
+}
 .watch-repair-stage.wr-stage-5 .wr-new-screen {
   opacity: 1;
   transform: translateX(-50%) translateY(40px);
+  box-shadow:
+    0 20px 50px rgba(57,197,207,0.25),
+    0 0 1px rgba(57,197,207,0.4);
+}
+.watch-repair-stage.wr-stage-5 .wr-new-screen-specular {
+  opacity: 1;
+  animation: wrSpecularDown 2.5s ease-in-out infinite;
 }
 .watch-repair-stage.wr-stage-5 .wr-new-screen-content { opacity: 0; }
+.watch-repair-stage.wr-stage-5 .wr-phone-body {
+  box-shadow:
+    0 25px 60px rgba(0,0,0,0.3),
+    0 10px 25px rgba(0,0,0,0.2),
+    inset 0 1px 0 rgba(255,255,255,0.05);
+}
 
-/* Stage 6: Press & seal (21.4s - 25.7s) */
-.watch-repair-stage.wr-stage-6 .wr-internals { opacity: 0; }
+/* ── Stage 6: Press & Seal (25s - 30s) ── */
+.watch-repair-stage.wr-stage-6 .wr-internals       { opacity: 0; }
+.watch-repair-stage.wr-stage-6 .wr-battery-pulse  { opacity: 0; }
+.watch-repair-stage.wr-stage-6 .wr-dust-particle  { opacity: 0.3; }
+.watch-repair-stage.wr-stage-6 .wr-device-shadow   { opacity: 0.8; }
 .watch-repair-stage.wr-stage-6 .wr-new-screen {
   opacity: 1;
   transform: translateX(-50%) translateY(130px);
+  /* Spring bounce on descent */
+  animation: wrScreenBounce 1s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  animation-delay: 0.1s;
+  box-shadow:
+    0 10px 30px rgba(57,197,207,0.15),
+    0 0 1px rgba(57,197,207,0.3);
 }
+.watch-repair-stage.wr-stage-6 .wr-new-screen-specular { opacity: 0; }
 .watch-repair-stage.wr-stage-6 .wr-adhesive-glow {
   opacity: 1;
-  box-shadow: 0 0 40px rgba(57,197,207,0.3),
-              inset 0 0 20px rgba(57,197,207,0.15);
+  box-shadow:
+    0 0 50px rgba(57,197,207,0.4),
+    inset 0 0 30px rgba(57,197,207,0.2);
+  animation: wrAdhesivePulse 0.8s ease-in-out 3;
+}
+.watch-repair-stage.wr-stage-6 .wr-phone-body {
+  box-shadow:
+    0 20px 55px rgba(0,0,0,0.32),
+    0 8px 20px rgba(0,0,0,0.18),
+    inset 0 1px 0 rgba(255,255,255,0.05);
 }
 
-/* Stage 7: Power on (25.7s - 30s) */
+/* ── Stage 7: Power On — THE PAYOFF (30s - 35s) ── */
+.watch-repair-stage.wr-stage-7 .wr-dust-particle   { opacity: 0.15; }
+.watch-repair-stage.wr-stage-7 .wr-device-shadow    {
+  opacity: 0.9;
+  transform: translateX(-50%) scale(1);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+}
 .watch-repair-stage.wr-stage-7 .wr-new-screen {
   opacity: 1;
   transform: translateX(-50%) translateY(130px);
   border-color: transparent;
   border-radius: 26px;
-  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+  box-shadow:
+    0 20px 60px rgba(0,0,0,0.3),
+    0 0 30px rgba(57,197,207,0.1);
   height: 380px;
   top: 0;
+  animation: wrDeviceReveal 1s ease-out forwards;
+  /* Subtle tilt to show all angles */
+  animation-delay: 0.5s;
 }
 .watch-repair-stage.wr-stage-7 .wr-new-screen-glass {
   background: linear-gradient(
@@ -23032,60 +23482,157 @@ body.panic-open {
     rgba(57,197,207,0.01) 100%
   );
 }
-.watch-repair-stage.wr-stage-7 .wr-new-screen-content {
+.watch-repair-stage.wr-stage-7 .wr-new-screen-content { opacity: 1; }
+.watch-repair-stage.wr-stage-7 .wr-adhesive-glow {
+  opacity: 0;
+  box-shadow:
+    0 0 30px rgba(57,197,207,0),
+    inset 0 0 15px rgba(57,197,207,0);
+}
+.watch-repair-stage.wr-stage-7 .wr-power-glow {
   opacity: 1;
+  animation: wrPowerOn 2s ease-in forwards;
+  animation-delay: 0.3s;
 }
 .watch-repair-stage.wr-stage-7 .wr-phone-body {
-  box-shadow: 0 20px 60px rgba(57,197,207,0.1);
+  box-shadow:
+    0 25px 65px rgba(57,197,207,0.12),
+    0 15px 35px rgba(0,0,0,0.25),
+    inset 0 1px 0 rgba(255,255,255,0.08);
+  animation: wrPhoneRotate 8s ease-in-out infinite;
+  animation-delay: 1.5s;
+}
+
+/* ═══════════════════════════════════════════
+   KEYFRAMES — Physics & Effects
+   ═══════════════════════════════════════════ */
+
+@keyframes wrCrackAppear {
+  0%   { opacity: 0; transform: scaleY(0) rotate(25deg); }
+  60%  { opacity: 1; transform: scaleY(1.1) rotate(25deg); }
+  100% { opacity: 1; transform: scaleY(1) rotate(25deg); }
+}
+
+@keyframes wrGlitch {
+  0%, 100% { transform: translate(0, 0); }
+  15%       { transform: translate(-2px, 1px); }
+  30%       { transform: translate(2px, -1px); }
+  45%       { transform: translate(-1px, 2px); }
+  60%       { transform: translate(1px, -2px); }
+  75%       { transform: translate(-2px, -1px); }
+}
+
+@keyframes wrScreenFlicker {
+  0%, 100% { opacity: 0; }
+  5%        { opacity: 1; }
+  10%       { opacity: 0; }
+  15%       { opacity: 0.6; }
+  20%       { opacity: 0; }
+  50%       { opacity: 0; }
+  55%       { opacity: 0.3; }
+  60%       { opacity: 0; }
+}
+
+@keyframes wrToolTrail {
+  0%   { opacity: 0.5; width: 60px; }
+  50%  { opacity: 0.8; width: 90px; }
+  100% { opacity: 0.5; width: 60px; }
+}
+
+@keyframes wrRipple {
+  0%   { transform: translate(-50%, -50%) scale(0.5); opacity: 0.8; }
+  100% { transform: translate(-50%, -50%) scale(2.5); opacity: 0; }
+}
+
+@keyframes wrSpecularDown {
+  0%   { top: -100%; opacity: 0; }
+  20%  { opacity: 0.8; }
+  80%  { opacity: 0.6; }
+  100% { top: 100%; opacity: 0; }
+}
+
+@keyframes wrScreenBounce {
+  0%   { transform: translateX(-50%) translateY(40px); }
+  50%  { transform: translateX(-50%) translateY(135px); }
+  70%  { transform: translateX(-50%) translateY(122px); }
+  85%  { transform: translateX(-50%) translateY(130px); }
+  100% { transform: translateX(-50%) translateY(130px); }
+}
+
+@keyframes wrAdhesivePulse {
+  0%, 100% { box-shadow: 0 0 40px rgba(57,197,207,0.3), inset 0 0 20px rgba(57,197,207,0.15); }
+  50%       { box-shadow: 0 0 60px rgba(57,197,207,0.5), inset 0 0 35px rgba(57,197,207,0.25); }
+}
+
+@keyframes wrPowerOn {
+  0%   { opacity: 0; }
+  30%  { opacity: 0.7; }
+  60%  { opacity: 0.9; }
+  100% { opacity: 1; }
+}
+
+@keyframes wrDeviceReveal {
+  0%   { transform: translateX(-50%) translateY(130px) rotateZ(0deg); }
+  40%  { transform: translateX(-50%) translateY(130px) rotateZ(-3deg); }
+  70%  { transform: translateX(-50%) translateY(130px) rotateZ(2deg); }
+  100% { transform: translateX(-50%) translateY(130px) rotateZ(0deg); }
+}
+
+@keyframes wrPhoneRotate {
+  0%, 100% { transform: translateX(-50%) rotateZ(0deg); }
+  25%       { transform: translateX(-50%) rotateZ(2deg); }
+  75%       { transform: translateX(-50%) rotateZ(-2deg); }
 }
 
 /* ── Reduced Motion ── */
 @media (prefers-reduced-motion: reduce) {
-  .watch-repair-stage.wr-playing .wr-progress-bar {
-    animation: none;
-  }
+  .watch-repair-stage.wr-playing .wr-progress-bar { animation: none; }
+
   .wr-screen,
   .wr-tool,
   .wr-new-screen,
-  .wr-adhesive-glow {
+  .wr-adhesive-glow,
+  .wr-device-shadow,
+  .wr-adhesive-line {
     transition-duration: 0.01s !important;
+    animation-duration: 0.01s !important;
+    transform: none !important;
   }
-  .watch-repair-stage.wr-stage-1 .wr-screen-glitch {
-    animation: wrFadeOnly 2s ease infinite;
-  }
+
+  .wr-screen-glitch  { animation: wrFadeOnly 2s ease infinite; }
+  .wr-screen-flicker { opacity: 0.3; animation: none; }
+  .wr-battery-pulse  { animation: none; opacity: 0.5; }
+  .wr-dust-particle   { animation: none; opacity: 0.2; }
+  .wr-device-shadow   { animation: none; opacity: 0.7; }
+
+  /* Show final powered-on state */
+  .watch-repair-stage.wr-stage-7 .wr-new-screen { opacity: 1; transform: translateX(-50%) translateY(130px); }
+  .watch-repair-stage.wr-stage-7 .wr-new-screen-content { opacity: 1; }
+  .watch-repair-stage.wr-stage-7 .wr-power-glow { opacity: 1; }
+  .watch-repair-stage.wr-stage-1 .wr-screen-crack { opacity: 1; }
+  .watch-repair-stage.wr-stage-4 .wr-internals { opacity: 1; }
+  .watch-repair-stage.wr-stage-4 .wr-callout { opacity: 1; }
 }
 
 @keyframes wrFadeOnly {
   0%, 100% { opacity: 0.5; }
-  50%      { opacity: 0.8; }
+  50%       { opacity: 0.8; }
 }
 
 /* ── Mobile Responsive ── */
 @media (max-width: 480px) {
-  .wr-animation {
-    width: 240px;
-    height: 380px;
-  }
+  .wr-animation { width: 240px; height: 380px; }
   .wr-phone-body,
-  .wr-new-screen {
-    width: 180px;
-    height: 310px;
-  }
-  .watch-repair-stage.wr-stage-7 .wr-new-screen {
-    height: 310px;
-  }
-  .wr-step-label {
-    font-size: 0.5rem;
-  }
-  .wr-info {
-    flex-direction: column;
-    align-items: center;
-    gap: 0.75rem;
-  }
+  .wr-new-screen { width: 180px; height: 310px; }
+  .watch-repair-stage.wr-stage-7 .wr-new-screen { height: 310px; }
+  .wr-step-label { font-size: 0.5rem; }
+  .wr-info { flex-direction: column; align-items: center; gap: 0.75rem; }
+  .wr-device-shadow { width: 160px; }
+  .wr-crack-line { transform-origin: center; }
+  .wr-crack-line--1 { top: 12%; left: 18%; width: 1.5px; height: 30%; }
+  .wr-crack-line--2 { top: 22%; left: 43%; width: 1px; height: 35%; }
 }
 
 @media (max-width: 360px) {
-  .wr-animation {
-    transform: scale(0.85);
-  }
+  .wr-animation { transform: scale(0.85); }
 }

@@ -7366,7 +7366,7 @@
 
   var stepLabels = stage.querySelectorAll('.wr-step-label');
   var STAGE_COUNT = 7;
-  var STAGE_DURATION = 4300; // ms per stage — ~30s total loop
+  var STAGE_DURATION = 5000; // ms per stage — 35s total loop (5s per stage)
   var currentStage = 0;
   var timer = null;
   var isPlaying = false;

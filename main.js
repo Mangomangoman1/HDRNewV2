@@ -4494,24 +4494,24 @@
 
     // Step detail descriptions shown below timeline labels — rich, technical
     const stepDetails = [
-      '"Hey Samuel, iPhone 14 screen cracked on the corner." — Device model, color (Midnight, 256GB), and iOS version confirmed. Repair slot queued. Customer from Ketchum asked about same-day turnaround.',
-      'Visual inspection at 10x magnification. Crack at ~9 o\'clock extending 42mm across glass. Backlight bleed confirmed at 3 of 7 LED zones. Face ID bracket intact. Battery: 84% health — no swap needed.',
-      '$189 parts + labor. OEM display quoted. 40-day warranty. Customer asked aftermarket vs OEM — explained color accuracy, True Tone, and brightness. Opted OEM.',
-      'Quote approved. $50 deposit via Venmo. Parts pulled from shelf B-17, serial verified. Display pre-tested. Repair slot confirmed.',
-      'Approved. $50 deposit received. Parts pre-tested ✓. ESD mat grounded. Heat gun at 70°C, 90 sec. 3M 468MP adhesive separator applied.',
-      'ESD workspace active. ZIF connectors released. New display seated + connected. Metal shield reinstalled. Boot test: 0.3s Apple logo ✓.',
-      'All tests passed. True Tone re-enrolled ✓. Face ID functional ✓. 0 dead pixels ✓. Device polished, boxed. Customer notified at 11:02 AM.'
+      '"Hey Samuel, iPhone 14 screen cracked on the corner." — Model A2882 / Midnight / 256GB confirmed. iOS 17.4. Customer from Ketchum asked about same-day turnaround. Repair slot queued for 10:15 AM window.',
+      '10x magnification inspection: crack at 9 o\'clock, 42mm spanning the active area. Backlight bleed: 3/7 LED zones failed. Face ID bracket intact — no damage risk. Battery: 84% health, no replacement needed. Zero liquid intrusion indicators.',
+      '$189 total: $175 OEM display (Apple-supplier grade, not aftermarket), $14 labor. 40-day parts + labor warranty. Customer compared OEM vs aftermarket: True Tone retention and 1200-nit brightness swayed the decision to OEM.',
+      '$50 deposit via Venmo received. Display pulled from inventory shelf B-17. Serial # DPTZNQTJQ1LD matched to job. Pre-test confirmed: all sub-pixels functional, no dead zones, True Tone IC intact.',
+      'Deposit confirmed. ESD mat: 0.05Ω ground resistance verified. Heat gun at 70°C for 90 seconds. 3M 468MP adhesive softened along all 4 edges. Suction cup applied at 9 o\'clock crack origin.',
+      'ZIF connectors (J3950 display, J2550 touch) released with nylon spudger. Display flex carefully threaded through mid-frame routing channel. New OEM assembly seated, connectors secured. Metal EMI shield reinstalled with 4× T2 screws.',
+      'All tests passed. True Tone re-enrolled via Apple Settings ✓. Face ID dot projector + IR camera verified ✓. 5-finger multi-touch: 0 dead zones ✓. Display brightness: 100% ✓. Device polished with microfiber, double-boxed. 11:02 AM — customer notified.'
     ];
 
     // Status messages — richer, more technical, per-step arrays
     const statusMessages = [
-      ['9:04 AM — Text received', '"iPhone 14, screen cracked"', 'Model: A2882 / 256GB / Midnight', 'Customer from Ketchum', 'Asked about same-day service'],
-      ['9:41 AM — Diagnosis complete', '✓ LCD crack 42mm at 9 o\'clock', '✓ Backlight bleed — 3/7 zones', '✓ Face ID bracket: intact', '✓ Battery: 84% health', '✓ Zero water damage indicators'],
-      ['9:52 AM — Quote sent', '$189 parts + labor', 'OEM display — Apple-supplier grade', '40-day warranty', 'Customer chose OEM over aftermarket'],
-      ['10:02 AM — Parts pulled', '$50 deposit via Venmo', 'Display from shelf B-17', 'Serial # verified', 'Pre-test: functional ✓'],
-      ['10:08 AM — Approved', 'Deposit confirmed ✓', 'Parts pre-tested ✓', 'ESD mat grounded', 'Confirmed: 10:15 AM slot'],
-      ['10:15 AM — Repair started', 'ESD mat: grounded ✓', 'Heat gun: 70°C, 90 sec', 'ZIF released (nylon spudger)', 'New display seated', 'Metal shield reinstalled', 'Boot: 0.3s Apple logo ✓', 'Running test suite...'],
-      ['11:02 AM — Tests passed', '✓ True Tone re-enrolled', '✓ Face ID: dot projector', '✓ Face ID: IR camera', '✓ 5-finger touch', '✓ Dead pixels: 0', '✓ Display: 100% brightness', '✓ Device polished + boxed', '📱 Customer notified']
+      ['9:04 AM — Text received', '📱 "iPhone 14 Pro, screen cracked"', 'Model: A2882 · Midnight · 256GB', 'iOS 17.4.1', 'Customer from Ketchum', 'Same-day requested'],
+      ['9:41 AM — Diagnosis complete', '🔍 ✓ Crack: 42mm at 9 o\'clock', '🔍 ✓ Backlight bleed: 3/7 zones', '🔍 ✓ Face ID bracket: intact', '🔍 ✓ Battery: 84% / no swap needed', '🔍 ✓ Water damage: none'],
+      ['9:52 AM — Quote sent', '💰 $189 total ($175 + $14 labor)', '🏭 OEM display (not aftermarket)', '✓ True Tone compatible', '✓ 40-day warranty included', 'Customer chose OEM'],
+      ['10:02 AM — Parts pulled', '📦 Shelf B-17 inventory', '🔢 Serial: DPTZNQTJQ1LD', '✓ Pre-test: all zones pass', '💳 $50 deposit via Venmo', 'Slot confirmed: 10:15 AM'],
+      ['10:08 AM — Approved', '✅ Deposit confirmed', '✅ ESD mat grounded (0.05Ω)', '✅ Heat gun prep: 70°C · 90s', '✅ 3M 468MP adhesive ready', '📋 Repair checklist loaded'],
+      ['10:15 AM — Repair started', '🛠️ ZIF J3950 + J2550 released', '🛠️ New display seated', '🛠️ EMI shield: 4× T2 screws', '🛠️ Boot test: 0.3s Apple logo ✓', '🧪 Running full test suite...', '⚡ True Tone IC verified ✓', '⚡ Face ID module confirmed ✓'],
+      ['11:02 AM — ✓ Complete', '✅ True Tone re-enrolled', '✅ Face ID: dot projector ✓', '✅ Face ID: IR camera ✓', '✅ 5-finger multi-touch: 0 dead', '✅ Display: 100% brightness ✓', '✅ 0 dead pixels confirmed', '✅ Polished + double-boxed', '📱 Customer notified — 11:02 AM']
     ];
 
     let currentStep = -1;
@@ -4631,6 +4631,7 @@
     function startRepairAnimation() {
       if (animationRunning) return;
       animationRunning = true;
+      stopRepairClock();
 
       // Reset and add active class to device
       device.classList.remove('done');
@@ -4640,8 +4641,12 @@
       timelineProgress.style.width = '0%';
       statusLog.innerHTML = '';
 
+      // Reset elapsed time display
+      var elapsedEl = document.getElementById('lrElapsedTime');
+      if (elapsedEl) elapsedEl.textContent = '00:00';
+
       // Step timing (in ms) — cinematic pacing, longer for repair step with more detail
-      const stepDurations = [1400, 2000, 1800, 1400, 1200, 4500, 2500];
+      const stepDurations = [1600, 2200, 2000, 1600, 1400, 5500, 3000];
       
       let elapsed = 0;
 
@@ -4691,8 +4696,14 @@
         if (stepIndex === 5) {
           // In Repair — crack fades out with smooth transition
           crack.classList.add('repaired');
+          // Start repair clock and sparks during repair phase
+          startRepairClock();
+          // Spawn sparks periodically during repair
+          spawnRepairSparks();
+          var sparkInterval = setInterval(spawnRepairSparks, 2000);
+          setTimeout(function() { clearInterval(sparkInterval); }, 4000);
           // Delay the repaired screen reveal slightly
-          setTimeout(() => {
+          setTimeout(function() {
             repaired.classList.add('show');
           }, 800);
         }
@@ -5329,8 +5340,16 @@
       });
       timelineProgress.style.width = '100%';
       
+      // Hide repair clock
+      var repairClock = document.getElementById('lrRepairClock');
+      if (repairClock) repairClock.classList.remove('active');
+
       // Celebration animation
-      setTimeout(() => device.classList.add('celebrating'), 200);
+      setTimeout(() => device.classList.add('done'), 200);
+
+      // Spawn extra particle bursts for celebration
+      setTimeout(() => spawnParticles(), 100);
+      setTimeout(() => spawnParticles(), 500);
 
       let count = 0;
       const target = 58;
@@ -5339,6 +5358,51 @@
         totalTime.textContent = count;
         if (count >= target) clearInterval(counterInterval);
       }, Math.floor(2000 / target));
+    }
+
+    // Enhanced spark spawn during repair
+    function spawnRepairSparks() {
+      var container = document.getElementById('lrParticles');
+      if (!container) return;
+      for (var i = 0; i < 8; i++) {
+        (function(idx) {
+          setTimeout(function() {
+            var spark = document.createElement('div');
+            spark.className = 'lr-spark';
+            var colors = ['#ffd700', '#ff8c00', '#ff4500', '#ff6347', '#ffa500'];
+            spark.style.left = (20 + Math.random() * 60) + '%';
+            spark.style.top = (20 + Math.random() * 60) + '%';
+            spark.style.background = colors[idx % colors.length];
+            spark.style.setProperty('--sx', ((Math.random() - 0.5) * 80) + 'px');
+            spark.style.setProperty('--sy', ((Math.random() - 0.5) * 80) + 'px');
+            container.appendChild(spark);
+            setTimeout(function() { spark.remove(); }, 600);
+          }, idx * 60);
+        })(i);
+      }
+    }
+
+    // Repair clock ticker
+    var clockInterval = null;
+    function startRepairClock() {
+      var clockEl = document.getElementById('lrRepairClock');
+      var elapsedEl = document.getElementById('lrElapsedTime');
+      if (!clockEl || !elapsedEl) return;
+      var seconds = 0;
+      clockEl.classList.add('active');
+      clockInterval = setInterval(function() {
+        seconds++;
+        var m = Math.floor(seconds / 60);
+        var s = seconds % 60;
+        elapsedEl.textContent = (m < 10 ? '0' + m : m) + ':' + (s < 10 ? '0' + s : s);
+      }, 1000);
+    }
+
+    function stopRepairClock() {
+      if (clockInterval) {
+        clearInterval(clockInterval);
+        clockInterval = null;
+      }
     }
   }
 })();
@@ -6938,6 +7002,17 @@
         complexityValue.textContent = data.complexity.charAt(0).toUpperCase() + data.complexity.slice(1);
       }
 
+      // Update difficulty meter
+      var diffFill = document.getElementById('anatomyDifficultyFill');
+      var diffText = document.getElementById('anatomyDifficultyText');
+      if (diffFill && diffText && data.complexity) {
+        var pct = data.complexity === 'low' ? 30 : data.complexity === 'medium' ? 60 : 85;
+        diffFill.style.width = pct + '%';
+        var labels = { low: 'Easy', medium: 'Medium', high: 'Advanced' };
+        diffText.textContent = labels[data.complexity] || 'Medium';
+        diffText.style.color = data.complexity === 'low' ? 'var(--color-green)' : data.complexity === 'medium' ? 'var(--accent)' : 'var(--color-purple)';
+      }
+
       // Set data attribute for layer highlighting
       anatomyView.setAttribute('data-repair', repairType);
 
@@ -7053,6 +7128,35 @@
 
     // Initialize with first tab
     updateAnatomy('screen');
+
+    // X-ray mode toggle
+    var xrayToggle = document.getElementById('anatomyXrayToggle');
+    var anatomyView = document.getElementById('anatomyView');
+    if (xrayToggle && anatomyView) {
+      xrayToggle.addEventListener('click', function() {
+        var isActive = this.classList.toggle('active');
+        anatomyView.setAttribute('data-xray', isActive ? 'true' : 'false');
+        this.setAttribute('aria-pressed', isActive);
+        // Update icon
+        var icon = this.querySelector('.material-symbols-outlined');
+        if (icon) {
+          icon.textContent = isActive ? 'visibility_off' : 'visibility';
+        }
+      });
+    }
+
+    // Layer badge — show on hover
+    anatomyLayers.forEach(function(layer) {
+      layer.addEventListener('mouseenter', function() {
+        var layerName = layer.getAttribute('data-layer');
+        var badge = layer.querySelector('.anatomy-layer-badge');
+        if (badge) badge.style.opacity = '1';
+      });
+      layer.addEventListener('mouseleave', function() {
+        var badge = layer.querySelector('.anatomy-layer-badge');
+        if (badge) badge.style.opacity = '0';
+      });
+    });
 
 
   })();

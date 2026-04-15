@@ -1546,8 +1546,21 @@ a{color:inherit;text-decoration:none}
                   <div class="anatomy-glass-shine" aria-hidden="true"></div>
                 </div>
               </div>
+              <div class="anatomy-layer-badge" aria-hidden="true">Front Glass</div>
             </div>
 
+          </div>
+
+          <!-- Explore hint + controls -->
+          <div class="anatomy-explode-controls" id="anatomyControls">
+            <button class="anatomy-xray-toggle" id="anatomyXrayToggle" type="button" aria-label="Toggle X-ray view" title="X-ray view: see internal components">
+              <span class="material-symbols-outlined" aria-hidden="true">visibility</span>
+              <span>X-ray</span>
+            </button>
+            <div class="anatomy-hover-hint" aria-hidden="true">
+              <span class="material-symbols-outlined" aria-hidden="true">touch_app</span>
+              Hover layers to explore
+            </div>
           </div>
 
           <!-- Floating annotations that appear on hover/selection -->
@@ -1594,24 +1607,6 @@ a{color:inherit;text-decoration:none}
                 <span class="anatomy-anno-detail">Wireless charge coil + dual camera module</span>
               </div>
             </div>
-                <strong class="anatomy-anno-title">Battery</strong>
-                <span class="anatomy-anno-detail">Lithium-ion cell with BMS</span>
-              </div>
-            </div>
-            <div class="anatomy-annotation" data-annotation="logic" id="annoLogic">
-              <div class="anatomy-anno-dot" aria-hidden="true"></div>
-              <div class="anatomy-anno-content">
-                <strong class="anatomy-anno-title">Logic Board</strong>
-                <span class="anatomy-anno-detail">Main board + connectors</span>
-              </div>
-            </div>
-            <div class="anatomy-annotation" data-annotation="back" id="annoBack">
-              <div class="anatomy-anno-dot" aria-hidden="true"></div>
-              <div class="anatomy-anno-content">
-                <strong class="anatomy-anno-title">Back Glass</strong>
-                <span class="anatomy-anno-detail">Rear panel + wireless charge coil</span>
-              </div>
-            </div>
           </div>
         </div>
 
@@ -1644,6 +1639,18 @@ a{color:inherit;text-decoration:none}
               <span class="anatomy-stat-value" id="anatomyStatWarranty">90</span>
               <span class="anatomy-stat-label">day warranty</span>
             </div>
+          </div>
+
+          <!-- Repair difficulty meter -->
+          <div class="anatomy-difficulty-meter" id="anatomyDifficultyMeter" aria-label="Repair difficulty">
+            <span class="anatomy-difficulty-label">Repair difficulty</span>
+            <div class="anatomy-difficulty-track">
+              <div class="anatomy-difficulty-fill" id="anatomyDifficultyFill"></div>
+              <div class="anatomy-difficulty-ticks">
+                <span></span><span></span><span></span><span></span><span></span>
+              </div>
+            </div>
+            <span class="anatomy-difficulty-text" id="anatomyDifficultyText">Medium</span>
           </div>
 
           <!-- What gets replaced -->
@@ -1896,6 +1903,12 @@ a{color:inherit;text-decoration:none}
         <div class="lr-grid" aria-hidden="true"></div>
         <div class="lr-scanline" aria-hidden="true"></div>
         <div class="lr-particles" id="lrParticles" aria-hidden="true"></div>
+
+        <!-- Repair elapsed clock -->
+        <div class="lr-repair-clock" id="lrRepairClock" aria-live="polite">
+          <span class="material-symbols-outlined lr-repair-clock-icon" aria-hidden="true">schedule</span>
+          <span id="lrElapsedTime">00:00</span>
+        </div>
 
         <div class="lr-device-wrap">
           <div class="lr-device" id="lrDevice">

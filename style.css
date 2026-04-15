@@ -20937,3 +20937,1255 @@ body.panic-open {
     transition-duration: 0.01s !important;
   }
 }
+
+/* ══════════════════════════════════════════════════════════════════
+   ENHANCED ANATOMY — Premium Layer Interactions & Visuals
+   ══════════════════════════════════════════════════════════════════ */
+
+/* Layer glow ring — pulsing border when highlighted */
+.anatomy-layer::after {
+  content: '';
+  position: absolute;
+  inset: -3px;
+  border-radius: inherit;
+  border: 2px solid transparent;
+  transition: border-color 0.4s ease, box-shadow 0.4s ease;
+  pointer-events: none;
+}
+
+.anatomy-layer.highlighted::after {
+  border-color: var(--accent);
+  box-shadow: 0 0 20px var(--accent-glow), inset 0 0 20px var(--accent-glow);
+  animation: layerGlowPulse 2s ease-in-out infinite;
+}
+
+@keyframes layerGlowPulse {
+  0%, 100% { opacity: 0.7; }
+  50% { opacity: 1; }
+}
+
+/* Dimmed layers — visually recede */
+.anatomy-layer.dimmed {
+  filter: brightness(0.45) saturate(0.5);
+}
+
+.anatomy-layer.dimmed .anatomy-layer-visual {
+  box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+}
+
+/* Layer hover — show label badge */
+.anatomy-layer-badge {
+  position: absolute;
+  bottom: -28px;
+  left: 50%;
+  transform: translateX(-50%) translateY(5px);
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-default);
+  border-radius: 20px;
+  padding: 3px 10px;
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 0.3s ease, transform 0.3s var(--ease-spring);
+  pointer-events: none;
+  z-index: 10;
+}
+
+.anatomy-layer:hover .anatomy-layer-badge {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* Enhanced annotation pop-in */
+.anatomy-annotation {
+  opacity: 0;
+  transform: translateX(-8px);
+  transition: opacity 0.4s ease, transform 0.4s var(--ease-spring);
+}
+
+.anatomy-annotation.visible {
+  opacity: 1;
+  transform: translateX(0);
+  animation: annoSlideIn 0.5s var(--ease-spring) both;
+}
+
+@keyframes annoSlideIn {
+  from { opacity: 0; transform: translateX(-12px) scale(0.95); }
+  to { opacity: 1; transform: translateX(0) scale(1); }
+}
+
+/* Annotation connector line animation */
+.anatomy-annotation.visible .anatomy-anno-dot::before {
+  animation: annoConnector 0.4s ease-out 0.2s both;
+}
+
+@keyframes annoConnector {
+  from { transform: scaleX(0); opacity: 0; }
+  to { transform: scaleX(1); opacity: 1; }
+}
+
+/* Exploded view — zoom on hover of the whole container */
+.anatomy-exploded {
+  transition: transform 0.8s var(--ease-spring);
+}
+
+.anatomy-exploded:hover {
+  transform: rotateY(-5deg) rotateX(3deg) scale(1.05);
+}
+
+/* X-ray mode toggle — makes all layers semi-transparent */
+.anatomy-view[data-xray="true"] .anatomy-layer {
+  filter: brightness(0.6) saturate(0.4);
+}
+
+.anatomy-view[data-xray="true"] .anatomy-layer.highlighted {
+  filter: brightness(1.1) saturate(1.1);
+}
+
+/* Anatomy info panel — premium scroll-snap */
+.anatomy-info {
+  scroll-behavior: smooth;
+  overscroll-behavior: contain;
+}
+
+.anatomy-info::before {
+  content: '';
+  position: sticky;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 40px;
+  background: linear-gradient(to bottom, var(--bg-surface), transparent);
+  display: block;
+  margin-bottom: -40px;
+  z-index: 5;
+  pointer-events: none;
+}
+
+/* Info block — staggered reveal on tab switch */
+.anatomy-info-block {
+  animation: infoBlockReveal 0.4s var(--ease-spring) both;
+}
+
+@keyframes infoBlockReveal {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Anatomy step — expanded detail reveal */
+.anatomy-steps-list li {
+  position: relative;
+  padding-left: 2rem;
+}
+
+.anatomy-steps-list li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--border-subtle);
+  border-radius: 2px;
+  transition: background 0.3s ease;
+}
+
+.anatomy-steps-list li:hover::before {
+  background: var(--accent);
+}
+
+.anatomy-step-detail {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  margin-top: 6px;
+  line-height: 1.5;
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition: max-height 0.4s ease, opacity 0.3s ease, margin 0.3s ease;
+  margin-top: 0;
+}
+
+.anatomy-steps-list li:hover .anatomy-step-detail {
+  max-height: 80px;
+  opacity: 1;
+  margin-top: 6px;
+}
+
+/* Parts item — color-coded indicators */
+.anatomy-part-replaced .anatomy-part-indicator {
+  background: var(--color-orange);
+  box-shadow: 0 0 8px rgba(247, 129, 102, 0.4);
+}
+
+.anatomy-part-checked .anatomy-part-indicator {
+  background: var(--color-green);
+  box-shadow: 0 0 8px rgba(63, 185, 80, 0.4);
+}
+
+/* Trust badge — premium shine sweep */
+.anatomy-trust-badge::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.06), transparent);
+  animation: trustShine 3s ease-in-out 2s infinite;
+}
+
+@keyframes trustShine {
+  0% { left: -100%; }
+  50%, 100% { left: 150%; }
+}
+
+/* Complexity fill — animated gradient */
+.anatomy-complexity-fill {
+  background: linear-gradient(90deg, var(--color-green) 0%, #7dd87d 30%, var(--accent) 60%, var(--color-purple) 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.anatomy-complexity-fill::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 20px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.5));
+  animation: complexityShimmer 2s ease-in-out infinite;
+}
+
+@keyframes complexityShimmer {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 1; }
+}
+
+/* Anatomy stat — counter animation enhancement */
+.anatomy-stat-value {
+  transition: transform 0.3s var(--ease-spring), color 0.3s ease;
+}
+
+.anatomy-stat-value:hover {
+  transform: scale(1.1);
+  color: var(--accent);
+}
+
+/* Anatomy tab — premium active state */
+.anatomy-tab.active {
+  position: relative;
+}
+
+.anatomy-tab.active::after {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: 50px;
+  border: 1px solid var(--accent);
+  opacity: 0.5;
+  animation: tabRingPulse 1.5s ease-in-out infinite;
+}
+
+@keyframes tabRingPulse {
+  0%, 100% { transform: scale(1); opacity: 0.5; }
+  50% { transform: scale(1.05); opacity: 0.2; }
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   ENHANCED LIVE REPAIR — Cinematic Multi-Stage Animation
+   ══════════════════════════════════════════════════════════════════ */
+
+/* Repair stage — cinematic letterbox bars */
+.live-repair-stage {
+  position: relative;
+}
+
+.live-repair-stage::before,
+.live-repair-stage::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 60px;
+  z-index: 30;
+  pointer-events: none;
+}
+
+.live-repair-stage::before {
+  top: 0;
+  background: linear-gradient(to bottom, var(--bg-surface) 0%, transparent 100%);
+}
+
+.live-repair-stage::after {
+  bottom: 0;
+  background: linear-gradient(to top, var(--bg-surface) 0%, transparent 100%);
+}
+
+/* Device — enhanced repair animation */
+.lr-device.repairing {
+  animation: deviceRepairPulse 1.5s ease-in-out infinite;
+}
+
+@keyframes deviceRepairPulse {
+  0%, 100% { transform: translateY(0) rotateY(-8deg) rotateX(4deg) scale(1); }
+  25% { transform: translateY(-6px) rotateY(-5deg) rotateX(2deg) scale(1.02); }
+  75% { transform: translateY(-10px) rotateY(-11deg) rotateX(5deg) scale(1.04); }
+}
+
+/* Device — done state */
+.lr-device.done {
+  animation: deviceDoneCelebrate 0.8s var(--ease-spring) forwards;
+}
+
+@keyframes deviceDoneCelebrate {
+  0% { transform: scale(1.05); }
+  50% { transform: scale(1.1) rotateY(0deg); }
+  100% { transform: scale(1) rotateY(-5deg) rotateX(3deg); }
+}
+
+/* Screen crack — fracture pattern enhancement */
+.lr-screen-crack {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border-radius: 0;
+}
+
+.lr-screen-crack::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 30% 30%, rgba(255,255,255,0.1) 0%, transparent 50%),
+    radial-gradient(ellipse at 70% 70%, rgba(255,255,255,0.05) 0%, transparent 40%);
+  opacity: 0.5;
+}
+
+/* Crack lines using SVG clip-path animation */
+.lr-screen-crack.crack-animated::before {
+  animation: crackReveal 0.6s ease-out forwards;
+}
+
+@keyframes crackReveal {
+  from { clip-path: inset(0 100% 0 0); opacity: 0.3; }
+  to { clip-path: inset(0 0% 0 0); opacity: 1; }
+}
+
+/* Screen — repaired glow effect */
+.lr-screen-repaired {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.6s ease;
+  background: linear-gradient(135deg, rgba(63,185,80,0.15), rgba(79,142,247,0.1));
+}
+
+.lr-screen-repaired.show {
+  opacity: 1;
+}
+
+.lr-repaired-check {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--color-green);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 8px;
+  animation: repairedCheckBounce 0.6s var(--ease-spring) 0.3s both;
+  box-shadow: 0 0 20px rgba(63,185,80,0.5);
+}
+
+@keyframes repairedCheckBounce {
+  0% { transform: scale(0); }
+  60% { transform: scale(1.3); }
+  100% { transform: scale(1); }
+}
+
+.lr-repaired-check::after {
+  content: '✓';
+  font-size: 20px;
+  color: white;
+}
+
+.lr-repaired-text {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--color-green);
+  text-align: center;
+}
+
+.lr-repaired-time {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+
+/* Tool — enhanced animations during repair */
+.lr-device.repairing .lr-tool--screwdriver {
+  animation: toolScrewdriverEnhanced 2s ease-in-out infinite;
+}
+
+@keyframes toolScrewdriverEnhanced {
+  0% { transform: translate(-60px, -50px) rotate(-25deg); opacity: 0.8; }
+  30% { transform: translate(-40px, -30px) rotate(-5deg); opacity: 1; }
+  60% { transform: translate(-55px, -40px) rotate(-15deg); opacity: 0.9; }
+  100% { transform: translate(-60px, -50px) rotate(-25deg); opacity: 0.8; }
+}
+
+.lr-device.repairing .lr-tool--spudger {
+  animation: toolSpudgerEnhanced 1.8s ease-in-out infinite 0.3s;
+}
+
+@keyframes toolSpudgerEnhanced {
+  0% { transform: translate(45px, 35px) rotate(10deg); opacity: 0.7; }
+  50% { transform: translate(60px, 15px) rotate(-8deg); opacity: 1; }
+  100% { transform: translate(45px, 35px) rotate(10deg); opacity: 0.7; }
+}
+
+.lr-device.repairing .lr-tool--heatgun {
+  animation: toolHeatgunEnhanced 1.5s ease-in-out infinite;
+}
+
+@keyframes toolHeatgunEnhanced {
+  0%, 100% { transform: translate(-20px, -60px) rotate(0deg); opacity: 0.8; }
+  50% { transform: translate(-10px, -45px) rotate(5deg); opacity: 1; }
+}
+
+.lr-device.repairing .lr-tool--suction {
+  animation: toolSuctionEnhanced 1.6s ease-in-out infinite 0.5s;
+}
+
+@keyframes toolSuctionEnhanced {
+  0%, 100% { transform: translate(50px, -40px); opacity: 0.6; }
+  50% { transform: translate(40px, -25px); opacity: 1; }
+}
+
+/* Heat shimmer effect around device during repair */
+.lr-device.repairing .lr-device-glow {
+  animation: heatShimmer 1.2s ease-in-out infinite;
+}
+
+@keyframes heatShimmer {
+  0%, 100% { opacity: 0.4; transform: scale(1); filter: blur(20px) hue-rotate(0deg); }
+  50% { opacity: 0.7; transform: scale(1.15); filter: blur(25px) hue-rotate(10deg); }
+}
+
+/* Particle burst on repair complete */
+.lr-device.done .lr-particles {
+  animation: particleBurstComplete 1.5s ease-out forwards;
+}
+
+/* Timeline — enhanced step progress with glow */
+.lr-timeline-progress {
+  height: 3px;
+  background: linear-gradient(90deg, var(--accent), var(--color-cyan), var(--accent));
+  background-size: 200% 100%;
+  box-shadow: 0 0 10px var(--accent-glow), 0 0 20px var(--accent-glow);
+  transition: width 0.8s var(--ease-spring);
+  position: relative;
+}
+
+.lr-timeline-progress::after {
+  content: '';
+  position: absolute;
+  right: -1px;
+  top: -3px;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 10px var(--accent), 0 0 20px var(--accent);
+  animation: progressDotPulse 1s ease-in-out infinite;
+}
+
+@keyframes progressDotPulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.4); }
+}
+
+/* Status feed — premium styling */
+.lr-status-log {
+  max-height: 200px;
+  overflow-y: auto;
+  padding-right: 4px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--accent) transparent;
+}
+
+.lr-status-log::-webkit-scrollbar { width: 3px; }
+.lr-status-log::-webkit-scrollbar-track { background: transparent; }
+.lr-status-log::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 2px; }
+
+.lr-status-item {
+  padding: 6px 0;
+  border-bottom: 1px solid var(--border-subtle);
+  font-size: 0.78rem;
+  transition: background 0.2s ease;
+}
+
+.lr-status-item:last-child { border-bottom: none; }
+
+.lr-status-item:hover {
+  background: var(--accent-dim);
+  border-radius: 6px;
+  padding-left: 6px;
+}
+
+.lr-status-icon {
+  color: var(--accent);
+  font-size: 0.9rem;
+}
+
+.lr-status-text {
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
+
+/* Status header — live indicator */
+.lr-status-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 10px;
+}
+
+.lr-status-pulse {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--color-green);
+  box-shadow: 0 0 8px var(--color-green);
+  animation: livePulse 1.5s ease-in-out infinite;
+}
+
+@keyframes livePulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.8); }
+}
+
+/* Summary stats — premium card */
+.lr-summary {
+  background: linear-gradient(135deg, var(--bg-elevated), var(--bg-card));
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-lg);
+  padding: var(--space-lg);
+  position: relative;
+  overflow: hidden;
+}
+
+.lr-summary::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, var(--accent-dim) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+.lr-summary-inner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-xl);
+  position: relative;
+}
+
+.lr-summary-stat {
+  text-align: center;
+  padding: 8px 20px;
+  border-radius: var(--radius-md);
+  transition: transform 0.3s var(--ease-spring), background 0.3s ease;
+}
+
+.lr-summary-stat:hover {
+  background: var(--accent-dim);
+  transform: translateY(-4px);
+}
+
+.lr-summary-value {
+  font-family: var(--font-display);
+  font-size: 2.2rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, var(--accent), var(--color-cyan));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  line-height: 1;
+}
+
+.lr-summary-unit {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  font-weight: 600;
+  margin-left: 2px;
+}
+
+.lr-summary-label {
+  display: block;
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-top: 4px;
+}
+
+.lr-summary-divider {
+  width: 1px;
+  height: 40px;
+  background: var(--border-default);
+}
+
+/* Replay button — spin animation on hover */
+.lr-replay-btn {
+  background: none;
+  border: 1px solid var(--border-default);
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s var(--ease-spring);
+  color: var(--text-muted);
+  margin-left: auto;
+}
+
+.lr-replay-btn:hover {
+  background: var(--accent-dim);
+  border-color: var(--accent);
+  color: var(--accent);
+  transform: rotate(180deg);
+}
+
+/* Repair clock — elapsed time counter */
+.lr-repair-clock {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-default);
+  border-radius: 20px;
+  padding: 6px 14px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  font-family: var(--font-display);
+  color: var(--accent);
+  z-index: 15;
+  box-shadow: 0 0 15px var(--accent-dim);
+  display: none;
+}
+
+.lr-repair-clock.active {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  animation: clockFadeIn 0.4s ease-out;
+}
+
+@keyframes clockFadeIn {
+  from { opacity: 0; transform: translateY(-8px) scale(0.9); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.lr-repair-clock-icon {
+  font-size: 0.9rem;
+  animation: clockTick 1s steps(1) infinite;
+}
+
+@keyframes clockTick {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+/* Spark effect during repair */
+.lr-spark {
+  position: absolute;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: #ffd700;
+  box-shadow: 0 0 6px #ffd700, 0 0 12px #ff8c00;
+  pointer-events: none;
+  animation: sparkFly 0.5s ease-out forwards;
+}
+
+@keyframes sparkFly {
+  0% { opacity: 1; transform: translate(0, 0) scale(1); }
+  100% { opacity: 0; transform: translate(var(--sx, 20px), var(--sy, -30px)) scale(0); }
+}
+
+/* Step — enhanced active state */
+.lr-step.active .lr-step-dot-inner {
+  background: var(--accent);
+  box-shadow: 0 0 15px var(--accent-glow), 0 0 30px var(--accent-glow);
+  transform: scale(1.3);
+}
+
+.lr-step.active .lr-step-dot-ring {
+  border-color: var(--accent);
+  opacity: 0.8;
+  animation: stepRingExpand 1s ease-out infinite;
+}
+
+@keyframes stepRingExpand {
+  0% { transform: scale(1); opacity: 0.8; }
+  100% { transform: scale(2); opacity: 0; }
+}
+
+.lr-step.active .lr-step-label {
+  color: var(--text-primary);
+  font-weight: 700;
+}
+
+.lr-step.done .lr-step-dot-inner {
+  background: var(--color-green);
+  box-shadow: 0 0 10px rgba(63,185,80,0.4);
+}
+
+/* Step detail — typewriter-style reveal */
+.lr-step-detail {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  margin-top: 4px;
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition: max-height 0.5s ease, opacity 0.4s ease;
+  line-height: 1.5;
+}
+
+.lr-step.active .lr-step-detail {
+  max-height: 80px;
+  opacity: 1;
+}
+
+/* Magnetic CTA button — premium */
+.lr-magnetic-btn {
+  position: relative;
+  overflow: hidden;
+  background: var(--accent);
+  border: none;
+  border-radius: 14px;
+  padding: 14px 32px;
+  cursor: pointer;
+  transition: transform 0.3s var(--ease-spring), box-shadow 0.3s ease;
+}
+
+.lr-magnetic-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 30px var(--accent-glow);
+}
+
+.lr-btn-content {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-body);
+  font-size: 1rem;
+  font-weight: 700;
+  color: white;
+}
+
+.lr-btn-icon {
+  font-size: 1.2rem;
+  animation: btnIconPulse 2s ease-in-out infinite;
+}
+
+@keyframes btnIconPulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.15) rotate(5deg); }
+}
+
+.lr-btn-shine {
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent);
+  animation: btnShineSweep 3s ease-in-out infinite 1s;
+}
+
+@keyframes btnShineSweep {
+  0% { left: -100%; }
+  50%, 100% { left: 150%; }
+}
+
+.lr-btn-ripple {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+.lr-btn-ripple::before,
+.lr-btn-ripple::after {
+  content: '';
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.3);
+  animation: btnRippleExpand 2s ease-out infinite;
+}
+
+.lr-btn-ripple::after {
+  animation-delay: 1s;
+}
+
+@keyframes btnRippleExpand {
+  0% { transform: scale(0); opacity: 0.6; }
+  100% { transform: scale(2.5); opacity: 0; }
+}
+
+/* Live repair — scanline enhancement */
+.lr-scanline {
+  animation: lrScanMove 5s ease-in-out infinite;
+}
+
+/* Grid — parallax-like depth */
+.lr-grid {
+  animation: gridParallax 8s ease-in-out infinite;
+}
+
+@keyframes gridParallax {
+  0%, 100% { transform: scale(1) translateY(0); }
+  50% { transform: scale(1.02) translateY(-5px); }
+}
+
+/* Screen status bar — live clock update */
+.lr-statusbar-time {
+  animation: statusTimeUpdate 60s steps(1) infinite;
+}
+
+@keyframes statusTimeUpdate {
+  from { content: '9:41'; }
+  to { content: '11:02'; }
+}
+
+/* Before/after comparison overlay */
+.lr-comparison {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  pointer-events: none;
+  z-index: 15;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+.lr-comparison.show {
+  opacity: 1;
+}
+
+.lr-comparison-label {
+  position: absolute;
+  bottom: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-default);
+  border-radius: 20px;
+  padding: 4px 12px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+/* Tool label badges */
+.lr-tool-label {
+  position: absolute;
+  bottom: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.6rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.lr-device.repairing .lr-tool-label {
+  opacity: 1;
+}
+
+/* Repair stage — enhanced ambient glow */
+.lr-device-glow {
+  background: radial-gradient(ellipse at center,
+    rgba(79,142,247,0.3) 0%,
+    rgba(57,197,207,0.15) 40%,
+    rgba(163,113,247,0.1) 70%,
+    transparent 100%);
+}
+
+/* Device shadow — depth enhancement */
+.lr-device-shadow {
+  position: absolute;
+  bottom: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 120px;
+  height: 20px;
+  background: radial-gradient(ellipse, rgba(0,0,0,0.4) 0%, transparent 70%);
+  filter: blur(8px);
+  animation: shadowPulse 3s ease-in-out infinite;
+}
+
+@keyframes shadowPulse {
+  0%, 100% { transform: translateX(-50%) scaleX(1); opacity: 0.6; }
+  50% { transform: translateX(-50%) scaleX(1.2); opacity: 0.3; }
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   ANATOMY EXPLODE CONTROLS — X-ray toggle + hover hint
+   ══════════════════════════════════════════════════════════════════ */
+.anatomy-explode-controls {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  z-index: 10;
+}
+
+.anatomy-xray-toggle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-default);
+  border-radius: 20px;
+  color: var(--text-secondary);
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s var(--ease-spring);
+  font-family: var(--font-body);
+}
+
+.anatomy-xray-toggle:hover {
+  background: var(--accent-dim);
+  border-color: var(--accent);
+  color: var(--accent);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px var(--accent-glow);
+}
+
+.anatomy-xray-toggle.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: white;
+  box-shadow: 0 0 20px var(--accent-glow);
+}
+
+.anatomy-xray-toggle .material-symbols-outlined {
+  font-size: 1rem;
+}
+
+.anatomy-hover-hint {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  animation: hintPulse 2.5s ease-in-out infinite;
+}
+
+.anatomy-hover-hint .material-symbols-outlined {
+  font-size: 0.9rem;
+  animation: hintIconBounce 2s ease-in-out infinite;
+}
+
+@keyframes hintPulse {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 0.9; }
+}
+
+@keyframes hintIconBounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-3px); }
+}
+
+@media (max-width: 700px) {
+  .anatomy-explode-controls {
+    flex-direction: column;
+    gap: 6px;
+  }
+  .anatomy-hover-hint { display: none; }
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   ENHANCED LIVE REPAIR — Repair Clock + Celebration Effects
+   ══════════════════════════════════════════════════════════════════ */
+.lr-repair-clock {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: rgba(13, 17, 23, 0.85);
+  border: 1px solid rgba(79, 142, 247, 0.4);
+  border-radius: 20px;
+  padding: 6px 14px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+  color: #4f8ef7;
+  z-index: 15;
+  box-shadow: 0 0 20px rgba(79, 142, 247, 0.25), 0 4px 16px rgba(0,0,0,0.3);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  opacity: 0;
+  transform: translateY(-8px) scale(0.9);
+  transition: opacity 0.4s ease, transform 0.4s var(--ease-spring);
+  pointer-events: none;
+}
+
+.lr-repair-clock.active {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
+}
+
+.lr-repair-clock-icon {
+  font-size: 0.95rem;
+  animation: clockTick 1s steps(1) infinite;
+  color: rgba(79, 142, 247, 0.8);
+}
+
+@keyframes clockTick {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+/* Spark effect container adjustments */
+.lr-particles {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 10;
+}
+
+/* Device — done state enhancement */
+.lr-device.done {
+  animation: deviceDoneFinal 0.8s var(--ease-spring) forwards;
+}
+
+@keyframes deviceDoneFinal {
+  0% { transform: scale(1.05) rotateY(-8deg) rotateX(4deg); }
+  40% { transform: scale(1.12) rotateY(-3deg) rotateX(1deg); }
+  70% { transform: scale(1.08) rotateY(-5deg) rotateX(2deg); }
+  100% { transform: scale(1) rotateY(-5deg) rotateX(3deg); }
+}
+
+/* Repair clock pulse when active */
+.lr-repair-clock.active::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: 22px;
+  border: 1px solid rgba(79, 142, 247, 0.5);
+  animation: clockRingPulse 1.5s ease-in-out infinite;
+}
+
+@keyframes clockRingPulse {
+  0%, 100% { opacity: 0.8; transform: scale(1); }
+  50% { opacity: 0.3; transform: scale(1.08); }
+}
+
+/* Enhanced scanline during repair */
+.live-repair-stage:has(.lr-device.repairing) .lr-scanline {
+  opacity: 0.6 !important;
+  animation-duration: 3s !important;
+}
+
+/* Screen content — enhanced before/after */
+.lr-screen-content {
+  position: relative;
+  overflow: hidden;
+}
+
+/* Crack pattern enhancement */
+.lr-screen-crack {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  opacity: 0.8;
+}
+
+.lr-screen-crack.repaired {
+  animation: crackFadeOut 0.6s ease-out forwards;
+}
+
+@keyframes crackFadeOut {
+  from { opacity: 0.8; }
+  to { opacity: 0; }
+}
+
+/* Screen glow during repair */
+.lr-device.repairing .lr-device-screen {
+  box-shadow: inset 0 0 40px rgba(79, 142, 247, 0.2);
+  animation: screenGlowRepair 1s ease-in-out infinite;
+}
+
+@keyframes screenGlowRepair {
+  0%, 100% { box-shadow: inset 0 0 30px rgba(79, 142, 247, 0.15); }
+  50% { box-shadow: inset 0 0 50px rgba(79, 142, 247, 0.3); }
+}
+
+/* Status feed — enhanced gradient border on active */
+.lr-status-feed {
+  border-left: 2px solid transparent;
+  padding-left: 12px;
+  transition: border-color 0.3s ease;
+}
+
+.lr-status-feed.active {
+  border-image: linear-gradient(to bottom, var(--accent), var(--color-cyan)) 1;
+}
+
+/* Summary — celebration pulse when done */
+.lr-summary.done-state {
+  animation: summaryCelebrate 0.6s var(--ease-spring);
+  border-color: var(--color-green);
+  box-shadow: 0 0 30px rgba(63, 185, 80, 0.2);
+}
+
+@keyframes summaryCelebrate {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.03); }
+  100% { transform: scale(1); }
+}
+
+/* Enhanced timeline — step connector lines */
+.lr-timeline-wrap {
+  position: relative;
+}
+
+/* Tool glow on device during repair */
+.lr-device.repairing .lr-tool {
+  filter: drop-shadow(0 0 8px var(--accent-glow));
+}
+
+/* Extra particle burst for celebration */
+.lr-particle.celebration {
+  background: linear-gradient(135deg, var(--color-green), var(--accent)) !important;
+  box-shadow: 0 0 12px rgba(63,185,80,0.6), 0 0 24px rgba(79,142,247,0.4) !important;
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   ANATOMY DIFFICULTY METER — Visual skill indicator
+   ══════════════════════════════════════════════════════════════════ */
+.anatomy-difficulty-meter {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-default);
+  border-radius: 10px;
+  margin-bottom: var(--space-md);
+}
+
+.anatomy-difficulty-label {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.anatomy-difficulty-track {
+  flex: 1;
+  height: 6px;
+  background: var(--bg-input);
+  border-radius: 3px;
+  position: relative;
+  overflow: visible;
+}
+
+.anatomy-difficulty-fill {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, #3fb950, #4f8ef7, #a371f7);
+  border-radius: 3px;
+  transition: width 0.8s var(--ease-spring);
+  box-shadow: 0 0 8px rgba(79, 142, 247, 0.4);
+}
+
+.anatomy-difficulty-ticks {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  pointer-events: none;
+}
+
+.anatomy-difficulty-ticks span {
+  width: 1px;
+  height: 4px;
+  background: var(--border-subtle);
+}
+
+.anatomy-difficulty-text {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--accent);
+  min-width: 45px;
+  text-align: right;
+}
+
+/* Anatomy info — scroll fade effect */
+.anatomy-info {
+  position: relative;
+}
+
+/* Parts list — stagger animation */
+.anatomy-parts-list .anatomy-part-item:nth-child(1) { animation-delay: 0.05s; }
+.anatomy-parts-list .anatomy-part-item:nth-child(2) { animation-delay: 0.1s; }
+.anatomy-parts-list .anatomy-part-item:nth-child(3) { animation-delay: 0.15s; }
+.anatomy-parts-list .anatomy-part-item:nth-child(4) { animation-delay: 0.2s; }
+.anatomy-parts-list .anatomy-part-item:nth-child(5) { animation-delay: 0.25s; }
+.anatomy-parts-list .anatomy-part-item:nth-child(6) { animation-delay: 0.3s; }
+.anatomy-parts-list .anatomy-part-item:nth-child(7) { animation-delay: 0.35s; }
+
+/* Anatomy steps list — stagger animation */
+.anatomy-steps-list li:nth-child(1) { animation-delay: 0.1s; }
+.anatomy-steps-list li:nth-child(2) { animation-delay: 0.15s; }
+.anatomy-steps-list li:nth-child(3) { animation-delay: 0.2s; }
+.anatomy-steps-list li:nth-child(4) { animation-delay: 0.25s; }
+.anatomy-steps-list li:nth-child(5) { animation-delay: 0.3s; }
+.anatomy-steps-list li:nth-child(6) { animation-delay: 0.35s; }
+.anatomy-steps-list li:nth-child(7) { animation-delay: 0.4s; }
+
+/* Anatomy tool item — stagger animation */
+.anatomy-tools-grid .anatomy-tool-item:nth-child(1) { animation-delay: 0.05s; }
+.anatomy-tools-grid .anatomy-tool-item:nth-child(2) { animation-delay: 0.1s; }
+.anatomy-tools-grid .anatomy-tool-item:nth-child(3) { animation-delay: 0.15s; }
+.anatomy-tools-grid .anatomy-tool-item:nth-child(4) { animation-delay: 0.2s; }
+.anatomy-tools-grid .anatomy-tool-item:nth-child(5) { animation-delay: 0.25s; }
+.anatomy-tools-grid .anatomy-tool-item:nth-child(6) { animation-delay: 0.3s; }
+.anatomy-tools-grid .anatomy-tool-item:nth-child(7) { animation-delay: 0.35s; }
+.anatomy-tools-grid .anatomy-tool-item:nth-child(8) { animation-delay: 0.4s; }

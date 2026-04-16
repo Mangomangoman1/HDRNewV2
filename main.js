@@ -6001,12 +6001,37 @@
             <span class="material-symbols-outlined" aria-hidden="true">timer</span>
             ${step.timer}
           </div>
-          <div class="sos-step-check">
+          <div class="sos-step-check" data-action="done">
             ${doneIcon}
-            Done
+            Mark Done
           </div>
         </div>
       `;
+      // Click on step card advances to this step (if not already done)
+      el.addEventListener('click', e => {
+        if (e.target.closest('[data-action="done"]')) return;
+        const idx = parseInt(el.dataset.index, 10);
+        if (idx > currentStep) {
+          currentStep = idx;
+          animateStepIn(currentStep);
+        }
+      });
+      // Click on "Mark Done" marks step done and advances
+      el.querySelector('[data-action="done"]').addEventListener('click', e => {
+        e.stopPropagation();
+        const idx = parseInt(el.dataset.index, 10);
+        if (stepStates[idx] !== 'done') {
+          stepStates[idx] = 'done';
+          el.classList.remove('active');
+          el.classList.add('done');
+          if (idx === currentStep && currentStep < totalSteps - 1) {
+            currentStep++;
+            animateStepIn(currentStep);
+          } else if (idx === currentStep && currentStep === totalSteps - 1) {
+            showSosCta();
+          }
+        }
+      });
       sosSteps.appendChild(el);
     });
   }
@@ -6023,8 +6048,8 @@
       }
     });
 
-    // Update progress
-    const pct = ((index) / totalSteps) * 100;
+    // Update progress — (index + 1) since index is 0-based
+    const pct = ((index + 1) / totalSteps) * 100;
     sosProgressFill.style.width = pct + '%';
     sosProgressLabel.textContent = `Step ${index + 1} of ${totalSteps}`;
 
@@ -6043,12 +6068,25 @@
 
   function nextStep() {
     if (currentStep < totalSteps - 1) {
-      markStepDone();
+      // Mark current step done before advancing
+      const steps = sosSteps.querySelectorAll('.sos-step');
+      const currentStepEl = steps[currentStep];
+      if (currentStepEl && stepStates[currentStep] !== 'done') {
+        stepStates[currentStep] = 'done';
+        currentStepEl.classList.remove('active');
+        currentStepEl.classList.add('done');
+      }
       currentStep++;
       animateStepIn(currentStep);
     } else {
       // Last step — mark done and show CTA
-      markStepDone();
+      const steps = sosSteps.querySelectorAll('.sos-step');
+      const currentStepEl = steps[currentStep];
+      if (currentStepEl && stepStates[currentStep] !== 'done') {
+        stepStates[currentStep] = 'done';
+        currentStepEl.classList.remove('active');
+        currentStepEl.classList.add('done');
+      }
       showSosCta();
     }
   }
@@ -6065,7 +6103,7 @@
     sosProgressLabel.textContent = 'All done';
     sosPrev.style.display = 'none';
     sosNext.style.display = 'none';
-    sosCtaBlock.classList.add('visible');
+    sosCtaBlock.classList.add('visible', 'sos-cta-activated');
     sosCtaBlock.setAttribute('aria-hidden', 'false');
   }
 

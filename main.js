@@ -5953,6 +5953,8 @@
     renderSosSteps();
 
     // Reset nav
+    sosPrev.style.display = '';
+    sosNext.style.display = '';
     sosPrev.disabled = true;
     sosNext.textContent = 'Next Step';
     sosNext.innerHTML = 'Next Step <span class="material-symbols-outlined" aria-hidden="true">arrow_forward</span>';

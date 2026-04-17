@@ -1922,6 +1922,17 @@
           </a>
         </div>
       `;
+      if (window.HDRBenchTicket && typeof window.HDRBenchTicket.set === 'function') {
+        window.HDRBenchTicket.set({
+          source: 'device-check',
+          device: data.label,
+          issues: selected.map(function(problem) { return problem.label; }),
+          urgency: urgText,
+          time: timeStr,
+          cost: '$' + totalLow + (totalHigh > totalLow ? '–$' + totalHigh : ''),
+          note: condNotes[state.condition]
+        });
+      }
     }
   }
 
@@ -4423,6 +4434,18 @@
       li.innerHTML = '<span class="material-symbols-outlined">help_outline</span>' + cause;
       breakdownList.appendChild(li);
     });
+
+    if (window.HDRBenchTicket && typeof window.HDRBenchTicket.set === 'function') {
+      window.HDRBenchTicket.set({
+        source: 'estimator',
+        device: data.name,
+        issues: selectedSyms.map(function(symptom) { return symptom.label; }),
+        urgency: urgencyLabel,
+        time: maxTime,
+        cost: '$' + minCost + '-' + maxCost,
+        note: allCauses.length ? 'Most likely causes: ' + allCauses.slice(0, 3).join(', ') + '.' : 'Instant repair estimate generated.'
+      });
+    }
   }
 
   // Back from step 3
@@ -6349,6 +6372,19 @@
     actionDesc.textContent = symptom.action;
     infoTitle.textContent = 'Good to Know';
     infoDesc.textContent = symptom.info;
+
+    if (window.HDRBenchTicket && typeof window.HDRBenchTicket.set === 'function' && selectedDevice) {
+      var triageDeviceLabel = triageData[selectedDevice] ? triageData[selectedDevice].label : selectedDevice;
+      var triageTime = urgency >= 9 ? 'ASAP' : urgency >= 7 ? 'Same-day recommended' : 'Schedule soon';
+      window.HDRBenchTicket.set({
+        source: 'device-er',
+        device: triageDeviceLabel,
+        issues: [symptom.label],
+        urgency: level.label + ' (' + urgency + '/10)',
+        time: triageTime,
+        note: symptom.action
+      });
+    }
   }
 
 })();
@@ -7347,6 +7383,26 @@
         actionTitle.textContent = 'What to do next';
         actionDesc.textContent = issue.action;
       }, 600);
+
+      if (window.HDRBenchTicket && typeof window.HDRBenchTicket.set === 'function') {
+        var fixmeterDeviceNames = {
+          iphone: 'iPhone',
+          android: 'Android',
+          laptop: 'Laptop',
+          ipad: 'Tablet',
+          console: 'Game Console',
+          other: 'Other Device'
+        };
+        window.HDRBenchTicket.set({
+          source: 'fixmeter',
+          device: fixmeterDeviceNames[currentDevice] || currentDevice,
+          issues: [issue.name],
+          urgency: urgency.label,
+          time: issue.time,
+          cost: issue.cost,
+          note: issue.action
+        });
+      }
     }
 
     function showStep(step) {
@@ -7474,4 +7530,533 @@
     // Fallback: just start
     startAnimation();
   }
+})();
+
+
+/* ═══════════════════════════════════════════
+   HDR Bench Ticket — persistent repair brief
+   ═══════════════════════════════════════════ */
+(function() {
+  'use strict';
+
+  var STORAGE_KEY = 'hdr-bench-ticket-v1';
+  var emptyTicket = { source: '', device: '', issues: [], urgency: '', time: '', cost: '', note: '', updatedAt: 0 };
+
+  function dedupe(list) {
+    return list.filter(function(item, idx) { return item && list.indexOf(item) === idx; });
+  }
+
+  function loadTicket() {
+    try {
+      var parsed = JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null');
+      return parsed ? Object.assign({}, emptyTicket, parsed) : Object.assign({}, emptyTicket);
+    } catch (err) {
+      return Object.assign({}, emptyTicket);
+    }
+  }
+
+  var state = loadTicket();
+  var isOpen = false;
+
+  var shell = document.createElement('div');
+  shell.className = 'bench-ticket-shell is-empty';
+  shell.innerHTML = [
+    '<section class="bench-ticket-panel" id="hdrBenchTicketPanel" aria-label="Repair brief">',
+      '<div class="bench-ticket-card">',
+        '<div class="bench-ticket-header">',
+          '<div class="bench-ticket-header-copy">',
+            '<span class="bench-ticket-overline"><span class="material-symbols-outlined" aria-hidden="true">receipt_long</span> Bench ticket</span>',
+            '<strong class="bench-ticket-title">Repair brief ready to send</strong>',
+            '<span class="bench-ticket-meta" id="hdrBenchTicketMeta">Use any tool and I’ll build a ready-to-send repair brief.</span>',
+          '</div>',
+          '<span class="bench-ticket-source" id="hdrBenchTicketSource">Waiting</span>',
+        '</div>',
+        '<div class="bench-ticket-empty" id="hdrBenchTicketEmpty">',
+          '<div class="bench-ticket-empty-card">',
+            '<strong>This turns the site into a work order.</strong>',
+            '<p>Run the estimator, Device ER, Fix Meter, or Device Check and I’ll assemble the device, problem, urgency, and next step into one clean message you can text Samuel.</p>',
+          '</div>',
+        '</div>',
+        '<div class="bench-ticket-body" id="hdrBenchTicketBody" hidden>',
+          '<div class="bench-ticket-summary">',
+            '<div class="bench-ticket-row"><span class="bench-ticket-label">Device</span><div class="bench-ticket-value" id="hdrBenchTicketDevice">—</div></div>',
+            '<div class="bench-ticket-row"><span class="bench-ticket-label">Issue</span><div class="bench-ticket-value"><div class="bench-ticket-chips" id="hdrBenchTicketIssues"></div></div></div>',
+            '<div class="bench-ticket-row"><span class="bench-ticket-label">Urgency</span><div class="bench-ticket-value" id="hdrBenchTicketUrgency">—</div></div>',
+            '<div class="bench-ticket-row"><span class="bench-ticket-label">Timing</span><div class="bench-ticket-value" id="hdrBenchTicketTime">—</div></div>',
+            '<div class="bench-ticket-row"><span class="bench-ticket-label">Typical cost</span><div class="bench-ticket-value" id="hdrBenchTicketCost">—</div></div>',
+          '</div>',
+          '<hr class="bench-ticket-divider" />',
+          '<div class="bench-ticket-note" id="hdrBenchTicketNote">—</div>',
+          '<div class="bench-ticket-actions">',
+            '<a href="#" class="bench-ticket-action" id="hdrBenchTicketSms"><span class="material-symbols-outlined" aria-hidden="true">sms</span><span>Text this brief</span></a>',
+            '<button type="button" class="bench-ticket-secondary" id="hdrBenchTicketCopy"><span class="material-symbols-outlined" aria-hidden="true">content_copy</span><span>Copy brief</span></button>',
+          '</div>',
+          '<div class="bench-ticket-secondary-group">',
+            '<button type="button" class="bench-ticket-secondary" id="hdrBenchTicketFill"><span class="material-symbols-outlined" aria-hidden="true">edit_note</span><span>Fill quote form</span></button>',
+            '<button type="button" class="bench-ticket-secondary" id="hdrBenchTicketClear"><span class="material-symbols-outlined" aria-hidden="true">delete</span><span>Clear</span></button>',
+          '</div>',
+        '</div>',
+      '</div>',
+    '</section>',
+    '<button type="button" class="bench-ticket-trigger" id="hdrBenchTicketTrigger" aria-expanded="false" aria-controls="hdrBenchTicketPanel">',
+      '<span class="bench-ticket-trigger-icon"><span class="material-symbols-outlined" aria-hidden="true">inventory_2</span></span>',
+      '<span class="bench-ticket-trigger-copy">',
+        '<span class="bench-ticket-trigger-title" id="hdrBenchTicketTriggerTitle">Bench ticket</span>',
+        '<span class="bench-ticket-trigger-sub" id="hdrBenchTicketTriggerSub">Build a ready-to-text repair brief</span>',
+      '</span>',
+      '<span class="bench-ticket-trigger-badge" id="hdrBenchTicketBadge">Idle</span>',
+    '</button>'
+  ].join('');
+  document.body.appendChild(shell);
+
+  var trigger = document.getElementById('hdrBenchTicketTrigger');
+  var triggerTitle = document.getElementById('hdrBenchTicketTriggerTitle');
+  var triggerSub = document.getElementById('hdrBenchTicketTriggerSub');
+  var badge = document.getElementById('hdrBenchTicketBadge');
+  var meta = document.getElementById('hdrBenchTicketMeta');
+  var source = document.getElementById('hdrBenchTicketSource');
+  var emptyState = document.getElementById('hdrBenchTicketEmpty');
+  var body = document.getElementById('hdrBenchTicketBody');
+  var device = document.getElementById('hdrBenchTicketDevice');
+  var issues = document.getElementById('hdrBenchTicketIssues');
+  var urgency = document.getElementById('hdrBenchTicketUrgency');
+  var time = document.getElementById('hdrBenchTicketTime');
+  var cost = document.getElementById('hdrBenchTicketCost');
+  var note = document.getElementById('hdrBenchTicketNote');
+  var smsBtn = document.getElementById('hdrBenchTicketSms');
+  var copyBtn = document.getElementById('hdrBenchTicketCopy');
+  var fillBtn = document.getElementById('hdrBenchTicketFill');
+  var clearBtn = document.getElementById('hdrBenchTicketClear');
+  var sourceMap = { estimator: 'Estimator', 'device-check': 'Device Check', 'device-er': 'Device ER', fixmeter: 'Fix Meter', contact: 'Quote Form' };
+
+  function hasData() {
+    return !!(state.device || (state.issues && state.issues.length) || state.urgency || state.time || state.cost || state.note);
+  }
+
+  function save() {
+    try {
+      if (hasData()) localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      else localStorage.removeItem(STORAGE_KEY);
+    } catch (err) {}
+  }
+
+  function relativeTime(ts) {
+    if (!ts) return 'No brief yet';
+    var delta = Math.max(0, Math.round((Date.now() - ts) / 1000));
+    if (delta < 15) return 'Updated just now';
+    if (delta < 60) return 'Updated ' + delta + 's ago';
+    if (delta < 3600) return 'Updated ' + Math.round(delta / 60) + 'm ago';
+    return 'Updated ' + Math.round(delta / 3600) + 'h ago';
+  }
+
+  function getBaseSmsHref() {
+    var el = document.querySelector('a[href^="sms:"]');
+    return el ? (el.getAttribute('href') || '').split('?')[0] : 'sms:+12083666111';
+  }
+
+  function appendSmsBody(baseHref, bodyText) {
+    var parts = baseHref.split('?');
+    var params = new URLSearchParams(parts[1] || '');
+    var existing = params.get('body');
+    params.set('body', existing ? (existing + '\n\n' + bodyText) : bodyText);
+    var query = params.toString();
+    return parts[0] + (query ? '?' + query : '');
+  }
+
+  function getSummaryLines() {
+    var lines = [];
+    if (state.device) lines.push('Device: ' + state.device);
+    if (state.issues && state.issues.length) lines.push('Issue: ' + state.issues.join(', '));
+    if (state.urgency) lines.push('Urgency: ' + state.urgency);
+    if (state.time) lines.push('Timing: ' + state.time);
+    if (state.cost) lines.push('Typical cost: ' + state.cost);
+    if (state.note) lines.push('Notes: ' + state.note);
+    return lines;
+  }
+
+  function getSummaryText() {
+    return getSummaryLines().join('\n');
+  }
+
+  function setPanelOpen(next) {
+    isOpen = !!next;
+    shell.classList.toggle('is-open', isOpen);
+    trigger.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+  }
+
+  function pingTrigger() {
+    shell.classList.remove('bench-ticket-shell--ping');
+    void shell.offsetWidth;
+    shell.classList.add('bench-ticket-shell--ping');
+    window.setTimeout(function() { shell.classList.remove('bench-ticket-shell--ping'); }, 700);
+  }
+
+  function render() {
+    var meaningful = hasData();
+    shell.classList.toggle('has-data', meaningful);
+    shell.classList.toggle('is-empty', !meaningful);
+
+    if (meaningful) {
+      triggerTitle.textContent = state.device || 'Repair brief';
+      triggerSub.textContent = state.issues && state.issues.length ? state.issues.slice(0, 2).join(' • ') : 'Ready to text Samuel';
+      badge.textContent = 'Ready';
+      meta.textContent = relativeTime(state.updatedAt);
+      source.textContent = sourceMap[state.source] || 'Shop note';
+      emptyState.hidden = true;
+      body.hidden = false;
+      device.textContent = state.device || 'Not set';
+      urgency.textContent = state.urgency || 'Not set';
+      time.textContent = state.time || 'Not set';
+      cost.textContent = state.cost || 'Need diagnosis';
+      note.textContent = state.note || 'No additional notes yet.';
+      issues.innerHTML = '';
+      (state.issues || []).forEach(function(item) {
+        var chip = document.createElement('span');
+        chip.className = 'bench-ticket-chip';
+        chip.textContent = item;
+        issues.appendChild(chip);
+      });
+      smsBtn.setAttribute('href', appendSmsBody(getBaseSmsHref(), ['Hi Samuel — here is my repair brief.', '', getSummaryText(), '', 'Can you help?'].join('\n')));
+    } else {
+      triggerTitle.textContent = 'Bench ticket';
+      triggerSub.textContent = 'Build a ready-to-text repair brief';
+      badge.textContent = 'Idle';
+      meta.textContent = 'Use any tool and I’ll build a ready-to-send repair brief.';
+      source.textContent = 'Waiting';
+      emptyState.hidden = false;
+      body.hidden = true;
+      if (window.innerWidth <= 768) setPanelOpen(false);
+    }
+
+    fillBtn.hidden = !document.querySelector('input[name="device"], textarea[name="issue"], #cf-device, #cf-issue, #device, #issue');
+    save();
+    document.dispatchEvent(new CustomEvent('hdr:bench-ticket-change', { detail: { state: state, hasData: meaningful } }));
+  }
+
+  function merge(payload) {
+    var hadData = hasData();
+    state = Object.assign({}, state, payload || {});
+    state.issues = dedupe((Array.isArray(state.issues) ? state.issues : []).filter(Boolean));
+    state.updatedAt = Date.now();
+    render();
+    if (!hadData && window.innerWidth > 768) setPanelOpen(true);
+    else pingTrigger();
+  }
+
+  function clear() {
+    state = Object.assign({}, emptyTicket);
+    render();
+    setPanelOpen(false);
+  }
+
+  function copySummary() {
+    var text = getSummaryText();
+    if (!text) return;
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).catch(function() {});
+    var original = copyBtn.innerHTML;
+    copyBtn.innerHTML = '<span class="material-symbols-outlined" aria-hidden="true">check</span><span>Copied</span>';
+    window.setTimeout(function() { copyBtn.innerHTML = original; }, 1400);
+  }
+
+  function fillForm() {
+    var deviceField = document.querySelector('input[name="device"], #cf-device, #device');
+    var issueField = document.querySelector('textarea[name="issue"], #cf-issue, #issue');
+    if (!deviceField && !issueField) {
+      window.location.href = '/contact';
+      return;
+    }
+    if (deviceField) {
+      deviceField.value = state.device || deviceField.value || '';
+      deviceField.dispatchEvent(new Event('input', { bubbles: true }));
+      deviceField.dispatchEvent(new Event('change', { bubbles: true }));
+    }
+    if (issueField) {
+      issueField.value = [state.issues && state.issues.length ? state.issues.join(', ') : '', state.note || '', state.urgency ? 'Urgency: ' + state.urgency : ''].filter(Boolean).join(' — ');
+      issueField.dispatchEvent(new Event('input', { bubbles: true }));
+      issueField.dispatchEvent(new Event('change', { bubbles: true }));
+    }
+    var target = (deviceField && deviceField.form) || (issueField && issueField.form) || deviceField || issueField;
+    if (target && target.scrollIntoView) target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    setPanelOpen(false);
+  }
+
+  trigger.addEventListener('click', function() { setPanelOpen(!isOpen); });
+  copyBtn.addEventListener('click', copySummary);
+  clearBtn.addEventListener('click', clear);
+  fillBtn.addEventListener('click', fillForm);
+
+  document.addEventListener('click', function(event) {
+    if (!isOpen) return;
+    if (shell.contains(event.target)) return;
+    setPanelOpen(false);
+  });
+
+  document.addEventListener('keydown', function(event) {
+    if (event.key === 'Escape' && isOpen) setPanelOpen(false);
+  });
+
+  window.HDRBenchTicket = {
+    set: function(payload) { merge({ source: payload && payload.source || state.source, device: payload && payload.device || state.device, issues: payload && payload.issues || state.issues, urgency: payload && payload.urgency || state.urgency, time: payload && payload.time || state.time, cost: payload && payload.cost || state.cost, note: payload && payload.note || state.note }); },
+    clear: clear,
+    open: function() { setPanelOpen(true); },
+    close: function() { setPanelOpen(false); },
+    hasData: hasData,
+    getSummaryText: getSummaryText,
+    getSMSHref: function() { return appendSmsBody(getBaseSmsHref(), ['Hi Samuel — here is my repair brief.', '', getSummaryText(), '', 'Can you help?'].join('\n')); },
+    fillForm: fillForm
+  };
+
+  render();
+})();
+
+/* ═══════════════════════════════════════════
+   HDR Command Palette — search pages, FAQs, actions
+   ═══════════════════════════════════════════ */
+(function() {
+  'use strict';
+
+  var root = document.createElement('div');
+  root.className = 'repair-command';
+  root.setAttribute('aria-hidden', 'true');
+  root.innerHTML = [
+    '<div class="repair-command-backdrop"></div>',
+    '<section class="repair-command-panel" aria-label="Quick search and actions" role="dialog" aria-modal="true">',
+      '<div class="repair-command-header">',
+        '<div class="repair-command-brand">',
+          '<span class="repair-command-brand-icon"><span class="material-symbols-outlined" aria-hidden="true">search</span></span>',
+          '<div class="repair-command-brand-copy"><strong>Quick Find</strong><span>Jump anywhere, search FAQs, or launch actions fast.</span></div>',
+        '</div>',
+        '<button type="button" class="repair-command-close" aria-label="Close quick find"><span class="material-symbols-outlined" aria-hidden="true">close</span></button>',
+      '</div>',
+      '<div class="repair-command-search"><div class="repair-command-search-shell"><span class="material-symbols-outlined" aria-hidden="true">terminal</span><input class="repair-command-search-input" type="text" autocomplete="off" spellcheck="false" placeholder="Search repairs, FAQs, pages, and actions…" /></div></div>',
+      '<div class="repair-command-results" role="listbox"></div>',
+      '<div class="repair-command-footer"><div class="repair-command-hints"><kbd>↑</kbd><kbd>↓</kbd><span>Move</span><kbd>Enter</kbd><span>Open</span><kbd>Esc</kbd><span>Close</span></div><span>Tip: press <strong>/</strong> or <strong>⌘K</strong> any time.</span></div>',
+    '</section>'
+  ].join('');
+  document.body.appendChild(root);
+
+  var input = root.querySelector('.repair-command-search-input');
+  var resultsEl = root.querySelector('.repair-command-results');
+  var closeBtn = root.querySelector('.repair-command-close');
+  var backdrop = root.querySelector('.repair-command-backdrop');
+  var isOpen = false;
+  var activeIndex = 0;
+  var results = [];
+
+  function getCurrentPath() { return window.location.pathname === '/index.html' ? '/' : window.location.pathname; }
+  function getTelHref() { var tel = document.querySelector('a[href^="tel:"]'); return tel ? tel.getAttribute('href') : 'tel:+12083666111'; }
+  function getSmsHref() { return window.HDRBenchTicket && window.HDRBenchTicket.hasData() ? window.HDRBenchTicket.getSMSHref() : ((document.querySelector('a[href^="sms:"]') || {}).getAttribute ? document.querySelector('a[href^="sms:"]').getAttribute('href') : 'sms:+12083666111'); }
+
+  function openPalette() {
+    isOpen = true;
+    root.classList.add('is-open');
+    root.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+    renderResults(input.value);
+    requestAnimationFrame(function() { input.focus(); input.select(); });
+  }
+
+  function closePalette() {
+    isOpen = false;
+    root.classList.remove('is-open');
+    root.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+  }
+
+  function insertTriggers() {
+    var navActions = document.querySelector('.nav-actions');
+    if (navActions && !navActions.querySelector('.nav-command-btn')) {
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'nav-command-btn';
+      btn.innerHTML = '<span class="nav-command-btn-icon"><span class="material-symbols-outlined" aria-hidden="true">search</span></span><span class="nav-command-btn-copy"><span class="nav-command-btn-title">Quick find</span><span class="nav-command-btn-sub">Search repairs, FAQs, pages</span></span><span class="nav-command-btn-kbd"><kbd>/</kbd><kbd>⌘K</kbd></span>';
+      btn.addEventListener('click', openPalette);
+      navActions.insertBefore(btn, navActions.firstChild);
+    }
+    var navMobile = document.getElementById('navMobile');
+    if (navMobile && !navMobile.querySelector('.nav-mobile-search-btn')) {
+      var mobileBtn = document.createElement('button');
+      mobileBtn.type = 'button';
+      mobileBtn.className = 'nav-mobile-search-btn';
+      mobileBtn.innerHTML = '<span class="nav-mobile-search-btn-copy"><strong>Quick find</strong><span class="nav-mobile-search-btn-sub">Search repairs, FAQs, and pages</span></span><span class="material-symbols-outlined" aria-hidden="true">search</span>';
+      mobileBtn.addEventListener('click', function() {
+        var mobileMenu = document.getElementById('navMobile');
+        var hamburger = document.getElementById('navHamburger');
+        if (mobileMenu) { mobileMenu.classList.remove('open'); mobileMenu.setAttribute('aria-hidden', 'true'); }
+        if (hamburger) hamburger.setAttribute('aria-expanded', 'false');
+        document.body.classList.remove('menu-open');
+        var backdropEl = document.getElementById('navBackdrop');
+        if (backdropEl) backdropEl.classList.remove('visible');
+        openPalette();
+      });
+      navMobile.insertBefore(mobileBtn, navMobile.firstChild);
+    }
+  }
+
+  function buildItems() {
+    var path = getCurrentPath();
+    var items = [
+      { title: 'Text Samuel now', subtitle: 'Fastest way to get a repair moving', type: 'Action', icon: 'sms', keywords: 'text quote repair help samuel', action: function() { window.location.href = getSmsHref(); } },
+      { title: 'Call Hailey Device Repair', subtitle: 'Talk to Samuel directly', type: 'Action', icon: 'call', keywords: 'call phone number', href: getTelHref() },
+      { title: 'Open repair brief', subtitle: 'View your current bench ticket summary', type: 'Brief', icon: 'inventory_2', keywords: 'bench ticket repair brief summary', action: function() { if (window.HDRBenchTicket) window.HDRBenchTicket.open(); } },
+      { title: 'Repair Queue Dashboard', subtitle: 'Live-at-the-bench style queue board', type: 'Page', icon: 'dashboard', keywords: 'queue dashboard live status board', href: '/queue' },
+      { title: 'Instant Repair Estimator', subtitle: 'Ballpark timing, urgency, and cost', type: 'Tool', icon: 'auto_awesome', keywords: 'estimator quote cost pricing screen battery', href: '/#estimator' },
+      { title: 'Device ER', subtitle: 'Emergency triage for urgent problems', type: 'Tool', icon: 'emergency', keywords: 'device er urgent emergency water battery swollen', href: '/#triage' },
+      { title: 'Fix Meter', subtitle: 'Quick urgency readout for common repairs', type: 'Tool', icon: 'speed', keywords: 'fix meter urgency gauge how bad is it', href: '/#fixmeter' },
+      { title: 'Contact / Quote form', subtitle: 'Fill out the repair request form', type: 'Page', icon: 'description', keywords: 'contact quote form request', href: '/contact' }
+    ];
+
+    if (window.HDRBenchTicket && window.HDRBenchTicket.hasData()) {
+      items.unshift(
+        { title: 'Text current repair brief', subtitle: 'Use the device + issue summary you already built', type: 'Brief', icon: 'send', keywords: 'text current brief send bench ticket', action: function() { window.location.href = window.HDRBenchTicket.getSMSHref(); } },
+        { title: 'Copy current repair brief', subtitle: 'Paste it anywhere', type: 'Brief', icon: 'content_copy', keywords: 'copy current brief bench ticket', action: function() { navigator.clipboard && navigator.clipboard.writeText ? navigator.clipboard.writeText(window.HDRBenchTicket.getSummaryText()) : null; } },
+        { title: 'Clear current repair brief', subtitle: 'Reset the bench ticket', type: 'Brief', icon: 'delete', keywords: 'clear reset ticket brief', action: function() { window.HDRBenchTicket.clear(); renderResults(input.value); } }
+      );
+    }
+
+    Array.from(document.querySelectorAll('.nav-link[href]')).forEach(function(link) {
+      var title = link.textContent.trim();
+      var href = link.getAttribute('href');
+      if (!title || !href) return;
+      items.push({ title: title, subtitle: href, type: 'Navigate', icon: 'arrow_outward', keywords: (title + ' nav page').toLowerCase(), href: href });
+    });
+
+    Array.from(document.querySelectorAll('section[id]')).forEach(function(section) {
+      var heading = section.querySelector('.section-title, h1, h2, h3');
+      if (!heading) return;
+      var title = heading.textContent.replace(/\s+/g, ' ').trim();
+      if (!title) return;
+      items.push({
+        title: title,
+        subtitle: 'Jump to this section',
+        type: 'Section',
+        icon: 'subdirectory_arrow_right',
+        keywords: (section.id + ' ' + title).toLowerCase(),
+        action: function() {
+          if (path === '/' || path === '') section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          else window.location.href = '/#' + section.id;
+        }
+      });
+    });
+
+    Array.from(document.querySelectorAll('#faq details, details.faq-item, .faq-hub-item')).forEach(function(item) {
+      var title = '';
+      var summary = item.querySelector('summary, .faq-hub-q, .faq-question, strong');
+      if (summary) title = summary.textContent.replace(/\s+/g, ' ').trim();
+      if (!title) title = item.textContent.replace(/\s+/g, ' ').trim().slice(0, 90);
+      if (!title) return;
+      items.push({ title: title, subtitle: 'FAQ', type: 'FAQ', icon: 'help', keywords: ('faq ' + title + ' ' + item.textContent).toLowerCase(), action: function() { if (item.tagName === 'DETAILS') item.open = true; item.scrollIntoView({ behavior: 'smooth', block: 'center' }); } });
+    });
+
+    Array.from(document.querySelectorAll('a[href$="repair"], a[href*="repair"], a[href="/pricing"], a[href="/tips"], a[href="/about"], a[href="/contact"]')).forEach(function(link) {
+      var title = link.textContent.replace(/\s+/g, ' ').trim();
+      var href = link.getAttribute('href');
+      if (!title || !href) return;
+      items.push({ title: title, subtitle: href, type: 'Page', icon: 'link', keywords: (title + ' ' + href).toLowerCase(), href: href });
+    });
+
+    var seen = {};
+    return items.filter(function(item) {
+      var key = [item.title, item.subtitle, item.type].join('::');
+      if (seen[key]) return false;
+      seen[key] = true;
+      return true;
+    });
+  }
+
+  function search(query) {
+    var items = buildItems();
+    var q = (query || '').trim().toLowerCase();
+    if (!q) return items.slice(0, 14);
+    var terms = q.split(/\s+/).filter(Boolean);
+    return items.map(function(item) {
+      var haystack = [item.title, item.subtitle, item.keywords].join(' ').toLowerCase();
+      var score = 0;
+      if (item.title.toLowerCase() === q) score += 120;
+      if (item.title.toLowerCase().indexOf(q) === 0) score += 90;
+      if (item.title.toLowerCase().indexOf(q) !== -1) score += 70;
+      if (haystack.indexOf(q) !== -1) score += 30;
+      terms.forEach(function(term) { if (haystack.indexOf(term) !== -1) score += 18; });
+      return Object.assign({ score: score }, item);
+    }).filter(function(item) { return item.score > 0; }).sort(function(a, b) { return b.score - a.score; }).slice(0, 18);
+  }
+
+  function renderResults(query) {
+    results = search(query);
+    activeIndex = 0;
+    if (!results.length) {
+      resultsEl.innerHTML = '<div class="repair-command-empty"><div class="repair-command-empty-card"><strong>No match yet.</strong><p>Try “water damage”, “screen”, “queue”, “pricing”, or “contact”.</p></div></div>';
+      return;
+    }
+    var groups = {};
+    results.forEach(function(item, idx) {
+      if (!groups[item.type]) groups[item.type] = [];
+      groups[item.type].push({ item: item, idx: idx });
+    });
+    var order = ['Brief', 'Action', 'Tool', 'FAQ', 'Section', 'Page', 'Navigate'];
+    resultsEl.innerHTML = order.filter(function(key) { return groups[key]; }).map(function(key) {
+      var groupHtml = groups[key].map(function(entry) {
+        return '<button type="button" class="repair-command-item' + (entry.idx === activeIndex ? ' is-active' : '') + '" data-command-index="' + entry.idx + '" role="option" aria-selected="' + (entry.idx === activeIndex ? 'true' : 'false') + '"><span class="repair-command-item-icon"><span class="material-symbols-outlined" aria-hidden="true">' + (entry.item.icon || 'bolt') + '</span></span><span class="repair-command-item-copy"><strong>' + entry.item.title + '</strong><span>' + (entry.item.subtitle || '') + '</span></span><span class="repair-command-item-type">' + key + '</span></button>';
+      }).join('');
+      return '<div class="repair-command-group"><div class="repair-command-group-label">' + key + '</div>' + groupHtml + '</div>';
+    }).join('');
+  }
+
+  function activate(index) {
+    var next = results[index];
+    if (!next) return;
+    closePalette();
+    if (typeof next.action === 'function') { next.action(); return; }
+    if (next.href) window.location.href = next.href;
+  }
+
+  input.addEventListener('input', function() { renderResults(input.value); });
+  input.addEventListener('keydown', function(event) {
+    if (event.key === 'ArrowDown') { event.preventDefault(); activeIndex = Math.min(results.length - 1, activeIndex + 1); renderResults(input.value); }
+    else if (event.key === 'ArrowUp') { event.preventDefault(); activeIndex = Math.max(0, activeIndex - 1); renderResults(input.value); }
+    else if (event.key === 'Enter') { event.preventDefault(); activate(activeIndex); }
+    else if (event.key === 'Escape') { event.preventDefault(); closePalette(); }
+  });
+
+  resultsEl.addEventListener('mousemove', function(event) {
+    var btn = event.target.closest('[data-command-index]');
+    if (!btn) return;
+    activeIndex = parseInt(btn.getAttribute('data-command-index'), 10) || 0;
+    Array.from(resultsEl.querySelectorAll('[data-command-index]')).forEach(function(el) {
+      var isActive = el === btn;
+      el.classList.toggle('is-active', isActive);
+      el.setAttribute('aria-selected', isActive ? 'true' : 'false');
+    });
+  });
+  resultsEl.addEventListener('click', function(event) {
+    var btn = event.target.closest('[data-command-index]');
+    if (!btn) return;
+    activate(parseInt(btn.getAttribute('data-command-index'), 10) || 0);
+  });
+
+  closeBtn.addEventListener('click', closePalette);
+  backdrop.addEventListener('click', closePalette);
+
+  document.addEventListener('keydown', function(event) {
+    var target = event.target;
+    var typing = target && (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.tagName === 'SELECT' || target.isContentEditable);
+    if ((event.key === 'k' || event.key === 'K') && (event.metaKey || event.ctrlKey)) {
+      event.preventDefault();
+      if (isOpen) closePalette(); else openPalette();
+      return;
+    }
+    if (!typing && event.key === '/') {
+      event.preventDefault();
+      openPalette();
+      return;
+    }
+    if (event.key === 'Escape' && isOpen) closePalette();
+  });
+
+  document.addEventListener('hdr:bench-ticket-change', function() {
+    if (isOpen) renderResults(input.value);
+  });
+
+  insertTriggers();
+  renderResults('');
 })();

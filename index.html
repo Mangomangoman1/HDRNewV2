@@ -83,8 +83,8 @@ a{color:inherit;text-decoration:none}
 .breadcrumb-sep{font-size:0.9rem}
 .text-accent{background:linear-gradient(135deg,var(--accent),var(--color-cyan,#22d3ee));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
 @media(max-width:768px){.nav-links{display:none}.nav-hamburger{display:flex;flex-direction:column;gap:4px}.hero{min-height:80vh;padding:5rem 0 3rem}}</style>
-  <link rel="preload" href="style.css?v=79" as="style" onload="this.onload=null;this.rel='stylesheet'" />
-  <noscript><link rel="stylesheet" href="style.css?v=79" /></noscript>
+  <link rel="preload" href="style.css?v=80" as="style" onload="this.onload=null;this.rel='stylesheet'" />
+  <noscript><link rel="stylesheet" href="style.css?v=80" /></noscript>
 
   <!-- Structured Data: LocalBusiness JSON-LD -->
   <script type="application/ld+json">
@@ -2160,170 +2160,156 @@ a{color:inherit;text-decoration:none}
     </div>
 
     <div class="container manifesto-container">
-      <div class="manifesto-header" data-animate>
-        <div class="section-eyebrow manifesto-eyebrow">Our Belief</div>
-        <h2 class="manifesto-title" id="manifesto-title" data-text-scramble>The Repair Manifesto</h2>
-      </div>
-
-      <div class="manifesto-statements" aria-label="Repair philosophy statements">
-        <div class="manifesto-statement" data-manifesto-reveal>
-          <div class="ms-number" aria-hidden="true">01</div>
-          <p class="ms-text">We live in a throwaway culture.</p>
-        </div>
-        <div class="manifesto-statement manifesto-statement--indent" data-manifesto-reveal>
-          <div class="ms-number" aria-hidden="true">02</div>
-          <p class="ms-text">Screen cracked? Replace it. Battery dying? Replace it. One speck of dust in the camera? Replace the whole device.</p>
-        </div>
-        <div class="manifesto-statement manifesto-statement--big" data-manifesto-reveal>
-          <div class="ms-number" aria-hidden="true">03</div>
-          <p class="ms-text">But here's the thing —<br><em>most devices don't need replacing.<br>They need fixing.</em></p>
-        </div>
-        <div class="manifesto-statement" data-manifesto-reveal>
-          <div class="ms-number" aria-hidden="true">04</div>
-          <p class="ms-text">Every repair is a small act of resistance against planned obsolescence.</p>
-        </div>
-        <div class="manifesto-statement manifesto-statement--accent" data-manifesto-reveal>
-          <div class="ms-number" aria-hidden="true">05</div>
-          <p class="ms-text">One fixed device = one less piece of e-waste in a landfill.</p>
-        </div>
-        <div class="manifesto-statement" data-manifesto-reveal>
-          <div class="ms-number" aria-hidden="true">06</div>
-          <p class="ms-text">That's why I do this. That's why Hailey Device Repair exists.</p>
-        </div>
-        <div class="manifesto-statement manifesto-statement--closing" data-manifesto-reveal>
-          <p class="ms-text ms-text--closing">Keep your device alive. Fix it.</p>
-        </div>
-      </div>
-
-      <div class="manifesto-cta" data-animate>
-        <a href="sms:+12083666111?body=Hey%20Samuel%2C%20I%27d%20rather%20fix%20than%20replace." class="manifesto-sms-btn" id="manifestoSmsBtn">
-          <span class="material-symbols-outlined manifesto-btn-icon" aria-hidden="true">sms</span>
-          <span class="manifesto-btn-text">Text to Fix Instead of Replace</span>
-          <span class="manifesto-btn-num">(208) 366-6111</span>
-        </a>
-        <p class="manifesto-cta-sub">No bots. Samuel responds personally.</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- ═══════════════════════════════════════════
-       WHY FIX CALCULATOR — Environmental & financial impact
-  ══════════════════════════════════════════════ -->
-  <section class="section why-fix-section" id="why-fix" aria-labelledby="why-fix-title">
-    <div class="container">
-      <div class="section-header">
-        <div class="section-eyebrow" data-animate>Impact Calculator</div>
-        <h2 class="section-title" id="why-fix-title" data-text-scramble>See what fixing actually saves</h2>
-        <p class="section-sub" data-text-reveal>Pick your device. See the real cost of replacing vs. fixing — for your wallet and the planet.</p>
-      </div>
-
-      <div class="why-fix-widget" id="whyFixWidget" aria-label="Repair vs replace impact calculator">
-        <!-- Step 1: Pick device -->
-        <div class="wf-step wf-step--active" id="wfStep1" role="group" aria-labelledby="wf-prompt-1">
-          <p class="wf-prompt" id="wf-prompt-1">What are you thinking about fixing?</p>
-          <div class="wf-devices" role="radiogroup" aria-label="Device type">
-            <button class="wf-device-btn" data-device="phone" type="button" aria-label="Phone">
-              <span class="material-symbols-outlined wf-device-icon" aria-hidden="true">smartphone</span>
-              <span class="wf-device-label">Phone</span>
-            </button>
-            <button class="wf-device-btn" data-device="laptop" type="button" aria-label="Laptop">
-              <span class="material-symbols-outlined wf-device-icon" aria-hidden="true">laptop</span>
-              <span class="wf-device-label">Laptop</span>
-            </button>
-            <button class="wf-device-btn" data-device="tablet" type="button" aria-label="Tablet">
-              <span class="material-symbols-outlined wf-device-icon" aria-hidden="true">tablet_android</span>
-              <span class="wf-device-label">Tablet</span>
-            </button>
-            <button class="wf-device-btn" data-device="console" type="button" aria-label="Console">
-              <span class="material-symbols-outlined wf-device-icon" aria-hidden="true">sports_esports</span>
-              <span class="wf-device-label">Console</span>
-            </button>
-          </div>
-        </div>
-
-        <!-- Step 2: Pick issue -->
-        <div class="wf-step" id="wfStep2" role="group" aria-labelledby="wf-prompt-2">
-          <button class="wf-back-btn" id="wfBack1" type="button" aria-label="Go back to device selection">
-            <span class="material-symbols-outlined" aria-hidden="true">arrow_back</span>
-          </button>
-          <p class="wf-prompt" id="wf-prompt-2">What's the issue? <span class="wf-device-label-accent" id="wfDeviceAccent"></span></p>
-          <div class="wf-issues" id="wfIssues" role="radiogroup" aria-label="Issue type"></div>
-        </div>
-
-        <!-- Step 3: Results -->
-        <div class="wf-step" id="wfStep3" role="group" aria-labelledby="wf-prompt-3">
-          <button class="wf-back-btn" id="wfBack2" type="button" aria-label="Go back to issue selection">
-            <span class="material-symbols-outlined" aria-hidden="true">arrow_back</span>
-          </button>
-          <p class="wf-prompt" id="wf-prompt-3">Here's the real cost</p>
-
-          <div class="wf-results" id="wfResults">
-            <!-- Comparison bars -->
-            <div class="wf-comparison">
-              <div class="wf-compare-col wf-compare--fix">
-                <div class="wf-compare-icon">
-                  <span class="material-symbols-outlined" aria-hidden="true">build</span>
-                </div>
-                <h3 class="wf-compare-title">Fix It</h3>
-                <div class="wf-compare-value" id="wfFixCost">—</div>
-                <div class="wf-compare-label">typical repair cost</div>
-                <div class="wf-compare-bar-wrap">
-                  <div class="wf-compare-bar" id="wfFixBar" style="width: 0%"></div>
-                </div>
-              </div>
-              <div class="wf-compare-vs">
-                <span>vs</span>
-              </div>
-              <div class="wf-compare-col wf-compare--replace">
-                <div class="wf-compare-icon">
-                  <span class="material-symbols-outlined" aria-hidden="true">shopping_cart</span>
-                </div>
-                <h3 class="wf-compare-title">Replace It</h3>
-                <div class="wf-compare-value" id="wfReplaceCost">—</div>
-                <div class="wf-compare-label">new device cost</div>
-                <div class="wf-compare-bar-wrap">
-                  <div class="wf-compare-bar" id="wfReplaceBar" style="width: 0%"></div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Impact stats -->
-            <div class="wf-impact-grid">
-              <div class="wf-impact-card" id="wfImpactMoney">
-                <div class="wf-impact-icon">
-                  <span class="material-symbols-outlined" aria-hidden="true">savings</span>
-                </div>
-                <div class="wf-impact-value" id="wfMoneySaved">—</div>
-                <div class="wf-impact-label">money saved</div>
-              </div>
-              <div class="wf-impact-card" id="wfImpactCarbon">
-                <div class="wf-impact-icon wf-impact-icon--green">
-                  <span class="material-symbols-outlined" aria-hidden="true">eco</span>
-                </div>
-                <div class="wf-impact-value" id="wfCarbonSaved">—</div>
-                <div class="wf-impact-label">CO₂ avoided</div>
-              </div>
-              <div class="wf-impact-card" id="wfImpactWaste">
-                <div class="wf-impact-icon wf-impact-icon--amber">
-                  <span class="material-symbols-outlined" aria-hidden="true">delete</span>
-                </div>
-                <div class="wf-impact-value" id="wfWasteSaved">—</div>
-                <div class="wf-impact-label">e-waste prevented</div>
-              </div>
-            </div>
-
-            <!-- Context -->
-            <div class="wf-context" id="wfContext"></div>
+      <div class="manifesto-layout">
+        <div class="manifesto-story">
+          <div class="manifesto-header" data-animate>
+            <div class="section-eyebrow manifesto-eyebrow">Our Belief</div>
+            <h2 class="manifesto-title" id="manifesto-title" data-text-scramble>The Repair Manifesto</h2>
+            <p class="manifesto-intro">Most broken devices do not need a funeral. They need the right part, a careful repair, and someone local who actually gives a damn.</p>
           </div>
 
-          <div class="wf-cta">
-            <a href="sms:+12083666111?body=Hey%2C%20I'd%20rather%20fix%20than%20replace.%20Can%20you%20help%3F" class="wf-sms-btn" id="wfSmsBtn">
-              <span class="material-symbols-outlined" aria-hidden="true">sms</span>
-              <span>Text Samuel to Fix It</span>
+          <div class="manifesto-statements manifesto-statements--compact" aria-label="Repair philosophy statements">
+            <div class="manifesto-statement" data-manifesto-reveal>
+              <div class="ms-number" aria-hidden="true">01</div>
+              <p class="ms-text">We live in a culture that says replace first.</p>
+            </div>
+            <div class="manifesto-statement manifesto-statement--indent" data-manifesto-reveal>
+              <div class="ms-number" aria-hidden="true">02</div>
+              <p class="ms-text">Cracked screen. Weak battery. Dust in the camera. Suddenly a perfectly usable device gets treated like trash.</p>
+            </div>
+            <div class="manifesto-statement manifesto-statement--big" data-manifesto-reveal>
+              <div class="ms-number" aria-hidden="true">03</div>
+              <p class="ms-text">But here is the thing —<br><em>most devices do not need replacing.<br>They need fixing.</em></p>
+            </div>
+            <div class="manifesto-statement manifesto-statement--accent" data-manifesto-reveal>
+              <div class="ms-number" aria-hidden="true">04</div>
+              <p class="ms-text">A repair saves money, avoids waste, and keeps one more good device alive.</p>
+            </div>
+            <div class="manifesto-statement manifesto-statement--closing" data-manifesto-reveal>
+              <p class="ms-text ms-text--closing">Fix the part. Keep the device.</p>
+            </div>
+          </div>
+
+          <div class="manifesto-cta" data-animate>
+            <a href="sms:+120****6111?body=Hey%20Samuel%2C%20I%27d%20rather%20fix%20than%20replace." class="manifesto-sms-btn" id="manifestoSmsBtn">
+              <span class="material-symbols-outlined manifesto-btn-icon" aria-hidden="true">sms</span>
+              <span class="manifesto-btn-text">Text to Fix Instead of Replace</span>
+              <span class="manifesto-btn-num">(208) 366-6111</span>
             </a>
-            <button class="wf-reset-btn" id="wfReset" type="button">Try another device</button>
+            <p class="manifesto-cta-sub">Samuel replies personally. No bots, no call center.</p>
           </div>
         </div>
+
+        <section class="manifesto-impact" id="why-fix" aria-labelledby="why-fix-title">
+          <div class="manifesto-impact-header" data-animate>
+            <div class="manifesto-impact-kicker">Impact Calculator</div>
+            <h3 class="manifesto-impact-title" id="why-fix-title">See what fixing actually saves</h3>
+            <p class="manifesto-impact-sub">Pick the device, pick the problem, and compare the cost of repair versus replacing the whole thing.</p>
+          </div>
+
+          <div class="why-fix-widget manifesto-impact-widget" id="whyFixWidget" aria-label="Repair vs replace impact calculator">
+            <div class="wf-step wf-step--active" id="wfStep1" role="group" aria-labelledby="wf-prompt-1">
+              <p class="wf-prompt" id="wf-prompt-1">Start with the device</p>
+              <div class="wf-devices" role="radiogroup" aria-label="Device type">
+                <button class="wf-device-btn" data-device="phone" type="button" aria-label="Phone">
+                  <span class="material-symbols-outlined wf-device-icon" aria-hidden="true">smartphone</span>
+                  <span class="wf-device-label">Phone</span>
+                </button>
+                <button class="wf-device-btn" data-device="laptop" type="button" aria-label="Laptop">
+                  <span class="material-symbols-outlined wf-device-icon" aria-hidden="true">laptop</span>
+                  <span class="wf-device-label">Laptop</span>
+                </button>
+                <button class="wf-device-btn" data-device="tablet" type="button" aria-label="Tablet">
+                  <span class="material-symbols-outlined wf-device-icon" aria-hidden="true">tablet_android</span>
+                  <span class="wf-device-label">Tablet</span>
+                </button>
+                <button class="wf-device-btn" data-device="console" type="button" aria-label="Console">
+                  <span class="material-symbols-outlined wf-device-icon" aria-hidden="true">sports_esports</span>
+                  <span class="wf-device-label">Console</span>
+                </button>
+              </div>
+            </div>
+
+            <div class="wf-step" id="wfStep2" role="group" aria-labelledby="wf-prompt-2">
+              <button class="wf-back-btn" id="wfBack1" type="button" aria-label="Go back to device selection">
+                <span class="material-symbols-outlined" aria-hidden="true">arrow_back</span>
+              </button>
+              <p class="wf-prompt" id="wf-prompt-2">What is wrong with it? <span class="wf-device-label-accent" id="wfDeviceAccent"></span></p>
+              <div class="wf-issues" id="wfIssues" role="radiogroup" aria-label="Issue type"></div>
+            </div>
+
+            <div class="wf-step" id="wfStep3" role="group" aria-labelledby="wf-prompt-3">
+              <button class="wf-back-btn" id="wfBack2" type="button" aria-label="Go back to issue selection">
+                <span class="material-symbols-outlined" aria-hidden="true">arrow_back</span>
+              </button>
+              <p class="wf-prompt" id="wf-prompt-3">Here is what a repair saves</p>
+
+              <div class="wf-results" id="wfResults">
+                <div class="wf-comparison">
+                  <div class="wf-compare-col wf-compare--fix">
+                    <div class="wf-compare-icon">
+                      <span class="material-symbols-outlined" aria-hidden="true">build</span>
+                    </div>
+                    <h3 class="wf-compare-title">Fix It</h3>
+                    <div class="wf-compare-value" id="wfFixCost">—</div>
+                    <div class="wf-compare-label">typical repair cost</div>
+                    <div class="wf-compare-bar-wrap">
+                      <div class="wf-compare-bar" id="wfFixBar" style="width: 0%"></div>
+                    </div>
+                  </div>
+                  <div class="wf-compare-vs">
+                    <span>vs</span>
+                  </div>
+                  <div class="wf-compare-col wf-compare--replace">
+                    <div class="wf-compare-icon">
+                      <span class="material-symbols-outlined" aria-hidden="true">shopping_cart</span>
+                    </div>
+                    <h3 class="wf-compare-title">Replace It</h3>
+                    <div class="wf-compare-value" id="wfReplaceCost">—</div>
+                    <div class="wf-compare-label">new device cost</div>
+                    <div class="wf-compare-bar-wrap">
+                      <div class="wf-compare-bar" id="wfReplaceBar" style="width: 0%"></div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="wf-impact-grid">
+                  <div class="wf-impact-card" id="wfImpactMoney">
+                    <div class="wf-impact-icon">
+                      <span class="material-symbols-outlined" aria-hidden="true">savings</span>
+                    </div>
+                    <div class="wf-impact-value" id="wfMoneySaved">—</div>
+                    <div class="wf-impact-label">money saved</div>
+                  </div>
+                  <div class="wf-impact-card" id="wfImpactCarbon">
+                    <div class="wf-impact-icon">
+                      <span class="material-symbols-outlined" aria-hidden="true">eco</span>
+                    </div>
+                    <div class="wf-impact-value" id="wfCarbonSaved">—</div>
+                    <div class="wf-impact-label">CO₂ avoided</div>
+                  </div>
+                  <div class="wf-impact-card" id="wfImpactWaste">
+                    <div class="wf-impact-icon">
+                      <span class="material-symbols-outlined" aria-hidden="true">delete</span>
+                    </div>
+                    <div class="wf-impact-value" id="wfWasteSaved">—</div>
+                    <div class="wf-impact-label">e-waste prevented</div>
+                  </div>
+                </div>
+
+                <div class="wf-context" id="wfContext"></div>
+              </div>
+
+              <div class="wf-cta">
+                <a href="sms:+120****6111?body=Hey%2C%20I'd%20rather%20fix%20than%20replace.%20Can%20you%20help%3F" class="wf-sms-btn" id="wfSmsBtn">
+                  <span class="material-symbols-outlined" aria-hidden="true">sms</span>
+                  <span>Text Samuel to Fix It</span>
+                </a>
+                <button class="wf-reset-btn" id="wfReset" type="button">Try another device</button>
+              </div>
+            </div>
+          </div>
+        </section>
       </div>
     </div>
   </section>
@@ -3789,7 +3775,7 @@ a{color:inherit;text-decoration:none}
     </div>
   </div>
 
-  <script src="main.js?v=79" defer></script>
+  <script src="main.js?v=80" defer></script>
   <script>
   (function() {
     /* ─── Manifesto Scroll Reveal ─── */

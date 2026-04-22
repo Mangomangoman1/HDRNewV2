@@ -1521,110 +1521,108 @@
   })();
 
   /* ═══════════════════════════════════════════════
-   CIRCUIT CANVAS — Original v1 organic node mesh
+   CIRCUIT CANVAS — PCB Branching Traces (verbatim from design-supervisor 163969e)
    ═══════════════════════════════════════════════ */
   const canvas = document.getElementById('circuitCanvas');
-  if (canvas) {
+  if (canvas && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
     const ctx = canvas.getContext('2d');
-    let width, height;
-    const nodes = [];
-    const NODE_COUNT = 40;
-    const CONNECTION_DIST = 180;
+    let width, height, dpr;
+    const traces = [];
+    const TRACE_COUNT = 12;
     let mouse = { x: -1000, y: -1000 };
-    let frame = 0;
 
     function resize() {
       const rect = canvas.parentElement.getBoundingClientRect();
       width = rect.width;
       height = rect.height;
-      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      dpr = Math.min(window.devicePixelRatio || 1, 2);
       canvas.width = width * dpr;
       canvas.height = height * dpr;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     }
 
-    function initNodes() {
-      nodes.length = 0;
-      for (let i = 0; i < NODE_COUNT; i++) {
-        nodes.push({
-          x: Math.random() * width,
-          y: Math.random() * height,
-          vx: (Math.random() - 0.5) * 0.3,
-          vy: (Math.random() - 0.5) * 0.3,
-          radius: 1.5 + Math.random() * 2,
-          pulse: Math.random() * Math.PI * 2,
-          pulseSpeed: 0.02 + Math.random() * 0.03
-        });
+    function createTrace() {
+      const startX = Math.random() * width;
+      const startY = Math.random() * height;
+      const segments = [];
+      let x = startX, y = startY;
+      const segCount = 3 + Math.floor(Math.random() * 4);
+
+      for (let i = 0; i < segCount; i++) {
+        const isHorizontal = Math.random() > 0.5;
+        const length = 40 + Math.random() * 120;
+        const nextX = isHorizontal ? x + (Math.random() > 0.5 ? length : -length) : x;
+        const nextY = isHorizontal ? y : y + (Math.random() > 0.5 ? length : -length);
+
+        segments.push({ x1: x, y1: y, x2: nextX, y2: nextY });
+
+        // Add node at junction
+        segments.push({ node: true, x: nextX, y: nextY, radius: 1.5 + Math.random() });
+
+        x = nextX;
+        y = nextY;
+      }
+
+      return {
+        segments: segments,
+        pulse: Math.random() * Math.PI * 2,
+        pulseSpeed: 0.015 + Math.random() * 0.02,
+        opacity: 0.1 + Math.random() * 0.2
+      };
+    }
+
+    function initTraces() {
+      traces.length = 0;
+      for (let i = 0; i < TRACE_COUNT; i++) {
+        traces.push(createTrace());
       }
     }
 
-    function drawCircuit() {
+    function drawTraces() {
       ctx.clearRect(0, 0, width, height);
-      frame++;
 
-      // Update nodes
-      nodes.forEach(n => {
-        n.x += n.vx;
-        n.y += n.vy;
-        n.pulse += n.pulseSpeed;
+      traces.forEach(trace => {
+        trace.pulse += trace.pulseSpeed;
+        const pulseFactor = 0.5 + 0.5 * Math.sin(trace.pulse);
 
-        if (n.x < 0 || n.x > width) n.vx *= -1;
-        if (n.y < 0 || n.y > height) n.vy *= -1;
-      });
-
-      // Draw connections
-      ctx.strokeStyle = 'rgba(245, 158, 11, 0.12)';
-      ctx.lineWidth = 0.8;
-      for (let i = 0; i < nodes.length; i++) {
-        for (let j = i + 1; j < nodes.length; j++) {
-          const dx = nodes[i].x - nodes[j].x;
-          const dy = nodes[i].y - nodes[j].y;
-          const dist = Math.sqrt(dx * dx + dy * dy);
-          if (dist < CONNECTION_DIST) {
-            const alpha = (1 - dist / CONNECTION_DIST) * 0.15;
-            ctx.strokeStyle = `rgba(245, 158, 11, ${alpha})`;
+        trace.segments.forEach(seg => {
+          if (seg.node) {
+            // Draw node
+            const glow = ctx.createRadialGradient(seg.x, seg.y, 0, seg.x, seg.y, seg.radius * 4);
+            glow.addColorStop(0, `rgba(245, 158, 11, ${trace.opacity * pulseFactor * 0.5})`);
+            glow.addColorStop(1, 'rgba(245, 158, 11, 0)');
+            ctx.fillStyle = glow;
             ctx.beginPath();
-            ctx.moveTo(nodes[i].x, nodes[i].y);
-            ctx.lineTo(nodes[j].x, nodes[j].y);
+            ctx.arc(seg.x, seg.y, seg.radius * 4, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.fillStyle = `rgba(245, 158, 11, ${trace.opacity * pulseFactor})`;
+            ctx.beginPath();
+            ctx.arc(seg.x, seg.y, seg.radius, 0, Math.PI * 2);
+            ctx.fill();
+          } else {
+            // Draw trace line
+            ctx.strokeStyle = `rgba(245, 158, 11, ${trace.opacity * pulseFactor * 0.5})`;
+            ctx.lineWidth = 0.8;
+            ctx.lineCap = 'round';
+            ctx.beginPath();
+            ctx.moveTo(seg.x1, seg.y1);
+            ctx.lineTo(seg.x2, seg.y2);
             ctx.stroke();
+
+            // Draw flowing dot on trace
+            const t = (Date.now() % 3000) / 3000;
+            const dotX = seg.x1 + (seg.x2 - seg.x1) * t;
+            const dotY = seg.y1 + (seg.y2 - seg.y1) * t;
+            ctx.fillStyle = `rgba(245, 158, 11, ${0.4 + 0.4 * pulseFactor})`;
+            ctx.beginPath();
+            ctx.arc(dotX, dotY, 1.5, 0, Math.PI * 2);
+            ctx.fill();
           }
-        }
-      }
-
-      // Draw nodes
-      nodes.forEach(n => {
-        const pulseFactor = 0.6 + 0.4 * Math.sin(n.pulse);
-        const glowSize = n.radius * 3 * pulseFactor;
-
-        // Glow
-        const grad = ctx.createRadialGradient(n.x, n.y, 0, n.x, n.y, glowSize);
-        grad.addColorStop(0, `rgba(245, 158, 11, ${0.3 * pulseFactor})`);
-        grad.addColorStop(1, 'rgba(245, 158, 11, 0)');
-        ctx.fillStyle = grad;
-        ctx.beginPath();
-        ctx.arc(n.x, n.y, glowSize, 0, Math.PI * 2);
-        ctx.fill();
-
-        // Core
-        ctx.fillStyle = `rgba(245, 158, 11, ${0.5 + 0.5 * pulseFactor})`;
-        ctx.beginPath();
-        ctx.arc(n.x, n.y, n.radius * pulseFactor, 0, Math.PI * 2);
-        ctx.fill();
+        });
       });
 
-      // Mouse interaction — subtle pull
-      nodes.forEach(n => {
-        const dx = mouse.x - n.x;
-        const dy = mouse.y - n.y;
-        const dist = Math.sqrt(dx * dx + dy * dy);
-        if (dist < 200 && dist > 0) {
-          const force = (200 - dist) / 200 * 0.02;
-          n.vx += (dx / dist) * force;
-          n.vy += (dy / dist) * force;
-        }
-      });
-
-      requestAnimationFrame(drawCircuit);
+      requestAnimationFrame(drawTraces);
     }
 
     canvas.parentElement.addEventListener('mousemove', e => {
@@ -1632,15 +1630,11 @@
       mouse.x = e.clientX - rect.left;
       mouse.y = e.clientY - rect.top;
     });
-    canvas.parentElement.addEventListener('mouseleave', () => {
-      mouse.x = -1000;
-      mouse.y = -1000;
-    });
 
     resize();
-    initNodes();
-    drawCircuit();
-    window.addEventListener('resize', () => { resize(); initNodes(); });
+    initTraces();
+    drawTraces();
+    window.addEventListener('resize', () => { resize(); initTraces(); });
   }
 
   /* ── Pricing page tabs ─────────────────── */

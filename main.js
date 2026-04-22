@@ -1521,18 +1521,25 @@
   })();
 
   /* ═══════════════════════════════════════════════
-   CIRCUIT CANVAS — PCB Branching Traces (verbatim from design-supervisor 163969e)
+   CIRCUIT CANVAS — Living PCB Traces v3
+   Continuous generation, build-on-existing, fade-out,
+   mouse-proximity glow, energy pulse.
    ═══════════════════════════════════════════════ */
-  const canvas = document.getElementById('circuitCanvas');
-  if (canvas && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    const ctx = canvas.getContext('2d');
-    let width, height, dpr;
-    const traces = [];
-    const TRACE_COUNT = 12;
-    let mouse = { x: -1000, y: -1000 };
+  (function() {
+    var canvas = document.getElementById('circuitCanvas');
+    if (!canvas || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    var ctx = canvas.getContext('2d');
+    var width, height, dpr;
+    var traces = [];
+    var MAX_TRACES = 25;
+    var SPAWN_INTERVAL = 500;
+    var lastSpawn = 0;
+    var mouse = { x: -1000, y: -1000, active: false };
+    var frame = 0;
 
     function resize() {
-      const rect = canvas.parentElement.getBoundingClientRect();
+      var rect = canvas.parentElement.getBoundingClientRect();
       width = rect.width;
       height = rect.height;
       dpr = Math.min(window.devicePixelRatio || 1, 2);
@@ -1541,101 +1548,233 @@
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     }
 
-    function createTrace() {
-      const startX = Math.random() * width;
-      const startY = Math.random() * height;
-      const segments = [];
-      let x = startX, y = startY;
-      const segCount = 3 + Math.floor(Math.random() * 4);
+    function createTrace(fromNode) {
+      var x, y;
+      if (fromNode) {
+        x = fromNode.x;
+        y = fromNode.y;
+      } else {
+        x = Math.random() * width;
+        y = Math.random() * height;
+      }
 
-      for (let i = 0; i < segCount; i++) {
-        const isHorizontal = Math.random() > 0.5;
-        const length = 40 + Math.random() * 120;
-        const nextX = isHorizontal ? x + (Math.random() > 0.5 ? length : -length) : x;
-        const nextY = isHorizontal ? y : y + (Math.random() > 0.5 ? length : -length);
+      var segments = [];
+      var segCount = 2 + Math.floor(Math.random() * 3);
+      var dirX = Math.random() > 0.5 ? 1 : -1;
+      var dirY = Math.random() > 0.5 ? 1 : -1;
+
+      for (var i = 0; i < segCount; i++) {
+        var isHorizontal = i % 2 === 0;
+        var length = 30 + Math.random() * 90;
+
+        var nextX = isHorizontal ? x + dirX * length : x;
+        var nextY = isHorizontal ? y : y + dirY * length;
+
+        // Clamp to canvas bounds
+        nextX = Math.max(10, Math.min(width - 10, nextX));
+        nextY = Math.max(10, Math.min(height - 10, nextY));
 
         segments.push({ x1: x, y1: y, x2: nextX, y2: nextY });
 
-        // Add node at junction
-        segments.push({ node: true, x: nextX, y: nextY, radius: 1.5 + Math.random() });
+        // Node at junction
+        if (i < segCount - 1 || Math.random() > 0.4) {
+          segments.push({ node: true, x: nextX, y: nextY, radius: 1.5 + Math.random() * 1.5 });
+        }
 
         x = nextX;
         y = nextY;
+
+        // Random direction flip for branching feel
+        if (Math.random() > 0.65) dirX *= -1;
+        if (Math.random() > 0.65) dirY *= -1;
       }
 
       return {
         segments: segments,
         pulse: Math.random() * Math.PI * 2,
-        pulseSpeed: 0.015 + Math.random() * 0.02,
-        opacity: 0.1 + Math.random() * 0.2
+        pulseSpeed: 0.015 + Math.random() * 0.025,
+        opacity: 0.12 + Math.random() * 0.2,
+        age: 0,
+        maxAge: 350 + Math.floor(Math.random() * 250)
       };
     }
 
-    function initTraces() {
-      traces.length = 0;
-      for (let i = 0; i < TRACE_COUNT; i++) {
-        traces.push(createTrace());
+    function pickLiveNode() {
+      if (traces.length === 0) return null;
+      // Collect all nodes from all traces
+      var allNodes = [];
+      for (var t = 0; t < traces.length; t++) {
+        var segs = traces[t].segments;
+        for (var s = 0; s < segs.length; s++) {
+          if (segs[s].node) allNodes.push(segs[s]);
+        }
+      }
+      if (allNodes.length === 0) return null;
+      return allNodes[Math.floor(Math.random() * allNodes.length)];
+    }
+
+    function spawnTrace() {
+      var fromNode = null;
+      if (traces.length > 0 && Math.random() > 0.2) {
+        fromNode = pickLiveNode();
+      }
+      traces.push(createTrace(fromNode));
+    }
+
+    function updateTraces() {
+      frame++;
+
+      // Continuous spawn
+      if (traces.length < MAX_TRACES && frame - lastSpawn > SPAWN_INTERVAL / 16) {
+        spawnTrace();
+        lastSpawn = frame;
+      }
+      // Emergency spawn if too sparse
+      if (traces.length < 5 && frame - lastSpawn > 10) {
+        spawnTrace();
+        lastSpawn = frame;
+      }
+
+      // Age & cull
+      for (var i = traces.length - 1; i >= 0; i--) {
+        traces[i].age++;
+        traces[i].pulse += traces[i].pulseSpeed;
+        if (traces[i].age > traces[i].maxAge) {
+          traces.splice(i, 1);
+        }
       }
     }
 
-    function drawTraces() {
+    function proximity(x, y) {
+      if (!mouse.active) return 0;
+      var dx = x - mouse.x;
+      var dy = y - mouse.y;
+      var dist = Math.sqrt(dx * dx + dy * dy);
+      var maxDist = 160;
+      if (dist > maxDist) return 0;
+      return 1 - (dist / maxDist);
+    }
+
+    function draw() {
       ctx.clearRect(0, 0, width, height);
+      var now = Date.now();
 
-      traces.forEach(trace => {
-        trace.pulse += trace.pulseSpeed;
-        const pulseFactor = 0.5 + 0.5 * Math.sin(trace.pulse);
+      for (var t = 0; t < traces.length; t++) {
+        var trace = traces[t];
+        var pulseFactor = 0.5 + 0.5 * Math.sin(trace.pulse);
 
-        trace.segments.forEach(seg => {
+        // Life-cycle alpha
+        var fadeIn = Math.min(trace.age / 40, 1);
+        var fadeOut = trace.age > trace.maxAge * 0.75
+          ? (1 - (trace.age - trace.maxAge * 0.75) / (trace.maxAge * 0.25))
+          : 1;
+        var lifeAlpha = fadeIn * fadeOut;
+        if (lifeAlpha <= 0) continue;
+
+        for (var s = 0; s < trace.segments.length; s++) {
+          var seg = trace.segments[s];
+
           if (seg.node) {
-            // Draw node
-            const glow = ctx.createRadialGradient(seg.x, seg.y, 0, seg.x, seg.y, seg.radius * 4);
-            glow.addColorStop(0, `rgba(245, 158, 11, ${trace.opacity * pulseFactor * 0.5})`);
+            var prox = proximity(seg.x, seg.y);
+            var glowMult = 1 + prox * 3;
+            var baseAlpha = trace.opacity * pulseFactor * 0.5 * lifeAlpha;
+            var coreAlpha = trace.opacity * pulseFactor * lifeAlpha;
+
+            if (prox > 0) {
+              baseAlpha = Math.min(0.8, baseAlpha * 2.5);
+              coreAlpha = Math.min(1, coreAlpha * 2.5);
+            }
+
+            var glow = ctx.createRadialGradient(seg.x, seg.y, 0, seg.x, seg.y, seg.radius * 4 * glowMult);
+            glow.addColorStop(0, 'rgba(245, 158, 11, ' + baseAlpha + ')');
             glow.addColorStop(1, 'rgba(245, 158, 11, 0)');
             ctx.fillStyle = glow;
             ctx.beginPath();
-            ctx.arc(seg.x, seg.y, seg.radius * 4, 0, Math.PI * 2);
+            ctx.arc(seg.x, seg.y, seg.radius * 4 * glowMult, 0, Math.PI * 2);
             ctx.fill();
 
-            ctx.fillStyle = `rgba(245, 158, 11, ${trace.opacity * pulseFactor})`;
+            ctx.fillStyle = 'rgba(245, 158, 11, ' + coreAlpha + ')';
             ctx.beginPath();
             ctx.arc(seg.x, seg.y, seg.radius, 0, Math.PI * 2);
             ctx.fill();
           } else {
-            // Draw trace line
-            ctx.strokeStyle = `rgba(245, 158, 11, ${trace.opacity * pulseFactor * 0.5})`;
-            ctx.lineWidth = 0.8;
+            var p1 = proximity(seg.x1, seg.y1);
+            var p2 = proximity(seg.x2, seg.y2);
+            var segProx = (p1 + p2) * 0.5;
+            var segAlpha = trace.opacity * pulseFactor * 0.5 * lifeAlpha;
+            var lineWidth = 0.8;
+
+            if (segProx > 0) {
+              segAlpha = Math.min(0.55, segAlpha * 3);
+              lineWidth = 0.8 + segProx * 2;
+            }
+
+            ctx.strokeStyle = 'rgba(245, 158, 11, ' + segAlpha + ')';
+            ctx.lineWidth = lineWidth;
             ctx.lineCap = 'round';
             ctx.beginPath();
             ctx.moveTo(seg.x1, seg.y1);
             ctx.lineTo(seg.x2, seg.y2);
             ctx.stroke();
 
-            // Draw flowing dot on trace
-            const t = (Date.now() % 3000) / 3000;
-            const dotX = seg.x1 + (seg.x2 - seg.x1) * t;
-            const dotY = seg.y1 + (seg.y2 - seg.y1) * t;
-            ctx.fillStyle = `rgba(245, 158, 11, ${0.4 + 0.4 * pulseFactor})`;
+            // Flowing energy dot
+            var cycle = 2500 + (t * 200) % 1500;
+            var t2 = (now % cycle) / cycle;
+            var dotX = seg.x1 + (seg.x2 - seg.x1) * t2;
+            var dotY = seg.y1 + (seg.y2 - seg.y1) * t2;
+            var dotProx = proximity(dotX, dotY);
+            var dotAlpha = (0.25 + 0.25 * pulseFactor) * lifeAlpha;
+            var dotRadius = 1.5;
+
+            if (dotProx > 0) {
+              dotAlpha = Math.min(1, dotAlpha * 2.5);
+              dotRadius = 1.5 + dotProx * 2;
+            }
+
+            var dotGlow = ctx.createRadialGradient(dotX, dotY, 0, dotX, dotY, dotRadius * 5);
+            dotGlow.addColorStop(0, 'rgba(255, 200, 80, ' + dotAlpha + ')');
+            dotGlow.addColorStop(1, 'rgba(245, 158, 11, 0)');
+            ctx.fillStyle = dotGlow;
             ctx.beginPath();
-            ctx.arc(dotX, dotY, 1.5, 0, Math.PI * 2);
+            ctx.arc(dotX, dotY, dotRadius * 5, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.fillStyle = 'rgba(255, 220, 100, ' + dotAlpha + ')';
+            ctx.beginPath();
+            ctx.arc(dotX, dotY, dotRadius, 0, Math.PI * 2);
             ctx.fill();
           }
-        });
-      });
+        }
+      }
 
-      requestAnimationFrame(drawTraces);
+      requestAnimationFrame(loop);
     }
 
-    canvas.parentElement.addEventListener('mousemove', e => {
-      const rect = canvas.getBoundingClientRect();
+    function loop() {
+      updateTraces();
+      draw();
+    }
+
+    canvas.parentElement.addEventListener('mousemove', function(e) {
+      var rect = canvas.getBoundingClientRect();
       mouse.x = e.clientX - rect.left;
       mouse.y = e.clientY - rect.top;
+      mouse.active = true;
+    });
+    canvas.parentElement.addEventListener('mouseleave', function() {
+      mouse.active = false;
     });
 
     resize();
-    initTraces();
-    drawTraces();
-    window.addEventListener('resize', () => { resize(); initTraces(); });
-  }
+    // Seed initial population
+    for (var i = 0; i < 10; i++) spawnTrace();
+    loop();
+    window.addEventListener('resize', function() {
+      resize();
+      traces = [];
+      for (var j = 0; j < 10; j++) spawnTrace();
+    });
+  })();
 
   /* ── Pricing page tabs ─────────────────── */
   const pricingTabs = document.querySelectorAll('.pricing-tab');

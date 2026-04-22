@@ -1521,25 +1521,46 @@
   })();
 
   /* ═══════════════════════════════════════════════
-   CIRCUIT CANVAS — Living PCB Traces v3
-   Continuous generation, build-on-existing, fade-out,
-   mouse-proximity glow, energy pulse.
+   CIRCUIT CANVAS — Living PCB Traces v4
+   Continuous generation, branch-from-junction,
+   fade-out, hover glow, click pulse.
    ═══════════════════════════════════════════════ */
   (function() {
-    var canvas = document.getElementById('circuitCanvas');
+    const canvas = document.getElementById('circuitCanvas');
     if (!canvas || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
-    var ctx = canvas.getContext('2d');
-    var width, height, dpr;
-    var traces = [];
-    var MAX_TRACES = 25;
-    var SPAWN_INTERVAL = 500;
-    var lastSpawn = 0;
-    var mouse = { x: -1000, y: -1000, active: false };
-    var frame = 0;
+    const ctx = canvas.getContext('2d');
+    let width = 0;
+    let height = 0;
+    let dpr = 1;
+
+    const traces = [];
+    const pulses = [];
+    const mouse = { x: -1000, y: -1000, active: false };
+
+    const INITIAL_TRACES = 12;
+    const MAX_TRACES = 30;
+    const SPAWN_INTERVAL = 220; // ms
+    const TRACE_LIFE_MIN = 6200;
+    const TRACE_LIFE_MAX = 9800;
+    const FADE_IN_MS = 280;
+    const FADE_OUT_MS = 1200;
+    const MOUSE_RADIUS = 160;
+    const PULSE_MAX_RADIUS = 240;
+
+    let lastSpawnAt = 0;
+    let lastFrameAt = performance.now();
+
+    function rand(min, max) {
+      return min + Math.random() * (max - min);
+    }
+
+    function clamp(value, min, max) {
+      return Math.max(min, Math.min(max, value));
+    }
 
     function resize() {
-      var rect = canvas.parentElement.getBoundingClientRect();
+      const rect = canvas.parentElement.getBoundingClientRect();
       width = rect.width;
       height = rect.height;
       dpr = Math.min(window.devicePixelRatio || 1, 2);
@@ -1548,231 +1569,332 @@
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     }
 
-    function createTrace(fromNode) {
-      var x, y;
-      if (fromNode) {
-        x = fromNode.x;
-        y = fromNode.y;
-      } else {
-        x = Math.random() * width;
-        y = Math.random() * height;
-      }
-
-      var segments = [];
-      var segCount = 2 + Math.floor(Math.random() * 3);
-      var dirX = Math.random() > 0.5 ? 1 : -1;
-      var dirY = Math.random() > 0.5 ? 1 : -1;
-
-      for (var i = 0; i < segCount; i++) {
-        var isHorizontal = i % 2 === 0;
-        var length = 30 + Math.random() * 90;
-
-        var nextX = isHorizontal ? x + dirX * length : x;
-        var nextY = isHorizontal ? y : y + dirY * length;
-
-        // Clamp to canvas bounds
-        nextX = Math.max(10, Math.min(width - 10, nextX));
-        nextY = Math.max(10, Math.min(height - 10, nextY));
-
-        segments.push({ x1: x, y1: y, x2: nextX, y2: nextY });
-
-        // Node at junction
-        if (i < segCount - 1 || Math.random() > 0.4) {
-          segments.push({ node: true, x: nextX, y: nextY, radius: 1.5 + Math.random() * 1.5 });
-        }
-
-        x = nextX;
-        y = nextY;
-
-        // Random direction flip for branching feel
-        if (Math.random() > 0.65) dirX *= -1;
-        if (Math.random() > 0.65) dirY *= -1;
-      }
-
+    function makeJunction(x, y, nextAxis) {
       return {
-        segments: segments,
-        pulse: Math.random() * Math.PI * 2,
-        pulseSpeed: 0.015 + Math.random() * 0.025,
-        opacity: 0.12 + Math.random() * 0.2,
-        age: 0,
-        maxAge: 350 + Math.floor(Math.random() * 250)
+        x,
+        y,
+        axis: nextAxis,
+        radius: rand(1.3, 2.9),
+        phase: Math.random() * Math.PI * 2
       };
     }
 
-    function pickLiveNode() {
-      if (traces.length === 0) return null;
-      // Collect all nodes from all traces
-      var allNodes = [];
-      for (var t = 0; t < traces.length; t++) {
-        var segs = traces[t].segments;
-        for (var s = 0; s < segs.length; s++) {
-          if (segs[s].node) allNodes.push(segs[s]);
+    function buildTrace(anchor) {
+      let x = anchor ? anchor.x : Math.random() * width;
+      let y = anchor ? anchor.y : Math.random() * height;
+      let axis = anchor && anchor.axis ? anchor.axis : (Math.random() > 0.5 ? 'h' : 'v');
+      let direction = Math.random() > 0.5 ? 1 : -1;
+      const segments = [];
+      const junctions = [];
+      const segmentCount = 2 + Math.floor(Math.random() * 3); // 2-4 segments
+
+      for (let i = 0; i < segmentCount; i++) {
+        const length = rand(34, 112);
+        let nextX = x;
+        let nextY = y;
+
+        if (axis === 'h') {
+          nextX = clamp(x + direction * length, 12, width - 12);
+        } else {
+          nextY = clamp(y + direction * length, 12, height - 12);
         }
+
+        if (nextX === x && nextY === y) break;
+
+        segments.push({
+          x1: x,
+          y1: y,
+          x2: nextX,
+          y2: nextY,
+          phase: Math.random()
+        });
+
+        const nextAxis = axis === 'h' ? 'v' : 'h';
+        const node = makeJunction(nextX, nextY, nextAxis);
+        junctions.push(node);
+
+        x = nextX;
+        y = nextY;
+        axis = nextAxis;
+
+        if (Math.random() > 0.62) direction *= -1;
       }
-      if (allNodes.length === 0) return null;
-      return allNodes[Math.floor(Math.random() * allNodes.length)];
+
+      return {
+        segments,
+        junctions,
+        age: 0,
+        lifespan: rand(TRACE_LIFE_MIN, TRACE_LIFE_MAX),
+        opacity: rand(0.12, 0.23),
+        pulse: Math.random() * Math.PI * 2,
+        pulseSpeed: rand(0.9, 1.45),
+        flowSpeed: rand(0.85, 1.35)
+      };
     }
 
-    function spawnTrace() {
-      var fromNode = null;
-      if (traces.length > 0 && Math.random() > 0.2) {
-        fromNode = pickLiveNode();
-      }
-      traces.push(createTrace(fromNode));
+    function allJunctions() {
+      const nodes = [];
+      traces.forEach(trace => nodes.push(...trace.junctions));
+      return nodes;
     }
 
-    function updateTraces() {
-      frame++;
-
-      // Continuous spawn
-      if (traces.length < MAX_TRACES && frame - lastSpawn > SPAWN_INTERVAL / 16) {
-        spawnTrace();
-        lastSpawn = frame;
-      }
-      // Emergency spawn if too sparse
-      if (traces.length < 5 && frame - lastSpawn > 10) {
-        spawnTrace();
-        lastSpawn = frame;
-      }
-
-      // Age & cull
-      for (var i = traces.length - 1; i >= 0; i--) {
-        traces[i].age++;
-        traces[i].pulse += traces[i].pulseSpeed;
-        if (traces[i].age > traces[i].maxAge) {
-          traces.splice(i, 1);
-        }
-      }
+    function recentJunctions() {
+      const nodes = [];
+      const tail = traces.slice(-6);
+      tail.forEach(trace => nodes.push(...trace.junctions));
+      return nodes;
     }
 
-    function proximity(x, y) {
+    function pickAnchor() {
+      const recent = recentJunctions();
+      const all = allJunctions();
+      const pool = recent.length ? recent : all;
+      if (!pool.length) return null;
+      if (Math.random() < 0.78) {
+        return pool[Math.floor(Math.random() * pool.length)];
+      }
+      return all.length ? all[Math.floor(Math.random() * all.length)] : pool[Math.floor(Math.random() * pool.length)];
+    }
+
+    function spawnTrace(forcedAnchor) {
+      const anchor = forcedAnchor || ((traces.length && Math.random() < 0.78) ? pickAnchor() : null);
+      traces.push(buildTrace(anchor));
+      lastSpawnAt = performance.now();
+    }
+
+    function spawnPulse(x, y, strength) {
+      pulses.push({
+        x,
+        y,
+        age: 0,
+        lifespan: 760,
+        maxRadius: PULSE_MAX_RADIUS,
+        strength: strength || 1
+      });
+    }
+
+    function nearestJunction(x, y, maxDistance) {
+      let nearest = null;
+      let best = maxDistance;
+      traces.forEach(trace => {
+        trace.junctions.forEach(node => {
+          const dx = node.x - x;
+          const dy = node.y - y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < best) {
+            best = dist;
+            nearest = node;
+          }
+        });
+      });
+      return nearest;
+    }
+
+    function pointerPos(event) {
+      const rect = canvas.getBoundingClientRect();
+      return {
+        x: event.clientX - rect.left,
+        y: event.clientY - rect.top
+      };
+    }
+
+    function mouseBoost(x, y) {
       if (!mouse.active) return 0;
-      var dx = x - mouse.x;
-      var dy = y - mouse.y;
-      var dist = Math.sqrt(dx * dx + dy * dy);
-      var maxDist = 160;
-      if (dist > maxDist) return 0;
-      return 1 - (dist / maxDist);
+      const dx = x - mouse.x;
+      const dy = y - mouse.y;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      if (dist >= MOUSE_RADIUS) return 0;
+      return 1 - dist / MOUSE_RADIUS;
+    }
+
+    function pulseBoost(x, y) {
+      let boost = 0;
+      for (const pulse of pulses) {
+        const life = clamp(pulse.age / pulse.lifespan, 0, 1);
+        const radius = pulse.maxRadius * life;
+        if (radius <= 0) continue;
+        const dx = x - pulse.x;
+        const dy = y - pulse.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < radius) {
+          boost += (1 - dist / radius) * (1 - life) * pulse.strength;
+        }
+      }
+      return clamp(boost, 0, 1.5);
+    }
+
+    function effectAt(x, y) {
+      return clamp(mouseBoost(x, y) + pulseBoost(x, y), 0, 1.5);
+    }
+
+    function update(now, dt) {
+      for (const trace of traces) {
+        trace.age += dt;
+        trace.pulse += trace.pulseSpeed * (dt / 1000);
+      }
+
+      for (const pulse of pulses) {
+        pulse.age += dt;
+      }
+
+      if (traces.length < INITIAL_TRACES && now - lastSpawnAt > 120) {
+        spawnTrace();
+      } else if (traces.length < MAX_TRACES && now - lastSpawnAt > SPAWN_INTERVAL) {
+        spawnTrace();
+      }
+
+      for (let i = traces.length - 1; i >= 0; i--) {
+        if (traces[i].age > traces[i].lifespan) traces.splice(i, 1);
+      }
+
+      for (let i = pulses.length - 1; i >= 0; i--) {
+        if (pulses[i].age > pulses[i].lifespan) pulses.splice(i, 1);
+      }
     }
 
     function draw() {
       ctx.clearRect(0, 0, width, height);
-      var now = Date.now();
 
-      for (var t = 0; t < traces.length; t++) {
-        var trace = traces[t];
-        var pulseFactor = 0.5 + 0.5 * Math.sin(trace.pulse);
-
-        // Life-cycle alpha
-        var fadeIn = Math.min(trace.age / 40, 1);
-        var fadeOut = trace.age > trace.maxAge * 0.75
-          ? (1 - (trace.age - trace.maxAge * 0.75) / (trace.maxAge * 0.25))
-          : 1;
-        var lifeAlpha = fadeIn * fadeOut;
-        if (lifeAlpha <= 0) continue;
-
-        for (var s = 0; s < trace.segments.length; s++) {
-          var seg = trace.segments[s];
-
-          if (seg.node) {
-            var prox = proximity(seg.x, seg.y);
-            var glowMult = 1 + prox * 3;
-            var baseAlpha = trace.opacity * pulseFactor * 0.5 * lifeAlpha;
-            var coreAlpha = trace.opacity * pulseFactor * lifeAlpha;
-
-            if (prox > 0) {
-              baseAlpha = Math.min(0.8, baseAlpha * 2.5);
-              coreAlpha = Math.min(1, coreAlpha * 2.5);
-            }
-
-            var glow = ctx.createRadialGradient(seg.x, seg.y, 0, seg.x, seg.y, seg.radius * 4 * glowMult);
-            glow.addColorStop(0, 'rgba(245, 158, 11, ' + baseAlpha + ')');
-            glow.addColorStop(1, 'rgba(245, 158, 11, 0)');
-            ctx.fillStyle = glow;
-            ctx.beginPath();
-            ctx.arc(seg.x, seg.y, seg.radius * 4 * glowMult, 0, Math.PI * 2);
-            ctx.fill();
-
-            ctx.fillStyle = 'rgba(245, 158, 11, ' + coreAlpha + ')';
-            ctx.beginPath();
-            ctx.arc(seg.x, seg.y, seg.radius, 0, Math.PI * 2);
-            ctx.fill();
-          } else {
-            var p1 = proximity(seg.x1, seg.y1);
-            var p2 = proximity(seg.x2, seg.y2);
-            var segProx = (p1 + p2) * 0.5;
-            var segAlpha = trace.opacity * pulseFactor * 0.5 * lifeAlpha;
-            var lineWidth = 0.8;
-
-            if (segProx > 0) {
-              segAlpha = Math.min(0.55, segAlpha * 3);
-              lineWidth = 0.8 + segProx * 2;
-            }
-
-            ctx.strokeStyle = 'rgba(245, 158, 11, ' + segAlpha + ')';
-            ctx.lineWidth = lineWidth;
-            ctx.lineCap = 'round';
-            ctx.beginPath();
-            ctx.moveTo(seg.x1, seg.y1);
-            ctx.lineTo(seg.x2, seg.y2);
-            ctx.stroke();
-
-            // Flowing energy dot
-            var cycle = 2500 + (t * 200) % 1500;
-            var t2 = (now % cycle) / cycle;
-            var dotX = seg.x1 + (seg.x2 - seg.x1) * t2;
-            var dotY = seg.y1 + (seg.y2 - seg.y1) * t2;
-            var dotProx = proximity(dotX, dotY);
-            var dotAlpha = (0.25 + 0.25 * pulseFactor) * lifeAlpha;
-            var dotRadius = 1.5;
-
-            if (dotProx > 0) {
-              dotAlpha = Math.min(1, dotAlpha * 2.5);
-              dotRadius = 1.5 + dotProx * 2;
-            }
-
-            var dotGlow = ctx.createRadialGradient(dotX, dotY, 0, dotX, dotY, dotRadius * 5);
-            dotGlow.addColorStop(0, 'rgba(255, 200, 80, ' + dotAlpha + ')');
-            dotGlow.addColorStop(1, 'rgba(245, 158, 11, 0)');
-            ctx.fillStyle = dotGlow;
-            ctx.beginPath();
-            ctx.arc(dotX, dotY, dotRadius * 5, 0, Math.PI * 2);
-            ctx.fill();
-
-            ctx.fillStyle = 'rgba(255, 220, 100, ' + dotAlpha + ')';
-            ctx.beginPath();
-            ctx.arc(dotX, dotY, dotRadius, 0, Math.PI * 2);
-            ctx.fill();
-          }
-        }
+      // Diagnostic pulses under the traces.
+      for (const pulse of pulses) {
+        const progress = clamp(pulse.age / pulse.lifespan, 0, 1);
+        const radius = pulse.maxRadius * progress;
+        const alpha = (1 - progress) * 0.18 * pulse.strength;
+        if (radius <= 0 || alpha <= 0) continue;
+        ctx.strokeStyle = `rgba(255, 200, 80, ${alpha})`;
+        ctx.lineWidth = 1 + (1 - progress) * 1.2;
+        ctx.beginPath();
+        ctx.arc(pulse.x, pulse.y, radius, 0, Math.PI * 2);
+        ctx.stroke();
       }
 
+      for (const trace of traces) {
+        const fadeIn = clamp(trace.age / FADE_IN_MS, 0, 1);
+        const fadeOut = trace.age > trace.lifespan - FADE_OUT_MS
+          ? clamp((trace.lifespan - trace.age) / FADE_OUT_MS, 0, 1)
+          : 1;
+        const life = fadeIn * fadeOut;
+        if (life <= 0) continue;
+
+        const pulseFactor = 0.55 + 0.45 * Math.sin(trace.pulse);
+
+        for (let i = 0; i < trace.segments.length; i++) {
+          const seg = trace.segments[i];
+          const midX = (seg.x1 + seg.x2) * 0.5;
+          const midY = (seg.y1 + seg.y2) * 0.5;
+          const boost = effectAt(midX, midY);
+
+          let lineAlpha = trace.opacity * pulseFactor * 0.5 * life;
+          let lineWidth = 0.8;
+
+          if (boost > 0) {
+            lineAlpha = clamp(lineAlpha * (1 + boost * 2.5), 0, 0.7);
+            lineWidth = 0.8 + boost * 1.8;
+          }
+
+          ctx.strokeStyle = `rgba(245, 158, 11, ${lineAlpha})`;
+          ctx.lineWidth = lineWidth;
+          ctx.lineCap = 'round';
+          ctx.beginPath();
+          ctx.moveTo(seg.x1, seg.y1);
+          ctx.lineTo(seg.x2, seg.y2);
+          ctx.stroke();
+
+          const phase = (performance.now() * 0.00028 * trace.flowSpeed + seg.phase) % 1;
+          const dotX = seg.x1 + (seg.x2 - seg.x1) * phase;
+          const dotY = seg.y1 + (seg.y2 - seg.y1) * phase;
+          const dotBoost = effectAt(dotX, dotY);
+
+          let dotAlpha = (0.28 + 0.34 * pulseFactor) * life;
+          let dotRadius = 1.45;
+
+          if (dotBoost > 0) {
+            dotAlpha = clamp(dotAlpha * (1 + dotBoost * 2.2), 0, 1);
+            dotRadius = 1.45 + dotBoost * 1.6;
+          }
+
+          const glow = ctx.createRadialGradient(dotX, dotY, 0, dotX, dotY, dotRadius * 5.5);
+          glow.addColorStop(0, `rgba(255, 214, 120, ${dotAlpha})`);
+          glow.addColorStop(1, 'rgba(245, 158, 11, 0)');
+          ctx.fillStyle = glow;
+          ctx.beginPath();
+          ctx.arc(dotX, dotY, dotRadius * 5.5, 0, Math.PI * 2);
+          ctx.fill();
+
+          ctx.fillStyle = `rgba(255, 220, 100, ${dotAlpha})`;
+          ctx.beginPath();
+          ctx.arc(dotX, dotY, dotRadius, 0, Math.PI * 2);
+          ctx.fill();
+        }
+
+        for (const node of trace.junctions) {
+          const boost = effectAt(node.x, node.y);
+          const nodePulse = 0.6 + 0.4 * Math.sin(trace.pulse + node.phase);
+          let nodeGlowAlpha = trace.opacity * nodePulse * 0.45 * life;
+          let nodeCoreAlpha = trace.opacity * nodePulse * life;
+
+          if (boost > 0) {
+            nodeGlowAlpha = clamp(nodeGlowAlpha * (1 + boost * 2.8), 0, 0.75);
+            nodeCoreAlpha = clamp(nodeCoreAlpha * (1 + boost * 2.8), 0, 1);
+          }
+
+          const glow = ctx.createRadialGradient(node.x, node.y, 0, node.x, node.y, node.radius * 4.2 * (1 + boost * 2));
+          glow.addColorStop(0, `rgba(245, 158, 11, ${nodeGlowAlpha})`);
+          glow.addColorStop(1, 'rgba(245, 158, 11, 0)');
+          ctx.fillStyle = glow;
+          ctx.beginPath();
+          ctx.arc(node.x, node.y, node.radius * 4.2 * (1 + boost * 2), 0, Math.PI * 2);
+          ctx.fill();
+
+          ctx.fillStyle = `rgba(245, 158, 11, ${nodeCoreAlpha})`;
+          ctx.beginPath();
+          ctx.arc(node.x, node.y, node.radius, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      }
+    }
+
+    function loop(now) {
+      const dt = Math.min(now - lastFrameAt, 34);
+      lastFrameAt = now;
+      update(now, dt);
+      draw();
       requestAnimationFrame(loop);
     }
 
-    function loop() {
-      updateTraces();
-      draw();
-    }
-
-    canvas.parentElement.addEventListener('mousemove', function(e) {
-      var rect = canvas.getBoundingClientRect();
-      mouse.x = e.clientX - rect.left;
-      mouse.y = e.clientY - rect.top;
+    canvas.parentElement.addEventListener('pointermove', event => {
+      const pos = pointerPos(event);
+      mouse.x = pos.x;
+      mouse.y = pos.y;
       mouse.active = true;
     });
-    canvas.parentElement.addEventListener('mouseleave', function() {
+
+    canvas.parentElement.addEventListener('pointerleave', () => {
       mouse.active = false;
     });
 
+    canvas.parentElement.addEventListener('pointerdown', event => {
+      const pos = pointerPos(event);
+      mouse.x = pos.x;
+      mouse.y = pos.y;
+      mouse.active = true;
+
+      const anchor = nearestJunction(pos.x, pos.y, 180);
+      const seed = anchor || { x: pos.x, y: pos.y, axis: Math.random() > 0.5 ? 'h' : 'v' };
+
+      spawnTrace(seed);
+      spawnPulse(seed.x, seed.y, 1.2);
+    });
+
     resize();
-    // Seed initial population
-    for (var i = 0; i < 10; i++) spawnTrace();
-    loop();
-    window.addEventListener('resize', function() {
+    for (let i = 0; i < INITIAL_TRACES; i++) spawnTrace();
+    requestAnimationFrame(loop);
+    window.addEventListener('resize', () => {
       resize();
-      traces = [];
-      for (var j = 0; j < 10; j++) spawnTrace();
+      traces.length = 0;
+      pulses.length = 0;
+      lastSpawnAt = performance.now();
+      for (let i = 0; i < INITIAL_TRACES; i++) spawnTrace();
     });
   })();
 

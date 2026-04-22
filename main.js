@@ -1521,85 +1521,210 @@
   })();
 
   /* ═══════════════════════════════════════════════
-   HERO PARTICLES — Tech dust & repair sparks
-   Mixed particle types: dots (dust), sparks (accent),
-   crosses (screw heads), lines (circuit traces).
-   Each has unique motion, size, and opacity ranges.
-═══════════════════════════════════════════════ */
-  var particleContainer = document.querySelector('.hero-particles');
-  if (particleContainer && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    var PARTICLE_COUNT = 35;
-    // Weights: [type, weight] — dots are most common
-    var TYPES = [
-      { type: 'dot',   weight: 50, sizeMin: 2, sizeMax: 5, durationMin: 10, durationMax: 22, opacityMin: 0.06, opacityMax: 0.18 },
-      { type: 'spark', weight: 15, sizeMin: 2, sizeMax: 4, durationMin: 4, durationMax: 8, opacityMin: 0.2, opacityMax: 0.5 },
-      { type: 'cross', weight: 20, sizeMin: 5, sizeMax: 9, durationMin: 12, durationMax: 25, opacityMin: 0.06, opacityMax: 0.14 },
-      { type: 'line',  weight: 15, sizeMin: 12, sizeMax: 28, durationMin: 8, durationMax: 16, opacityMin: 0.06, opacityMax: 0.15 }
-    ];
-    var totalWeight = TYPES.reduce(function(s, t) { return s + t.weight; }, 0);
+   CIRCUIT CANVAS — Organic node mesh with
+   probe-mode cursor repel & signal propagation.
+   ═══════════════════════════════════════════════ */
+  (function() {
+    var canvas = document.getElementById('circuitCanvas');
+    if (!canvas || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
-    function pickType() {
-      var r = Math.random() * totalWeight;
-      for (var i = 0; i < TYPES.length; i++) {
-        r -= TYPES[i].weight;
-        if (r <= 0) return TYPES[i];
-      }
-      return TYPES[0];
+    var ctx = canvas.getContext('2d');
+    var width, height, dpr;
+    var nodes = [];
+    var NODE_COUNT = 70;
+    var CONNECTION_DIST = 160;
+    var MOUSE_REPEL_DIST = 180;
+    var MOUSE_REPEL_FORCE = 0.25;
+
+    var signals = [];
+    var SIGNAL_INTERVAL = 600;
+    var lastSignalTime = 0;
+
+    var mouse = { x: -1000, y: -1000 };
+
+    function resize() {
+      var rect = canvas.parentElement.getBoundingClientRect();
+      width = rect.width;
+      height = rect.height;
+      dpr = Math.min(window.devicePixelRatio || 1, 2);
+      canvas.width = width * dpr;
+      canvas.height = height * dpr;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     }
 
-    function randRange(min, max) { return min + Math.random() * (max - min); }
-
-    for (var i = 0; i < PARTICLE_COUNT; i++) {
-      var cfg = pickType();
-      var el = document.createElement('span');
-      el.classList.add('hero-particle', 'hero-particle--' + cfg.type);
-
-      // Size
-      var size = randRange(cfg.sizeMin, cfg.sizeMax);
-      if (cfg.type === 'line') {
-        el.style.width = size + 'px';
-        el.style.height = '1.5px';
-      } else {
-        el.style.width = el.style.height = size + 'px';
-      }
-
-      // Position — spread across full width, bottom 60% of hero
-      el.style.left = Math.random() * 100 + '%';
-      el.style.top = (40 + Math.random() * 55) + '%';
-
-      // Motion custom properties
-      var driftY = -(30 + Math.random() * 70) + 'vh';
-      var sway = (Math.random() - 0.5) * 60 + 'px';
-      var rotate = Math.random() * 360 + 'deg';
-      var opacity = randRange(cfg.opacityMin, cfg.opacityMax);
-      el.style.setProperty('--p-drift-y', driftY);
-      el.style.setProperty('--p-sway', sway);
-      el.style.setProperty('--p-rotate', rotate);
-      el.style.setProperty('--p-opacity', opacity.toFixed(2));
-
-      // Timing
-      el.style.animationDuration = randRange(cfg.durationMin, cfg.durationMax).toFixed(1) + 's';
-      el.style.animationDelay = (Math.random() * 15).toFixed(1) + 's';
-
-      particleContainer.appendChild(el);
-    }
-
-    // ── Mouse parallax on particles ──
-    // Shift particle container slightly opposite to cursor for depth
-    if (window.matchMedia('(pointer: fine)').matches || window.matchMedia('(hover: hover)').matches) {
-      var pTicking = false;
-      document.addEventListener('mousemove', function(e) {
-        if (pTicking) return;
-        pTicking = true;
-        requestAnimationFrame(function() {
-          var cx = (e.clientX / window.innerWidth - 0.5) * 2;  // -1 to 1
-          var cy = (e.clientY / window.innerHeight - 0.5) * 2;
-          particleContainer.style.transform = 'translate(' + (cx * -8).toFixed(1) + 'px, ' + (cy * -6).toFixed(1) + 'px)';
-          pTicking = false;
+    function initNodes() {
+      nodes.length = 0;
+      for (var i = 0; i < NODE_COUNT; i++) {
+        nodes.push({
+          x: Math.random() * width,
+          y: Math.random() * height,
+          vx: (Math.random() - 0.5) * 0.4,
+          vy: (Math.random() - 0.5) * 0.4,
+          radius: 1.5 + Math.random() * 2,
+          pulse: Math.random() * Math.PI * 2,
+          pulseSpeed: 0.02 + Math.random() * 0.03
         });
-      }, { passive: true });
+      }
     }
-  }
+
+    function spawnSignal(originNode) {
+      var neighbors = [];
+      for (var i = 0; i < nodes.length; i++) {
+        var n = nodes[i];
+        if (n === originNode) continue;
+        var dx = originNode.x - n.x;
+        var dy = originNode.y - n.y;
+        var dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < CONNECTION_DIST) {
+          neighbors.push({ node: n, dist: dist });
+        }
+      }
+      if (neighbors.length === 0) return;
+      var target = neighbors[Math.floor(Math.random() * neighbors.length)].node;
+      signals.push({
+        from: originNode,
+        to: target,
+        progress: 0,
+        speed: 0.015 + Math.random() * 0.025,
+        intensity: 0.6 + Math.random() * 0.4,
+        decay: 0.95 + Math.random() * 0.03
+      });
+    }
+
+    function updateNodes() {
+      for (var i = 0; i < nodes.length; i++) {
+        var n = nodes[i];
+        n.x += n.vx;
+        n.y += n.vy;
+        n.pulse += n.pulseSpeed;
+
+        if (n.x < 0) { n.x = 0; n.vx *= -0.8; }
+        if (n.x > width) { n.x = width; n.vx *= -0.8; }
+        if (n.y < 0) { n.y = 0; n.vy *= -0.8; }
+        if (n.y > height) { n.y = height; n.vy *= -0.8; }
+
+        var mdx = n.x - mouse.x;
+        var mdy = n.y - mouse.y;
+        var mdist = Math.sqrt(mdx * mdx + mdy * mdy);
+        if (mdist < MOUSE_REPEL_DIST && mdist > 0) {
+          var force = (MOUSE_REPEL_DIST - mdist) / MOUSE_REPEL_DIST * MOUSE_REPEL_FORCE;
+          n.vx += (mdx / mdist) * force;
+          n.vy += (mdy / mdist) * force;
+        }
+
+        n.vx *= 0.995;
+        n.vy *= 0.995;
+
+        if (Math.abs(n.vx) < 0.03) n.vx += (Math.random() - 0.5) * 0.015;
+        if (Math.abs(n.vy) < 0.03) n.vy += (Math.random() - 0.5) * 0.015;
+      }
+    }
+
+    function updateSignals() {
+      var now = Date.now();
+      if (now - lastSignalTime > SIGNAL_INTERVAL && Math.random() > 0.3) {
+        spawnSignal(nodes[Math.floor(Math.random() * nodes.length)]);
+        lastSignalTime = now;
+      }
+      for (var i = signals.length - 1; i >= 0; i--) {
+        var s = signals[i];
+        s.progress += s.speed;
+        s.intensity *= s.decay;
+        if (s.progress >= 1) {
+          if (s.intensity > 0.2 && Math.random() > 0.5) {
+            spawnSignal(s.to);
+          }
+          signals.splice(i, 1);
+        } else if (s.intensity < 0.01) {
+          signals.splice(i, 1);
+        }
+      }
+    }
+
+    function draw() {
+      ctx.clearRect(0, 0, width, height);
+
+      ctx.lineWidth = 0.8;
+      ctx.lineCap = 'round';
+      for (var i = 0; i < nodes.length; i++) {
+        for (var j = i + 1; j < nodes.length; j++) {
+          var a = nodes[i], b = nodes[j];
+          var dx = a.x - b.x;
+          var dy = a.y - b.y;
+          var dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < CONNECTION_DIST) {
+            var alpha = (1 - dist / CONNECTION_DIST) * 0.12;
+            ctx.strokeStyle = 'rgba(245, 158, 11, ' + alpha + ')';
+            ctx.beginPath();
+            ctx.moveTo(a.x, a.y);
+            ctx.lineTo(b.x, b.y);
+            ctx.stroke();
+          }
+        }
+      }
+
+      for (var k = 0; k < signals.length; k++) {
+        var s = signals[k];
+        var sx = s.from.x + (s.to.x - s.from.x) * s.progress;
+        var sy = s.from.y + (s.to.y - s.from.y) * s.progress;
+        var sr = 2 + s.intensity * 2;
+        var glow = ctx.createRadialGradient(sx, sy, 0, sx, sy, sr * 6);
+        glow.addColorStop(0, 'rgba(245, 158, 11, ' + (s.intensity * 0.4) + ')');
+        glow.addColorStop(0.5, 'rgba(245, 158, 11, ' + (s.intensity * 0.15) + ')');
+        glow.addColorStop(1, 'rgba(245, 158, 11, 0)');
+        ctx.fillStyle = glow;
+        ctx.beginPath();
+        ctx.arc(sx, sy, sr * 6, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.fillStyle = 'rgba(255, 200, 80, ' + s.intensity + ')';
+        ctx.beginPath();
+        ctx.arc(sx, sy, sr, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      for (var m = 0; m < nodes.length; m++) {
+        var n = nodes[m];
+        var pulseFactor = 0.6 + 0.4 * Math.sin(n.pulse);
+        var glowSize = n.radius * 3 * pulseFactor;
+        var nGrad = ctx.createRadialGradient(n.x, n.y, 0, n.x, n.y, glowSize);
+        nGrad.addColorStop(0, 'rgba(245, 158, 11, ' + (0.25 * pulseFactor) + ')');
+        nGrad.addColorStop(1, 'rgba(245, 158, 11, 0)');
+        ctx.fillStyle = nGrad;
+        ctx.beginPath();
+        ctx.arc(n.x, n.y, glowSize, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.fillStyle = 'rgba(245, 158, 11, ' + (0.4 + 0.4 * pulseFactor) + ')';
+        ctx.beginPath();
+        ctx.arc(n.x, n.y, n.radius * pulseFactor, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      requestAnimationFrame(loop);
+    }
+
+    function loop() {
+      updateNodes();
+      updateSignals();
+      draw();
+    }
+
+    canvas.parentElement.addEventListener('mousemove', function(e) {
+      var rect = canvas.getBoundingClientRect();
+      mouse.x = e.clientX - rect.left;
+      mouse.y = e.clientY - rect.top;
+    });
+    canvas.parentElement.addEventListener('mouseleave', function() {
+      mouse.x = -1000;
+      mouse.y = -1000;
+    });
+
+    resize();
+    initNodes();
+    loop();
+    window.addEventListener('resize', function() { resize(); initNodes(); });
+  })();
 
   /* ── Pricing page tabs ─────────────────── */
   const pricingTabs = document.querySelectorAll('.pricing-tab');

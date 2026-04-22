@@ -1521,32 +1521,23 @@
   })();
 
   /* ═══════════════════════════════════════════════
-   CIRCUIT CANVAS — Organic node mesh with
-   probe-mode cursor repel & signal propagation.
+   CIRCUIT CANVAS — Original v1 organic node mesh
    ═══════════════════════════════════════════════ */
-  (function() {
-    var canvas = document.getElementById('circuitCanvas');
-    if (!canvas || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-
-    var ctx = canvas.getContext('2d');
-    var width, height, dpr;
-    var nodes = [];
-    var NODE_COUNT = 70;
-    var CONNECTION_DIST = 160;
-    var MOUSE_REPEL_DIST = 180;
-    var MOUSE_REPEL_FORCE = 0.25;
-
-    var signals = [];
-    var SIGNAL_INTERVAL = 600;
-    var lastSignalTime = 0;
-
-    var mouse = { x: -1000, y: -1000 };
+  const canvas = document.getElementById('circuitCanvas');
+  if (canvas) {
+    const ctx = canvas.getContext('2d');
+    let width, height;
+    const nodes = [];
+    const NODE_COUNT = 40;
+    const CONNECTION_DIST = 180;
+    let mouse = { x: -1000, y: -1000 };
+    let frame = 0;
 
     function resize() {
-      var rect = canvas.parentElement.getBoundingClientRect();
+      const rect = canvas.parentElement.getBoundingClientRect();
       width = rect.width;
       height = rect.height;
-      dpr = Math.min(window.devicePixelRatio || 1, 2);
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
       canvas.width = width * dpr;
       canvas.height = height * dpr;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
@@ -1554,12 +1545,12 @@
 
     function initNodes() {
       nodes.length = 0;
-      for (var i = 0; i < NODE_COUNT; i++) {
+      for (let i = 0; i < NODE_COUNT; i++) {
         nodes.push({
           x: Math.random() * width,
           y: Math.random() * height,
-          vx: (Math.random() - 0.5) * 0.4,
-          vy: (Math.random() - 0.5) * 0.4,
+          vx: (Math.random() - 0.5) * 0.3,
+          vy: (Math.random() - 0.5) * 0.3,
           radius: 1.5 + Math.random() * 2,
           pulse: Math.random() * Math.PI * 2,
           pulseSpeed: 0.02 + Math.random() * 0.03
@@ -1567,164 +1558,90 @@
       }
     }
 
-    function spawnSignal(originNode) {
-      var neighbors = [];
-      for (var i = 0; i < nodes.length; i++) {
-        var n = nodes[i];
-        if (n === originNode) continue;
-        var dx = originNode.x - n.x;
-        var dy = originNode.y - n.y;
-        var dist = Math.sqrt(dx * dx + dy * dy);
-        if (dist < CONNECTION_DIST) {
-          neighbors.push({ node: n, dist: dist });
-        }
-      }
-      if (neighbors.length === 0) return;
-      var target = neighbors[Math.floor(Math.random() * neighbors.length)].node;
-      signals.push({
-        from: originNode,
-        to: target,
-        progress: 0,
-        speed: 0.015 + Math.random() * 0.025,
-        intensity: 0.6 + Math.random() * 0.4,
-        decay: 0.95 + Math.random() * 0.03
-      });
-    }
+    function drawCircuit() {
+      ctx.clearRect(0, 0, width, height);
+      frame++;
 
-    function updateNodes() {
-      for (var i = 0; i < nodes.length; i++) {
-        var n = nodes[i];
+      // Update nodes
+      nodes.forEach(n => {
         n.x += n.vx;
         n.y += n.vy;
         n.pulse += n.pulseSpeed;
 
-        if (n.x < 0) { n.x = 0; n.vx *= -0.8; }
-        if (n.x > width) { n.x = width; n.vx *= -0.8; }
-        if (n.y < 0) { n.y = 0; n.vy *= -0.8; }
-        if (n.y > height) { n.y = height; n.vy *= -0.8; }
+        if (n.x < 0 || n.x > width) n.vx *= -1;
+        if (n.y < 0 || n.y > height) n.vy *= -1;
+      });
 
-        var mdx = n.x - mouse.x;
-        var mdy = n.y - mouse.y;
-        var mdist = Math.sqrt(mdx * mdx + mdy * mdy);
-        if (mdist < MOUSE_REPEL_DIST && mdist > 0) {
-          var force = (MOUSE_REPEL_DIST - mdist) / MOUSE_REPEL_DIST * MOUSE_REPEL_FORCE;
-          n.vx += (mdx / mdist) * force;
-          n.vy += (mdy / mdist) * force;
-        }
-
-        n.vx *= 0.995;
-        n.vy *= 0.995;
-
-        if (Math.abs(n.vx) < 0.03) n.vx += (Math.random() - 0.5) * 0.015;
-        if (Math.abs(n.vy) < 0.03) n.vy += (Math.random() - 0.5) * 0.015;
-      }
-    }
-
-    function updateSignals() {
-      var now = Date.now();
-      if (now - lastSignalTime > SIGNAL_INTERVAL && Math.random() > 0.3) {
-        spawnSignal(nodes[Math.floor(Math.random() * nodes.length)]);
-        lastSignalTime = now;
-      }
-      for (var i = signals.length - 1; i >= 0; i--) {
-        var s = signals[i];
-        s.progress += s.speed;
-        s.intensity *= s.decay;
-        if (s.progress >= 1) {
-          if (s.intensity > 0.2 && Math.random() > 0.5) {
-            spawnSignal(s.to);
-          }
-          signals.splice(i, 1);
-        } else if (s.intensity < 0.01) {
-          signals.splice(i, 1);
-        }
-      }
-    }
-
-    function draw() {
-      ctx.clearRect(0, 0, width, height);
-
+      // Draw connections
+      ctx.strokeStyle = 'rgba(245, 158, 11, 0.12)';
       ctx.lineWidth = 0.8;
-      ctx.lineCap = 'round';
-      for (var i = 0; i < nodes.length; i++) {
-        for (var j = i + 1; j < nodes.length; j++) {
-          var a = nodes[i], b = nodes[j];
-          var dx = a.x - b.x;
-          var dy = a.y - b.y;
-          var dist = Math.sqrt(dx * dx + dy * dy);
+      for (let i = 0; i < nodes.length; i++) {
+        for (let j = i + 1; j < nodes.length; j++) {
+          const dx = nodes[i].x - nodes[j].x;
+          const dy = nodes[i].y - nodes[j].y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
           if (dist < CONNECTION_DIST) {
-            var alpha = (1 - dist / CONNECTION_DIST) * 0.12;
-            ctx.strokeStyle = 'rgba(245, 158, 11, ' + alpha + ')';
+            const alpha = (1 - dist / CONNECTION_DIST) * 0.15;
+            ctx.strokeStyle = `rgba(245, 158, 11, ${alpha})`;
             ctx.beginPath();
-            ctx.moveTo(a.x, a.y);
-            ctx.lineTo(b.x, b.y);
+            ctx.moveTo(nodes[i].x, nodes[i].y);
+            ctx.lineTo(nodes[j].x, nodes[j].y);
             ctx.stroke();
           }
         }
       }
 
-      for (var k = 0; k < signals.length; k++) {
-        var s = signals[k];
-        var sx = s.from.x + (s.to.x - s.from.x) * s.progress;
-        var sy = s.from.y + (s.to.y - s.from.y) * s.progress;
-        var sr = 2 + s.intensity * 2;
-        var glow = ctx.createRadialGradient(sx, sy, 0, sx, sy, sr * 6);
-        glow.addColorStop(0, 'rgba(245, 158, 11, ' + (s.intensity * 0.4) + ')');
-        glow.addColorStop(0.5, 'rgba(245, 158, 11, ' + (s.intensity * 0.15) + ')');
-        glow.addColorStop(1, 'rgba(245, 158, 11, 0)');
-        ctx.fillStyle = glow;
-        ctx.beginPath();
-        ctx.arc(sx, sy, sr * 6, 0, Math.PI * 2);
-        ctx.fill();
+      // Draw nodes
+      nodes.forEach(n => {
+        const pulseFactor = 0.6 + 0.4 * Math.sin(n.pulse);
+        const glowSize = n.radius * 3 * pulseFactor;
 
-        ctx.fillStyle = 'rgba(255, 200, 80, ' + s.intensity + ')';
-        ctx.beginPath();
-        ctx.arc(sx, sy, sr, 0, Math.PI * 2);
-        ctx.fill();
-      }
-
-      for (var m = 0; m < nodes.length; m++) {
-        var n = nodes[m];
-        var pulseFactor = 0.6 + 0.4 * Math.sin(n.pulse);
-        var glowSize = n.radius * 3 * pulseFactor;
-        var nGrad = ctx.createRadialGradient(n.x, n.y, 0, n.x, n.y, glowSize);
-        nGrad.addColorStop(0, 'rgba(245, 158, 11, ' + (0.25 * pulseFactor) + ')');
-        nGrad.addColorStop(1, 'rgba(245, 158, 11, 0)');
-        ctx.fillStyle = nGrad;
+        // Glow
+        const grad = ctx.createRadialGradient(n.x, n.y, 0, n.x, n.y, glowSize);
+        grad.addColorStop(0, `rgba(245, 158, 11, ${0.3 * pulseFactor})`);
+        grad.addColorStop(1, 'rgba(245, 158, 11, 0)');
+        ctx.fillStyle = grad;
         ctx.beginPath();
         ctx.arc(n.x, n.y, glowSize, 0, Math.PI * 2);
         ctx.fill();
 
-        ctx.fillStyle = 'rgba(245, 158, 11, ' + (0.4 + 0.4 * pulseFactor) + ')';
+        // Core
+        ctx.fillStyle = `rgba(245, 158, 11, ${0.5 + 0.5 * pulseFactor})`;
         ctx.beginPath();
         ctx.arc(n.x, n.y, n.radius * pulseFactor, 0, Math.PI * 2);
         ctx.fill();
-      }
+      });
 
-      requestAnimationFrame(loop);
+      // Mouse interaction — subtle pull
+      nodes.forEach(n => {
+        const dx = mouse.x - n.x;
+        const dy = mouse.y - n.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < 200 && dist > 0) {
+          const force = (200 - dist) / 200 * 0.02;
+          n.vx += (dx / dist) * force;
+          n.vy += (dy / dist) * force;
+        }
+      });
+
+      requestAnimationFrame(drawCircuit);
     }
 
-    function loop() {
-      updateNodes();
-      updateSignals();
-      draw();
-    }
-
-    canvas.parentElement.addEventListener('mousemove', function(e) {
-      var rect = canvas.getBoundingClientRect();
+    canvas.parentElement.addEventListener('mousemove', e => {
+      const rect = canvas.getBoundingClientRect();
       mouse.x = e.clientX - rect.left;
       mouse.y = e.clientY - rect.top;
     });
-    canvas.parentElement.addEventListener('mouseleave', function() {
+    canvas.parentElement.addEventListener('mouseleave', () => {
       mouse.x = -1000;
       mouse.y = -1000;
     });
 
     resize();
     initNodes();
-    loop();
-    window.addEventListener('resize', function() { resize(); initNodes(); });
-  })();
+    drawCircuit();
+    window.addEventListener('resize', () => { resize(); initNodes(); });
+  }
 
   /* ── Pricing page tabs ─────────────────── */
   const pricingTabs = document.querySelectorAll('.pricing-tab');
